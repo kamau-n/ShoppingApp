@@ -1,38 +1,258 @@
 .App {
-  text-align: center;
+    text-align: center;
 }
 
 .App-logo {
-  height: 40vmin;
-  pointer-events: none;
+    height: 40vmin;
+    pointer-events: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+    .App-logo {
+        animation: App-logo-spin infinite 20s linear;
+    }
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
 }
 
 .App-link {
-  color: #61dafb;
+    color: #61dafb;
 }
 
 @keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+h1,
+h2,
+h3,
+h4 {
+    text-align: center;
+}
+
+.main {
+    margin: auto;
+    width: 90%;
+    background-color: silver;
+    height: 100%
+}
+
+.body {
+    width: 80%;
+    margin: auto;
+    display: flex;
+    gap: 2rem;
+    overflow: auto;
+}
+
+.product {
+    text-align: center;
+    border: 2px solid silver;
+    width: 30%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    border-radius: 20px;
+    background-color: white;
+}
+
+.product img {
+    width: 200px;
+    height: 150px;
+    padding: 10px;
+    border-radius: 20px;
+}
+
+.info {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    justify-content: center;
+    padding-left: 40px;
+    padding-right: 40px;
+}
+
+.ind {
+    border: 2px solid silver;
+    background-color: red;
+    color: blue;
+    text-align: center;
+    width: 80px;
+    height: 30px;
+    font-size: 40;
+    font-weight: 900;
+    float: right;
+    border-radius: 10px;
+    padding-top: 10px;
+}
+
+.btn {
+    background-color: blue;
+    color: white;
+    width: 100px;
+    text-align: center;
+    padding: 5px;
+    font-size: 15px;
+    border: none;
+    border-radius: 10px
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    justify-content: center;
+    padding: 25px;
+    width: 50%;
+    margin: auto
+}
+
+.form input {
+    width: 200px;
+    margin: 10px;
+    height: 20px;
+    border-radius: 10px;
+    border: none;
+    text-align: center;
+    font-weight: 500;
+    outline: hidden;
+}
+
+.cart {
+    width: 50px;
+    height: 40px;
+    padding-top: 2px;
+    margin-left: 10px;
+}
+
+.cart img {
+    width: 100%
+}
+
+.header {
+    width: 80%;
+    margin: auto;
+    padding-top: 10px;
+}
+
+#bar {
+    width: 50%;
+    height: 35px;
+    border-radius: 10px;
+    border-color: silver;
+    border: none
+}
+
+.sb {
+    margin-left: 10px;
+    height: 35px;
+    border-radius: 10px;
+    width: 70px;
+    background-color: yellow;
+    color: white;
+    font-size: 15px;
+    border-color: yellow;
+}
+
+.logo {
+    font-size: 35px;
+    font-weight: 900;
+    margin-right: 20px;
+    margin-top: 1px;
+}
+
+.footer {
+    background-color: black;
+    color: white;
+    width: 100%;
+    margin: auto;
+    display: flex;
+    gap: 6rem;
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
+
+.footer ul {
+    list-style: none;
+}
+
+.comments {
+    display: flex;
+    flex-direction: column;
+}
+
+.login {}
+
+.login input {
+    height: 30px;
+    width: 300px;
+}
+
+.login ::placeholder {
+    font-size: 15px;
+    text-align: center;
+}
+
+.login button {
+    height: 37px;
+    background-color: orange;
+    font-size: 12px;
+    border-color: orange;
+    color: white;
+    font-weight: 800;
+    width: 300px
+}
+
+.account {
+    margin: 10px;
+    font-size: 15px;
+    font-weight: 900;
+    text-decoration: none;
+}
+
+.login-btn {
+    margin-top: 30px;
+}
+
+@media(max-width:800px) {
+    .product {
+        width: 100%;
+        margin: auto;
+    }
+    .body {
+        display: block;
+        gap: 4rem;
+    }
+    .ind {
+        text-align: center;
+        float: unset
+    }
+    .footer {
+        display: block;
+        width: 90%;
+        margin: auto
+    }
+    .comments {
+        width: 80%;
+        margin: auto;
+        padding-bottom: 40px;
+    }
+    .main {
+        width: 100%;
+    }
 }
