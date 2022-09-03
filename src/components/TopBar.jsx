@@ -10,9 +10,9 @@ const TopBar = () => {
   return (
     <div>
       <div className="top-bar">
-        <span className="main-logo">LA DOCHE.</span>
-        <div className="top-bar">
-          <Link to="/">Home</Link>
+        <div className="main-logo">LA DOCHE.</div>
+        <div className="top-links">
+          <Link to="/">Account</Link>
           <Link to="/">Home</Link>
           <Link to="/">Home</Link>
           <Link to="/">Home</Link>
@@ -20,11 +20,32 @@ const TopBar = () => {
         </div>
 
         <div className="top-icons">
-          <div>
-            <BsSearch />
-          </div>
-          <CgProfile />
-          <AiOutlineMessage />
+          <BsSearch
+            style={{
+              fontSize: 15,
+              marginLeft: 15,
+              paddingTop: 5,
+              marginRight: 1,
+            }}
+          />
+
+          <CgProfile
+            style={{
+              fontSize: 15,
+              marginLeft: 15,
+              paddingTop: 5,
+              marginRight: 1,
+            }}
+          />
+
+          <AiOutlineMessage
+            style={{
+              fontSize: 15,
+              marginLeft: 15,
+              paddingTop: 5,
+              marginRight: 1,
+            }}
+          />
         </div>
       </div>
     </div>

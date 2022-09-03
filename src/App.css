@@ -377,25 +377,31 @@ a {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    margin-left: 15px;
-    margin-right: 15px;
-    font-size: 20;
-    font-weight: 500;
 }
 
 .main-logo {
-    font-size: 35;
+    font-size: 350;
     font-weight: 900;
+    margin-left: 50px;
+    padding-top: 10;
 }
 
 .top-icons {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    margin-left: 15px;
-    margin-right: 15px;
-    font-size: 20;
+    margin-right: 50px;
+}
+
+.top-links {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     font-weight: 500;
+}
+
+.top-links-text {
+    font-size: 300
 }
 
 @media(max-width:800px) {
