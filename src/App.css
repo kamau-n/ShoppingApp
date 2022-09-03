@@ -53,7 +53,9 @@ h4 {
 
 .body {
     width: 80%;
-    margin: auto;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
     display: flex;
     gap: 2rem;
     overflow: auto;
@@ -68,7 +70,7 @@ h4 {
     margin-top: 50px;
     margin-bottom: 50px;
     border-radius: 20px;
-    background-color: white;
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
 .product img {
@@ -146,16 +148,46 @@ h4 {
 
 .header {
     width: 80%;
-    margin: auto;
+    margin-left: auto;
+    margin-right: auto;
     padding-top: 10px;
+    /* position: fixed;  */
+    top: 0%
 }
 
 #bar {
-    width: 50%;
+    width: 40%;
     height: 35px;
     border-radius: 10px;
     border-color: silver;
-    border: none
+    border: none;
+    text-align: center;
+    font-size: 15px;
+}
+
+.order-image {
+    padding: 20px;
+    margin-left: auto;
+    width: 80%;
+    margin-right: auto;
+}
+
+.order {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    margin-top: 20px;
+    float: left;
+    display: flex;
+    padding: 10px;
+    gap: 10rem;
+    background-color: rgba(0, 0, 0, 0.2)
+}
+
+.order img {
+    width: 150px;
+    height: 100px;
 }
 
 .sb {
@@ -180,11 +212,34 @@ h4 {
     background-color: black;
     color: white;
     width: 100%;
-    margin: auto;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 40px;
     display: flex;
     gap: 6rem;
     padding-bottom: 10px;
     padding-top: 10px;
+}
+
+#no {
+    z-index: -3;
+    position: absolute;
+}
+
+select {
+    width: 250px;
+    height: 30px;
+    outline: hidden;
+    border: none;
+    font-size: 12px;
+}
+
+a {
+    text-decoration: none;
+    margin: 5px;
+    color: black;
+    font-size: 13px;
+    font-weight: 700;
 }
 
 .footer ul {
@@ -196,11 +251,17 @@ h4 {
     flex-direction: column;
 }
 
+.errors {
+    color: red
+}
+
 .login {}
 
 .login input {
     height: 30px;
     width: 300px;
+    font-size: 15px;
+    padding-left: 10px;
 }
 
 .login ::placeholder {
@@ -229,7 +290,119 @@ h4 {
     margin-top: 30px;
 }
 
+.rem-btn {
+    width: 20px;
+    height: 15px
+}
+
+.rem-btn img {
+    width: 100%
+}
+
+#btn {
+    margin: 7px;
+}
+
+.op {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: beige;
+    padding: 10px
+}
+
+
+/* Dropdown Button */
+
+.dropbtn {
+    background-color: #04AA6D;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+}
+
+
+/* The container <div> - needed to position the dropdown content */
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+    margin: 20px;
+}
+
+
+/* Dropdown Content (Hidden by Default) */
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 100px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+}
+
+
+/* Links inside the dropdown */
+
+.dropdown-content a {
+    color: black;
+    padding: 10px 14px;
+    text-decoration: none;
+    display: block;
+}
+
+
+/* Change color of dropdown links on hover */
+
+.dropdown-content a:hover {
+    background-color: #ddd;
+}
+
+
+/* Show the dropdown menu on hover */
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+
+.dropdown:hover .dropbtn {
+    background-color: #3e8e41;
+}
+
+.top-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-left: 15px;
+    margin-right: 15px;
+    font-size: 20;
+    font-weight: 500;
+}
+
+.main-logo {
+    font-size: 35;
+    font-weight: 900;
+}
+
+.top-icons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-left: 15px;
+    margin-right: 15px;
+    font-size: 20;
+    font-weight: 500;
+}
+
 @media(max-width:800px) {
+    .rem-btn {
+        width: 10px;
+        height: 5px;
+    }
     .product {
         width: 100%;
         margin: auto;
@@ -237,6 +410,9 @@ h4 {
     .body {
         display: block;
         gap: 4rem;
+    }
+    .top-bar {
+        flex-direction: column;
     }
     .ind {
         text-align: center;
@@ -254,5 +430,13 @@ h4 {
     }
     .main {
         width: 100%;
+    }
+    .order {
+        gap: 1rem;
+        font-size: xx-small;
+    }
+    .order img {
+        width: 150px;
+        height: 75px;
     }
 }

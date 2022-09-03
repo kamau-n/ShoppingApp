@@ -9,6 +9,10 @@ import { BrowserRouter,Routes,Route } from 'react-router-dom';
 import Products  from './Products';
 import Upload from './Upload';
 import Login from './Login';
+import Order from './Order';
+import Sign from './Sign';
+import Test from './Test'
+
 
 
 function App() {
@@ -21,17 +25,20 @@ function App() {
   return (
  
     <div className="App">
-      <BrowserRouter>
+       <BrowserRouter>
       <Routes>
         <Route path='/' element={<Products/>} />
         <Route path="/uploads" element={<Upload/>}/>
         <Route path="/login" element={<Login/>}/>
+        <Route path="/orders" element={<Order/>} />
+        <Route path="/signup" element={<Sign/>} />
+        <Route path="/test" element={<Test/>} />
 
       </Routes>
 
 
 
-      </BrowserRouter>
+      </BrowserRouter> 
 
      
  

@@ -1,11 +1,8 @@
 import React from 'react'
-import {Link} from 'react-router-dom'
+import {Link,Navigate} from 'react-router-dom'
 //import {auth} from './config'
 import {useState ,useEffect} from 'react';
-
-
-
-import { getAuth, createUserWithEmailAndPassword , signInWithEmailAndPassword,onAuthStateChanged  } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword , signInWithEmailAndPassword,onAuthStateChanged ,signOut } from "firebase/auth";
 
 const auth = getAuth();
 
@@ -14,24 +11,13 @@ const auth = getAuth();
 //import * as firebaseui from 'firebaseui'
 //import 'firebaseui/dist/firebaseui.css'
 
-const Login = () => {
+const Login =() =>{
+
+
   const [useremail,setUseremail] = useState()
   const [password,setPassword] = useState()
   
 
-const getuser =() =>{
-  
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      //console.log(user.uid)
-      auth.currentUser
-      // ...
-    } else {
-      // User is signed out
-      // ...
-    }
-  });
-}
   
   const signup=()=>{
     console.log(useremail,password)
@@ -44,13 +30,28 @@ const getuser =() =>{
     .catch((err)=>{console.log(err)})
 
   }
+
+ 
+
   const signin=() =>{
     console.log(useremail,password)
     signInWithEmailAndPassword(auth, useremail, password)
-    .then((res)=>{console.log(res)})
+    .then((res)=>{
+      console.log(res.user);
+      <Navigate to="/" replace={true} />
+
+    })
     .catch((err)=>{console.log(err)})
 
 
+  }
+  const logout = ()=>{
+    signOut(auth).then((res) => {
+      console.log(res)
+    }).catch((error) => {
+      console.log(("there was an error that occured"))
+      // An error happened.
+    });
   }
 
   
@@ -66,21 +67,18 @@ const getuser =() =>{
         onChange={(e)=>{setPassword(e.target.value)}}
         /></div>
         <div>
-        <button className="login-btn" onClick={signin}>Continue</button>
+        <button className="login-btn" onClick={signin}>Login</button>
         </div>
 
-        <div>
-        <button className="login-btn" onClick={getuser}>SignUp</button>
-        </div>
+        
 
         <div>
-        <button className="login-btn">Use Facebook</button>
+        <button className="login-btn">GetUSer</button>
         </div>
-        <div>
-        <button className="login-btn">Use Twitter</button>
-        </div>
+   
 
 <Link to = "/">Home</Link>
+<Link to = "/signup">signup</Link>
 
  
 

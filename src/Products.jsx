@@ -1,166 +1,153 @@
-import React from 'react'
-import {Link} from 'react-router-dom'
-import { useState ,useEffect} from 'react';
-import {getDownloadURL, ref,uploadBytesResumable,listAll} from "firebase/storage"
-import './App.css';
-import {db,storage} from './config'
-import  {collection,getDocs,addDoc ,doc,deleteDoc} from 'firebase/firestore';
+import React from "react";
+import { Grid } from "@mui/material";
+import Products from "./assets/Assests";
+import Item from "./Item";
+import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import {
+  getDownloadURL,
+  ref,
+  uploadBytesResumable,
+  listAll,
+} from "firebase/storage";
+import "./App.css";
+import { db, storage } from "./config";
+import Header from "./components/Header";
+import TopBar from "./components/TopBar";
+import {
+  collection,
+  getDocs,
+  addDoc,
+  doc,
+  deleteDoc,
+} from "firebase/firestore";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut,
+} from "firebase/auth";
+const auth = getAuth();
 
-const Products = () => {
-    const [cart,setCart] = useState([])
-    const [selected ,setSelected] = useState(0)
-    const [data,setData] = useState([])
-    const  mealCollection =  collection(db,"Meals")
-    
-    const addCart = (name,quantity)=>{
-        //localStorage.setItem()
-        const meal = ({
-            name:name,
-            quantity:quantity,
+const Product = () => {
+  const [cart, setCart] = useState([]);
 
-        })
-        setSelected(selected+1)
+  const [data, setData] = useState([]);
+  const [drinks, setDrinks] = useState([]);
+  const mealCollection = collection(db, "Meals");
+  const drinkCollection = collection(db, "Drinks");
+  const [noOrder, setNoOrders] = useState(0);
+  const [user, setUser] = useState();
 
+  function allStorage() {
+    var values = [],
+      keys = Object.keys(localStorage),
+      i = keys.length;
 
+    while (i--) {
+      values.push(localStorage.getItem(keys[i]));
     }
 
-    useEffect(()=>{
-        listItem()
-      },[])
-
-
-
-//listing all the files that have been uploaded
-
-const listItem = () => {
-    const getMeals = async()=>{
-        const data =await getDocs(mealCollection)
-        setData(data.docs.map((doc)=>({...doc.data(),id:doc.id})))
-        console.log(data.docs.map((doc)=>({...doc.data(),id:doc.id})))
-    }
-    getMeals()
-   
-
-
-
-   
+    return values;
   }
-  
+
+  useEffect(() => {
+    listItem();
+    listItem2();
+    setNoOrders(allStorage().length);
+    getDrink();
+  }, []);
+
+  const getDrink = () => {
+    const getDrinks = async () => {
+      const data = await getDocs(drinkCollection);
+      setDrinks(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      console.log(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    };
+    getDrinks();
+  };
+
+  const listItem = () => {
+    const getMeals = async () => {
+      const data = await getDocs(mealCollection);
+      setData(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      //console.log(data.docs.map((doc)=>({...doc.data(),id:doc.id})))
+    };
+    getMeals();
+  };
+
+  const logout = () => {
+    signOut(auth)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        console.log("there was an error that occured");
+        // An error happened.
+      });
+  };
+
+  const listItem2 = () => {
+    // getuser()
+    const getDrinks = async () => {
+      const data = await getDocs(drinkCollection);
+      setDrinks(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      //console.log(data.docs.map((doc)=>({...doc.data(),id:doc.id})))
+    };
+    getDrinks();
+  };
+
   return (
-      <div>
-    <div className="main">
-        <div className="header">
-            <span className="logo">La Doche</span>
-            <input type="text" name="item" id="bar"  placeholder="Search..."/>
-            <button className="sb">Search</button>
-            <img src={require('./cart.png')} className="cart"/>
-         
-            {selected}
-            <span className="account">
-                <Link to="/login">Account</Link>
-
-            </span>
-
-
-        </div>
-        <h2>Available Meals</h2>
-        <div className="body">
-
-
-            {
-
-                data.map((meal)=>{
-                    return <div className="product">
-
-                        <img src={meal.Link} alt="no image"/>
-                        <h3>{meal.Name} </h3>
-                        <p className="info">
-                            <h3>{meal.Restaurant}</h3>
-                            <h3>
-                                {meal.Price}
-                            </h3>
-
-                        </p>
-                        <p><button onClick={addCart}>Order</button></p>
-
-                        </div>
-
-                })
-            }
-
-
-        </div>
-
-
-        </div>
-<div className="footer">
-    <ul>
-        <li><h3>Important Links</h3></li>
-        <li>About</li>
-        <li>Policies</li>
-        <li>uploads</li>
-        <li>Home</li>
-        <li>Mail</li>
-        <li>About</li>
-    </ul>
-
-    <ul>
-        <li><h3>Social Media</h3></li>
-        <li>Facebook</li>
-        <li>Twitter</li>
-        <li>Instagram</li>
-        <li>Linkedn</li>
-        <li>Tiktok</li>
-    </ul>
-
-    <ul>
-        <li><h3>About Us</h3></li>
-        <li>Terms and Condition</li>
-        <li>Supplier</li>
-        <li>Owner</li>
-        <li>Services</li>
-        <li>Sell with us</li>
-    </ul>
-
-    <ul>
-        <li><h3>Contact  Us</h3></li>
-        <li>Phone : +254 67868678</li>
-        <li>Fax:23244 234235 </li>
-        <li>Email:info@ladoche@gmail.com</li>
-        <li>Address :private bag 08939</li>
-        <li>Location:Nairobi</li>
-    </ul>
-
-    <ul>
-        <li><h3>Location</h3></li>
-        <li>Kenya</li>
-        <li>Uganda</li>
-        <li>Tanzania</li>
-        <li>Burundi</li>
-        <li>Rwanda</li>
-    </ul>
-
     <div>
-        <h3>Comments</h3>
-        <div className="comments">
-            <input type="text" placeholder="Enter Your Name" />
-            <input type="email" placeholder="Enter Your Email" />
-            <textarea placeholder="Enter Your Message Here" rows="5"/>
-            <button>Submit</button>
-        
-           
-        </div>
+      <TopBar />
+      <div className="category">
+        <h2>Categories</h2>
+        <div></div>
+      </div>
+      <main
+        style={{
+          width: "90%",
+          margin: "auto",
+          height: "50%",
+        }}>
+        <h2>Available Meal</h2>
+        <Grid container justify="center" spacing={2}>
+          {data.map((product) => (
+            <Grid
+              item
+              key={product.id}
+              xs={12}
+              sm={8}
+              lg={2}
+              style={{
+                marginTop: 10,
+              }}>
+              <Item product={product} />
+            </Grid>
+          ))}
+        </Grid>
 
-   
+        <h2>Available Drinks</h2>
+
+        <Grid container justify="center" spacing={2}>
+          {drinks.map((product) => (
+            <Grid
+              item
+              key={product.id}
+              xs={12}
+              sm={8}
+              lg={3}
+              style={{
+                marginTop: 10,
+              }}>
+              <Item product={product} />
+            </Grid>
+          ))}
+        </Grid>
+      </main>
     </div>
+  );
+};
 
-</div>
- 
-
-    </div>
-
-
-  )
-}
-
-export default Products
+export default Product;
