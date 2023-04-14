@@ -380,28 +380,35 @@ a {
 }
 
 .main-logo {
-    font-size: 350;
+    font-size: 20px;
     font-weight: 900;
-    margin-left: 50px;
+    margin-left: 100px;
     padding-top: 10;
+    margin-top: 10px
 }
 
 .top-icons {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    margin-right: 50px;
+    margin-right: 100px;
+    margin-top: 10px;
+    gap: 1rem
 }
 
 .top-links {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    font-weight: 500;
+    gap: 2rem;
+}
+
+.top-links-spans {
+    font: size 12px;
+    font-weight: 400;
 }
 
 .top-links-text {
-    font-size: 300
+    font-size: 300px
 }
 
 @media(max-width:800px) {

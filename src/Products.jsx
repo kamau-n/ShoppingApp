@@ -14,6 +14,7 @@ import "./App.css";
 import { db, storage } from "./config";
 import Header from "./components/Header";
 import TopBar from "./components/TopBar";
+//import Carosel from "./components/Carosel";
 import {
   collection,
   getDocs,
@@ -28,6 +29,7 @@ import {
   onAuthStateChanged,
   signOut,
 } from "firebase/auth";
+
 const auth = getAuth();
 
 const Product = () => {
@@ -101,6 +103,7 @@ const Product = () => {
   return (
     <div>
       <TopBar />
+
       <div className="category">
         <h2>Categories</h2>
         <div></div>
@@ -120,24 +123,6 @@ const Product = () => {
               xs={12}
               sm={8}
               lg={2}
-              style={{
-                marginTop: 10,
-              }}>
-              <Item product={product} />
-            </Grid>
-          ))}
-        </Grid>
-
-        <h2>Available Drinks</h2>
-
-        <Grid container justify="center" spacing={2}>
-          {drinks.map((product) => (
-            <Grid
-              item
-              key={product.id}
-              xs={12}
-              sm={8}
-              lg={3}
               style={{
                 marginTop: 10,
               }}>

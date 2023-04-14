@@ -5,25 +5,33 @@ import "../App.css";
 import { BsSearch } from "react-icons/bs";
 import { CgProfile } from "react-icons/cg";
 import { AiOutlineMessage } from "react-icons/ai";
+import { Button } from "@mui/material";
 
 const TopBar = () => {
   return (
     <div>
       <div className="top-bar">
-        <div className="main-logo">LA DOCHE.</div>
+        <div className="main-logo">LADOCHE.</div>
         <div className="top-links">
-          <Link to="/">Account</Link>
-          <Link to="/">Home</Link>
-          <Link to="/">Home</Link>
-          <Link to="/">Home</Link>
-          <Link to="/">Home</Link>
+          <h2 style={{ fontSize: 15, fontWeight: "700", marginTop: 10 }}>
+          z
+          </h2>
+          <h2 style={{ fontSize: 15, fontWeight: "700", marginTop: 10 }}>
+            About
+          </h2>
+          <h2 style={{ fontSize: 15, fontWeight: "700", marginTop: 10 }}>
+            Cart
+          </h2>
+          <h2 style={{ fontSize: 15, fontWeight: "700", marginTop: 10 }}>
+            Account
+          </h2>
         </div>
 
         <div className="top-icons">
           <BsSearch
             style={{
-              fontSize: 15,
-              marginLeft: 15,
+              fontSize: 18,
+              marginLeft: 18,
               paddingTop: 5,
               marginRight: 1,
             }}
@@ -31,21 +39,26 @@ const TopBar = () => {
 
           <CgProfile
             style={{
-              fontSize: 15,
-              marginLeft: 15,
+              fontSize: 18,
+              marginLeft: 18,
               paddingTop: 5,
               marginRight: 1,
             }}
           />
-
-          <AiOutlineMessage
-            style={{
-              fontSize: 15,
-              marginLeft: 15,
-              paddingTop: 5,
-              marginRight: 1,
-            }}
-          />
+          <div>
+            <Button
+              style={{
+                paddingTop: 5,
+                marginRight: 10,
+                backgroundColor: "red",
+                borderRadius: 10,
+                alignItems: "center",
+                color: "blue",
+                fontWeight: "700",
+              }}>
+              Login
+            </Button>
+          </div>
         </div>
       </div>
     </div>

@@ -16,6 +16,7 @@ const Item = ({ product }) => {
         maxWidth: "100%",
         width: "70%",
         margin: "auto",
+        maxHeight: "100%",
       }}>
       <CardMedia
         image={product.Link}
@@ -33,13 +34,9 @@ const Item = ({ product }) => {
           }}>
           <Typography gutterBottom variant="h6">
             {product.Name}
-            {}
           </Typography>
 
-          <Typography variant="h5">
-            {product.Price}
-            {}
-          </Typography>
+          <Typography variant="h5">{product.Price}</Typography>
         </div>
       </CardContent>
       <CardActions
