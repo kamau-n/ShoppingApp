@@ -13,9 +13,7 @@ const TopBar = () => {
       <div className="top-bar">
         <div className="main-logo">LADOCHE.</div>
         <div className="top-links">
-          <h2 style={{ fontSize: 15, fontWeight: "700", marginTop: 10 }}>
-          z
-          </h2>
+          <h2 style={{ fontSize: 15, fontWeight: "700", marginTop: 10 }}></h2>
           <h2 style={{ fontSize: 15, fontWeight: "700", marginTop: 10 }}>
             About
           </h2>
@@ -56,7 +54,7 @@ const TopBar = () => {
                 color: "blue",
                 fontWeight: "700",
               }}>
-              Login
+              <a href="login"> Login</a>
             </Button>
           </div>
         </div>
