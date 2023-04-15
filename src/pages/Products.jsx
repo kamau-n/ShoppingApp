@@ -1,7 +1,7 @@
 import React from "react";
 import { Grid } from "@mui/material";
-import Products from "./assets/Assests";
-import Item from "./Item";
+import Products from "../assets/Assests";
+// import Item from "../Item";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import {
@@ -10,10 +10,10 @@ import {
   uploadBytesResumable,
   listAll,
 } from "firebase/storage";
-import "./App.css";
-import { db, storage } from "./config";
-import Header from "./components/Header";
-import TopBar from "./components/TopBar";
+
+import { db, storage } from "../config/config";
+import Header from "../components/Header";
+import TopBar from "../components/TopBar";
 //import Carosel from "./components/Carosel";
 import {
   collection,
@@ -115,21 +115,13 @@ const Product = () => {
           height: "50%",
         }}>
         <h2>Available Meal</h2>
-        <Grid container justify="center" spacing={2}>
+        <div>
           {data.map((product) => (
-            <Grid
-              item
-              key={product.id}
-              xs={12}
-              sm={8}
-              lg={2}
-              style={{
-                marginTop: 10,
-              }}>
-              <Item product={product} />
-            </Grid>
+            <div className="" key={product.id}>
+              {/* <img src={product.Link} alt="no image" className="w-20" /> */}
+            </div>
           ))}
-        </Grid>
+        </div>
       </main>
     </div>
   );

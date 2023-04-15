@@ -6,8 +6,8 @@ import {
   uploadBytesResumable,
   listAll,
 } from "firebase/storage";
-import "./App.css";
-import { db, storage } from "./config";
+
+import { db, storage } from "../config/config";
 import {
   collection,
   getDocs,
@@ -17,23 +17,25 @@ import {
 } from "firebase/firestore";
 
 const Upload = () => {
-  const [name, setName] = useState();
-  const [price, setPrice] = useState();
-  const [rest, setRest] = useState();
   const [file, setFile] = useState();
   const [progress, setProgress] = useState(0);
   const [data, setData] = useState([]);
   const [url, setUrl] = useState();
-  const [mealType, setMealType] = useState("");
-  const [link, setLink] = useState();
-  // const  mealCollection =  collection(db,"Meals")
+  const [inputs, setInputs] = useState({});
 
+  const [link, setLink] = useState();
+
+  const handleChange = (event) => {
+    const name = event.target.name;
+    const value = event.target.value;
+    setInputs((values) => ({ ...values, [name]: value }));
+  };
   const handleSubmit = (ln) => {
-    addDoc(collection(db, `${mealType}`), {
-      Name: name,
-      Price: price,
+    addDoc(collection(db, `${inputs.meal_type}`), {
+      Name: inputs.name,
+      Price: inputs.price,
       Link: ln,
-      Restaurant: rest,
+      Restaurant: inputs.rest,
     })
       .then((res) => {
         console.log(res);
@@ -85,33 +87,30 @@ const Upload = () => {
         <div className="form">
           Select The type of Meal
           <select
-            onChange={(e) => {
-              setMealType(e.target.value);
-              console.log(e.target.value);
-            }}>
+            onChange={handleChange}
+            name="meal_type"
+            value={inputs.meal_type || ""}>
             <option value="Meals">Meal</option>
             <option value="Drinks">Drink</option>
           </select>
           <input
             type="text"
             placeholder="Enter the name of the Meal"
-            onChange={(e) => {
-              setName(e.target.value);
-            }}
+            onChange={handleChange}
           />
           <input
             type="text"
             placeholder="Enter the Price of the Meal"
-            onChange={(e) => {
-              setPrice(e.target.value);
-            }}
+            name="price"
+            value={inputs.price || ""}
+            onChange={handleChange}
           />
           <input
             type="text"
             placeholder="Enter the name of the Restaurant"
-            onChange={(e) => {
-              setRest(e.target.value);
-            }}
+            name="rest"
+            value={inputs.rest || ""}
+            onChange={handleChange}
           />
           <input
             type="file"
