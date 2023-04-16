@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import Order from "./pages/Order";
 import Sign from "./pages/Sign";
 import Home from "./pages/Home";
+import Drinks from "./pages/Drinks";
 
 function App() {
   return (
@@ -15,10 +16,11 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/products" element={<Products />} />
+          <Route path="/meals" element={<Products />} />
           <Route path="/uploads" element={<Upload />} />
           <Route path="/login" element={<Login />} />
           <Route path="/orders" element={<Order />} />
+          <Route path="/drinks" element={<Drinks />} />
           <Route path="/signup" element={<Sign />} />
         </Routes>
       </BrowserRouter>
