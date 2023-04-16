@@ -30,6 +30,7 @@ import {
 } from "firebase/auth";
 import DisplayFood from "../components/displayFood";
 import TopNav from "../components/TopNav";
+import Footer from "../components/Footer";
 
 const auth = getAuth();
 
@@ -102,14 +103,15 @@ const Product = () => {
   };
 
   return (
-    <div className=" w-5/6 p-2 my-3 mx-auto  ">
-      <main>
+    <div>
+      <main className=" w-5/6 p-2 my-3 mx-auto  ">
         <TopNav />
         <h2 className="uppercase text-xl my-5 py-3  font-bold">
           Available Meals
         </h2>
         <DisplayFood data={data} />
       </main>
+      <Footer />
     </div>
   );
 };

@@ -45,7 +45,8 @@ export default function SimpleSlider() {
           <div className="">
             <div key={prod.id} className="m-6 ">
               <img src={prod.link} alt="no image" className="w-full h-64 " />
-              <div className="px-3 py-5 flex  justify-between m-4">
+              <h3 className="px-2 py-2 font-mono">{prod.name}</h3>
+              <div className="px-3 py-3 flex  justify-between m-4">
                 <h2 className="font-bold py-2">{prod.price}</h2>
                 <button className="font-bold text-white px-5 py-2 bg-blue-700 rounded">
                   add
