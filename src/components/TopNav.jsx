@@ -7,7 +7,7 @@ export default function TopNav() {
       <h2 className="font-bold uppercase">LA DOCHE</h2>
       <div className="flex gap-3 font-mono">
         <Link to="/">Home</Link>
-        <Link to="/orders">Orders</Link>
+        <Link to="/cart">Cart</Link>
         <Link to="/drinks">Drinks</Link>
         <Link to="/meals">Meals</Link>
         <Link to="/about">About</Link>

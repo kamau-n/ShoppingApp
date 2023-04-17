@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import SimpleSlider from "../components/SimpleSlider";
 import burger from "../assets/burger.jpg";
@@ -7,6 +7,11 @@ import TopNav from "../components/TopNav";
 import Footer from "../components/Footer";
 
 export default function Home() {
+  useState(() => {
+    if (localStorage.getItem("ladoche_shopping_cart") == null) {
+      localStorage.setItem("ladoche_shopping_cart", "[]");
+    }
+  }, []);
   return (
     <div>
       <div className=" w-3/4 p-2 my-3 mx-auto  ">
