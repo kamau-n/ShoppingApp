@@ -10,6 +10,7 @@ import Sign from "./pages/Sign";
 import Home from "./pages/Home";
 import Drinks from "./pages/Drinks";
 import Product from "./pages/Products";
+import Billing from "./pages/Billing";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/drinks" element={<Drinks />} />
           <Route path="/signup" element={<Sign />} />
           <Route path="/product/:id" element={<Product />} />
+          <Route path="/billing" element={<Billing />} />
         </Routes>
       </BrowserRouter>
     </div>

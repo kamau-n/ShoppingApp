@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { collection, doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../config/config";
 import TopNav from "../components/TopNav";
@@ -7,13 +7,15 @@ import Footer from "../components/Footer";
 
 const mealsRef = collection(db, "Meals");
 
-export default function () {
+export default function ({ route, navigation }) {
   const { id } = useParams();
   const [details, setDetails] = useState({});
   const [quantity, setQuantity] = useState(1);
+  const { state } = useLocation();
+  console.log(state);
 
   useState(async () => {
-    const docRef = doc(db, "Meals", id);
+    const docRef = doc(db, `${state.type}`, id);
 
     try {
       const docSnap = await getDoc(docRef);
@@ -69,6 +71,7 @@ export default function () {
                   let cart2 = JSON.parse(cart);
                   const detail = {
                     name: `${details.Name}`,
+                    id: `${details.Id}`,
                     price: `${details.Price}`,
                     link: `${details.Link}`,
                     quantity: quantity,

@@ -109,7 +109,7 @@ const Product = () => {
         <h2 className="uppercase text-xl my-5 py-3  font-bold">
           Available Meals
         </h2>
-        <DisplayFood data={data} />
+        <DisplayFood data={data} type="Meals" />
       </main>
       <Footer />
     </div>

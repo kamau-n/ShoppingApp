@@ -1,8 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function ({ data }) {
+export default function ({ data, type, navigation }) {
   const navigate = useNavigate();
+  console.log("type is " + type);
 
   return (
     <div className="grid grid-cols-5 gap-4">
@@ -11,7 +12,7 @@ export default function ({ data }) {
           className="mx-4 border-2 rounded-sm "
           key={product.id}
           onClick={() => {
-            navigate(`/product/${product.id}`);
+            navigate(`/product/${product.id}`, { state: { type: type } });
           }}>
           <img src={product.Link} alt="" className="w-full h-52" />
           <h2 className="font-mono px-2 py-3">{product.Name}</h2>

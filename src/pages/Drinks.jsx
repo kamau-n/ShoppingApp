@@ -73,7 +73,7 @@ const Drinks = () => {
         <h2 className="uppercase text-xl my-5 py-3  font-bold">
           Available Drinks
         </h2>
-        <DisplayFood data={drinks} />
+        <DisplayFood data={drinks} type="Drinks" />
       </main>
       <Footer />
     </div>
