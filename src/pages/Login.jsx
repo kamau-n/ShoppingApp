@@ -10,17 +10,6 @@ const Login = () => {
   const [password, setPassword] = useState();
   const [mess, setMesseges] = useState("");
 
-  // const signup = () => {
-  //   console.log(useremail, password);
-  //   createUserWithEmailAndPassword(auth, useremail, password)
-  //     .then((res) => {
-  //       console.log(res);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // };
-
   const signin = () => {
     console.log(useremail, password);
     if (useremail == null || password == null) {
@@ -39,16 +28,6 @@ const Login = () => {
         });
     }
   };
-  // const logout = () => {
-  //   signOut(auth)
-  //     .then((res) => {
-  //       console.log(res);
-  //     })
-  //     .catch((error) => {
-  //       console.log("there was an error that occured");
-  //       // An error happened.
-  //     });
-  // };
 
   return (
     <div className="my-20 py-5 ">

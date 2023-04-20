@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { MpesaStk } from "react-mpesa-stk";
 
 //load the styles
 import "react-mpesa-stk/dist/index.css";
 
 export default function Billing() {
+  const [inputs, setInputs] = useState({});
   const handleSuccess = (data) => {
     //handle success
     console.log(data);
@@ -13,6 +14,17 @@ export default function Billing() {
   const handleError = (error) => {
     //handle error
     console.log(error);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log(inputs);
+  };
+
+  const handleChange = (event) => {
+    const name = event.target.name;
+    const value = event.target.value;
+    setInputs((values) => ({ ...values, [name]: value }));
   };
 
   const credentials = {
@@ -24,40 +36,12 @@ export default function Billing() {
     businessShortcode: 247247, //eg 174379
     amount: "1", //Amount to be paid by the customer eg. 100
     phone: "254759155650", //Phone number of the customer eg. 254712345000
-    callbackUrl: "", //Callback url to be called after payment
+    callbackUrl: "localhost:3000", //Callback url to be called after payment
     accountReference: "order number", //Account reference eg. order number
     transactionDesc: "order", //Transaction description eg. Order for pizza
     mpesaAuth:
       "QVVMSGVIMHhrOGlKVkVZVlZMZFA3S0J0NEs0QVhjMWs6QnlNbEdwcVJraHlNVDVUbw", //Mpesa auth token obtained from mpesa daraja portal
     environment: "sandbox", //environment to be used eg. sandbox or production--you can use sandbox for testing
-  };
-
-  const pay = async () => {
-    fetch("https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest", {
-      method: "POST",
-      mode: "no-cors",
-
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(credentials),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.errorMessage) {
-          console.log(data.errorMessage);
-          //   setError(true);
-          //   setErrorMessage(data.errorMessage);
-        } else {
-          console.log({ message: "success", data });
-          //   setData(data);
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        // setError(true);
-        // setErrorMessage(error.message);
-      });
   };
 
   return (
@@ -69,8 +53,8 @@ export default function Billing() {
             <span className="text-l font-bold">First Name</span>
             <input
               type="text"
-              name=""
-              id=""
+              name="first_name"
+              value={inputs.first_name || ""}
               className="p-2 border-2 border-slate-200 "
             />
           </div>
@@ -78,8 +62,8 @@ export default function Billing() {
             <span className="text-l font-bold">Last Name</span>
             <input
               type="text"
-              name=""
-              id=""
+              name="last_name"
+              value={inputs.last_name || ""}
               className="p-2 border-2 border-slate-200 "
             />
           </div>
@@ -89,8 +73,8 @@ export default function Billing() {
           <input
             type="text"
             className="p-2 border-2 border-slate-200 "
-            name=""
-            id=""
+            name="company_name"
+            value={inputs.company_name || ""}
           />
         </div>
         <div className="flex flex-col">
@@ -98,8 +82,9 @@ export default function Billing() {
           <input
             type="text"
             className="p-2 border-2 border-slate-200 "
-            name=""
-            id=""
+            name="region"
+            value={inputs.region || ""}
+            onChange={handleChange}
           />
         </div>
 
@@ -108,8 +93,9 @@ export default function Billing() {
           <input
             type="text"
             className="p-2 border-2 border-slate-200 "
-            name=""
-            id=""
+            name="address"
+            value={inputs.address || ""}
+            onChange={handleChange}
           />
         </div>
 
@@ -118,9 +104,10 @@ export default function Billing() {
           <input
             type="text"
             className="p-2 border-2 border-slate-200 "
-            name=""
+            name="contact"
+            value={inputs.contact || ""}
             placeholder="+254"
-            id=""
+            onChange={handleChange}
           />
         </div>
         <div className="flex flex-col">
@@ -128,8 +115,9 @@ export default function Billing() {
           <input
             type="email"
             className="p-2 border-2 border-slate-200 "
-            name=""
-            id=""
+            name="email"
+            value={inputs.email || ""}
+            onChange={handleChange}
           />
         </div>
       </div>
@@ -145,17 +133,17 @@ export default function Billing() {
           Payment method
         </h2>
         <button
-          onClick={pay}
+          onClick={handleSubmit}
           className="bg-green-500 font-bold text-white text-xl py-3 px-2 ">
           COMPLETE WITH MPESA
         </button>
-        <MpesaStk
+        {/* <MpesaStk
           credentials={credentials} //credentials object
           onPaySuccess={handleSuccess} //returned afer a successful payment
           onPayError={handleError}
 
           //returned after a failed payment
-        />
+        /> */}
       </div>
     </div>
   );

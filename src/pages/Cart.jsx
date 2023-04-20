@@ -48,7 +48,7 @@ const Cart = () => {
 
   useEffect(() => {
     allStorage();
-  }, [total]);
+  }, []);
 
   return (
     <div className="">
