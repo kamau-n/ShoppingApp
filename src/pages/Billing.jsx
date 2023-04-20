@@ -32,6 +32,34 @@ export default function Billing() {
     environment: "sandbox", //environment to be used eg. sandbox or production--you can use sandbox for testing
   };
 
+  const pay = async () => {
+    fetch("https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest", {
+      method: "POST",
+      mode: "no-cors",
+
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(credentials),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.errorMessage) {
+          console.log(data.errorMessage);
+          //   setError(true);
+          //   setErrorMessage(data.errorMessage);
+        } else {
+          console.log({ message: "success", data });
+          //   setData(data);
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        // setError(true);
+        // setErrorMessage(error.message);
+      });
+  };
+
   return (
     <div className="w-4/5 mx-auto my-10 py-4 px-3">
       <h2 className="text-2xl font-bold text-left">Billing Details</h2>
@@ -116,15 +144,18 @@ export default function Billing() {
         <h2 className="text-left text-2xl font-bold my-3 py-3">
           Payment method
         </h2>
-        <button className="bg-green-500 font-bold text-white text-xl py-3 px-2 ">
+        <button
+          onClick={pay}
+          className="bg-green-500 font-bold text-white text-xl py-3 px-2 ">
           COMPLETE WITH MPESA
         </button>
         <MpesaStk
           credentials={credentials} //credentials object
           onPaySuccess={handleSuccess} //returned afer a successful payment
-          onPayError={handleError} //returned after a failed payment
+          onPayError={handleError}
+
+          //returned after a failed payment
         />
-        ;
       </div>
     </div>
   );

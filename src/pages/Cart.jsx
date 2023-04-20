@@ -122,7 +122,10 @@ const Cart = () => {
               <span> {value}</span>
             </div>
             <button className="font-bold bg-black p-2 text-white w-full mx-1">
-              CHECKOUT
+              <Link to="/billing" className="text-white">
+                {" "}
+                CHECKOUT
+              </Link>
             </button>
           </div>
         </div>
