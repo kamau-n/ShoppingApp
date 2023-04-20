@@ -55,6 +55,7 @@ export default function Billing() {
               type="text"
               name="first_name"
               value={inputs.first_name || ""}
+              onChange={handleChange}
               className="p-2 border-2 border-slate-200 "
             />
           </div>
@@ -64,6 +65,7 @@ export default function Billing() {
               type="text"
               name="last_name"
               value={inputs.last_name || ""}
+              onChange={handleChange}
               className="p-2 border-2 border-slate-200 "
             />
           </div>
