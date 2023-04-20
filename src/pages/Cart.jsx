@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import TopNav from "../components/TopNav";
 import Footer from "../components/Footer";
 
@@ -8,6 +8,8 @@ const Cart = () => {
   const [items, setItems] = useState([]);
   const [value, setValue] = useState(0);
   const [total, setTotal] = useState(0);
+  const [shipping, setShipping] = useState(0);
+  const navigate = useNavigate();
 
   const allStorage = () => {
     let cart = localStorage.getItem("ladoche_shopping_cart");
@@ -104,10 +106,21 @@ const Cart = () => {
             </div>
 
             <h3 className="text-left my-6">SHIPPING</h3>
-            <select className="font-bold p-2 my-8">
-              <option className="font-bold p-2">Standard Delivery {500}</option>
-              <option className="font-bold p-2">Normal Delivery {300}</option>
-              <option className="font-bold p-2">Fast Delivery {800}</option>
+            <select
+              className="font-bold p-2 my-8"
+              onChange={(e) => {
+                setShipping(e.target.value);
+              }}>
+              <option className="font-bold p-2" value={300}>
+                Normal Delivery {300}
+              </option>
+              <option className="font-bold p-2" value={500}>
+                Standard Delivery {500}
+              </option>
+
+              <option className="font-bold p-2" value={800}>
+                Fast Delivery {800}
+              </option>
             </select>
             <h2 className="text-left mt-7 mb-2 ">COUPON CODE</h2>
             <div className="text-left">
@@ -121,11 +134,17 @@ const Cart = () => {
               <h2>TOTAL PRICE</h2>
               <span> {value}</span>
             </div>
-            <button className="font-bold bg-black p-2 text-white w-full mx-1">
-              <Link to="/billing" className="text-white">
-                {" "}
-                CHECKOUT
-              </Link>
+            <button
+              className="font-bold bg-black p-2 text-white w-full mx-1"
+              onClick={() => {
+                navigate("/billing", {
+                  state: {
+                    shipping: shipping,
+                    total: total,
+                  },
+                });
+              }}>
+              CHECKOUT
             </button>
           </div>
         </div>

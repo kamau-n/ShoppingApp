@@ -3,9 +3,11 @@ import { MpesaStk } from "react-mpesa-stk";
 
 //load the styles
 import "react-mpesa-stk/dist/index.css";
+import { useLocation } from "react-router-dom";
 
 export default function Billing() {
   const [inputs, setInputs] = useState({});
+  const { state } = useLocation();
   const handleSuccess = (data) => {
     //handle success
     console.log(data);
@@ -126,7 +128,14 @@ export default function Billing() {
       <div className="text-left">
         <h2 className="text-left text-2xl font-bold my-3 py-3">Your Order</h2>
         <div className=" flex justify-between bg-black px-3 py-3">
-          <h2 className="text-white font-bold">Product</h2>
+          <div className="flex justify-between">
+            <h2 className="text-white font-bold">Products</h2>
+            <h2 className="text-white font-bold">{state.total}</h2>
+          </div>
+          <div className="flex  justify-between">
+            <h2 className="text-white font-bold">Shipping</h2>
+            <h2 className="text-white font-bold">{state.shipping}</h2>
+          </div>
           <h3 className="text-white font-bold">Total</h3>
         </div>
       </div>
