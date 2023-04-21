@@ -55,7 +55,6 @@ const Cart = () => {
   return (
     <div className="">
       <div className=" w-5/6 p-2 my-3 bg-slate-400 mx-auto">
-        {/* <TopNav /> */}
         <div className="my-7 w-3/4 flex mx-auto py-5 px-3">
           <div className="bg-white basis-2/3 px-4 py-4">
             <h2 className="text-2xl text-left font-semibold font-mono">
@@ -63,7 +62,6 @@ const Cart = () => {
             </h2>
             {items.map((item) => {
               let total = item.name.price * item.name.quantity;
-              // console.log(total + value);
 
               return (
                 <div className="w-3/4 mx-auto my-6  border-t-2 border-b-2 gap-4 py-4 px-2 flex ">
