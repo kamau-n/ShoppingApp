@@ -10,7 +10,7 @@ import { db } from "../config/config";
 import { collection, getDocs } from "firebase/firestore";
 
 export default function Home() {
-  const drinkCollection = collection(db, "Fdrinks");
+  const drinkCollection = collection(db, "Fmeals");
   const [fMeals, setFmeals] = useState([]);
   const navigate = useNavigate();
 
