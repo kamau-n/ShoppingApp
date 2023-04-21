@@ -4,6 +4,7 @@ import { collection, doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../config/config";
 import TopNav from "../components/TopNav";
 import Footer from "../components/Footer";
+import { Alert } from "@mui/material";
 
 const mealsRef = collection(db, "Meals");
 
@@ -12,6 +13,7 @@ export default function ({ route, navigation }) {
   const [details, setDetails] = useState({});
   const [quantity, setQuantity] = useState(1);
   const { state } = useLocation();
+  const [show, setShow] = useState(false);
   console.log(state);
 
   useState(async () => {
@@ -29,6 +31,18 @@ export default function ({ route, navigation }) {
     <div>
       <div className=" w-5/6 p-2 my-3 mx-auto  ">
         <TopNav />
+        {show && (
+          <div className="my-5 mx-3">
+            <Alert
+              severity="success"
+              className="text-3xl"
+              onClose={() => {
+                setShow(false);
+              }}>
+              Item has been added to the cart sucessfully
+            </Alert>
+          </div>
+        )}
         <div className=" my-5 mx-3 py-5  px-3 sm:flex  gap-5 ">
           <div className="basis-1/2 py-4 px-3 m-4">
             <img src={details.Link} alt="no image" />
@@ -85,7 +99,7 @@ export default function ({ route, navigation }) {
                       "ladoche_shopping_cart",
                       JSON.stringify(cart2)
                     );
-                    alert("item added successfully");
+                    setShow(true);
                   } catch (err) {
                     console.log(err);
                   }

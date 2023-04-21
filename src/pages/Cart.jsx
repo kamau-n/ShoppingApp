@@ -111,7 +111,7 @@ const Cart = () => {
               onChange={(e) => {
                 setShipping(e.target.value);
               }}>
-              <option className="font-bold p-2" value={300}>
+              <option className="font-bold p-2" selected value={300}>
                 Normal Delivery {300}
               </option>
               <option className="font-bold p-2" value={500}>
@@ -140,7 +140,7 @@ const Cart = () => {
                 navigate("/billing", {
                   state: {
                     shipping: shipping,
-                    total: total,
+                    total: Number(value) + Number(shipping),
                   },
                 });
               }}>

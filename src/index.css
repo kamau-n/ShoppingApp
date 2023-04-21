@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+.slider-dots {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: gray;
+    margin: 0 5px;
+    transition: all 0.3s;
+}
+
+.slick-active .dot {
+    background-color: white;
+}

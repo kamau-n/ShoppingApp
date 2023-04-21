@@ -1,13 +1,17 @@
+import { Button } from "@material-ui/core";
+import { Alert } from "@mui/material";
 import React, { useState } from "react";
 import { MpesaStk } from "react-mpesa-stk";
 
 //load the styles
 import "react-mpesa-stk/dist/index.css";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export default function Billing() {
   const [inputs, setInputs] = useState({});
   const { state } = useLocation();
+  const [message, setMessages] = useState("");
+  const [show, setShow] = useState(false);
   const handleSuccess = (data) => {
     //handle success
     console.log(data);
@@ -18,9 +22,21 @@ export default function Billing() {
     console.log(error);
   };
 
+  function checkProperties(obj) {
+    for (var key in obj) {
+      if (obj[key] !== null && obj[key] != "") return false;
+    }
+    return true;
+  }
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(inputs);
+    if (checkProperties(inputs)) {
+      setMessages("some values are empty");
+      setShow(true);
+    } else {
+      console.log(inputs);
+    }
   };
 
   const handleChange = (event) => {
@@ -47,8 +63,20 @@ export default function Billing() {
   };
 
   return (
-    <div className="w-4/5 mx-auto my-10 py-4 px-3">
+    <div className="w-3/5 mx-auto my-10 py-4 px-3">
       <h2 className="text-2xl font-bold text-left">Billing Details</h2>
+      {show && (
+        <div className="my-5 mx-3">
+          <Alert
+            severity="error"
+            onClose={() => {
+              setShow(false);
+            }}>
+            Error Message — Some values are empty!
+          </Alert>
+        </div>
+      )}
+
       <div className="text-left space-y-5">
         <div className="flex flex-row gap-4">
           <div className="flex  basis-1/2  flex-col">
@@ -79,6 +107,7 @@ export default function Billing() {
             className="p-2 border-2 border-slate-200 "
             name="company_name"
             value={inputs.company_name || ""}
+            onChange={handleChange}
           />
         </div>
         <div className="flex flex-col">
@@ -127,35 +156,45 @@ export default function Billing() {
       </div>
       <div className="text-left">
         <h2 className="text-left text-2xl font-bold my-3 py-3">Your Order</h2>
-        <div className=" flex justify-between bg-black px-3 py-3">
-          <div className="flex justify-between">
+        <div className=" block justify-between bg-black px-3 py-3">
+          <div className="flex  flex-cols justify-between">
             <h2 className="text-white font-bold">Products</h2>
             <h2 className="text-white font-bold">{state.total}</h2>
           </div>
-          <div className="flex  justify-between">
+          <div className="flex flex-cols justify-between">
             <h2 className="text-white font-bold">Shipping</h2>
             <h2 className="text-white font-bold">{state.shipping}</h2>
           </div>
-          <h3 className="text-white font-bold">Total</h3>
+          <div className="flex justify-between">
+            <h3 className="text-white font-bold">Total</h3>
+            <h3 className="text-white font-bold">{state.total}</h3>
+          </div>
         </div>
       </div>
       <div className="text-left">
         <h2 className="text-left text-2xl font-bold my-3 py-3">
           Payment method
         </h2>
-        <button
-          onClick={handleSubmit}
-          className="bg-green-500 font-bold text-white text-xl py-3 px-2 ">
-          COMPLETE WITH MPESA
-        </button>
-        {/* <MpesaStk
+
+        <div className="flex justify-between">
+          <button
+            onClick={handleSubmit}
+            className="bg-green-500 font-bold text-white text-xl py-3 px-2 ">
+            COMPLETE WITH MPESA
+          </button>
+          {/* <MpesaStk
           credentials={credentials} //credentials object
           onPaySuccess={handleSuccess} //returned afer a successful payment
           onPayError={handleError}
 
           //returned after a failed payment
         /> */}
+          <button className="bg-blue-500 font-bold text-white text-xl py-3 px-2 ">
+            COMPLETE WITH CARD
+          </button>
+        </div>
       </div>
+      <Link to="/">Back to shopping </Link>
     </div>
   );
 }
