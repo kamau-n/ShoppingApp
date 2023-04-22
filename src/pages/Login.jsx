@@ -18,11 +18,15 @@ const Login = () => {
       signInWithEmailAndPassword(auth, useremail, password)
         .then((res) => {
           // console.log(res.user);
-          console.log(res);
+          console.log(res.user);
+          if (res.user) {
+            alert("there is a user who is logged in");
+          }
         })
         .catch((err) => {
           console.log(err.message);
           //  errorCode === 'auth/wrong-password' )
+          setMesseges(err.message);
           if (err.message) {
           }
         });
@@ -30,12 +34,12 @@ const Login = () => {
   };
 
   return (
-    <div className="my-20 py-5 ">
+    <div className="my-10 py-5 ">
       <h2 className="text-2xl font-bold py-5 my-3">LA DOCHE</h2>
       <h3 className="p-3 m-4 text-center text-red-500 text-xl font-bold">
         {mess}
       </h3>
-      <h2 className="uppercase font-mono text-center">Login </h2>
+      <h2 className="uppercase font-mono font-bold text-center">Login </h2>
 
       <div className="my-5">
         <input

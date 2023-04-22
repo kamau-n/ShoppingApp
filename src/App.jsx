@@ -11,6 +11,7 @@ import Home from "./pages/Home";
 import Drinks from "./pages/Drinks";
 import Product from "./pages/Products";
 import Billing from "./pages/Billing";
+import Account from "./pages/Account";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="/signup" element={<Sign />} />
           <Route path="/product/:id" element={<Product />} />
           <Route path="/billing" element={<Billing />} />
+          <Route path="/account" element={<Account />} />
         </Routes>
       </BrowserRouter>
     </div>

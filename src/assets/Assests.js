@@ -1,4 +1,13 @@
 const Products = ([{
+        id: 17,
+        name: "Burger",
+        price: 400,
+        link: 'https://static.onecms.io/wp-content/uploads/sites/43/2022/09/26/25473-the-perfect-basic-burger-ddmfs-4x3-1350-1.jpg',
+        Restaurant: "Yuukis"
+
+    },
+
+    {
         id: 12,
         name: "Pizza",
         price: 400,
@@ -18,14 +27,7 @@ const Products = ([{
 
 
 
-    {
-        id: 17,
-        name: "Burger",
-        price: 400,
-        link: 'https://static.onecms.io/wp-content/uploads/sites/43/2022/09/26/25473-the-perfect-basic-burger-ddmfs-4x3-1350-1.jpg',
-        Restaurant: "Yuukis"
 
-    },
     {
         id: 90,
         name: "Pasta Noodle",

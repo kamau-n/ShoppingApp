@@ -16,24 +16,24 @@ const Login = () => {
   const [number, setNumber] = useState();
 
   const signup = () => {
-    console.log(useremail, password, address, firstname, lastname);
-
-    createUserWithEmailAndPassword(
-      auth,
-      useremail,
-      password,
-      firstname,
-      lastname,
-      address,
-      number
-    )
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        setError(err.message);
-        console.log(err.message);
-      });
+    if (
+      useremail == null ||
+      password == null ||
+      address == null ||
+      firstname == null ||
+      lastname == null
+    ) {
+      setError("Some values are empty");
+    } else {
+      createUserWithEmailAndPassword(auth, useremail, password)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          setError(err.message);
+          console.log(err.message);
+        });
+    }
   };
 
   return (
@@ -45,7 +45,7 @@ const Login = () => {
         <input
           type="email"
           placeholder="Email"
-          className="text-xl text-center font-light py-3"
+          className="text-xl text-center font-light py-2"
           onChange={(e) => {
             setUseremail(e.target.value);
           }}
@@ -56,7 +56,7 @@ const Login = () => {
         <input
           type="Text"
           placeholder="FirstName"
-          className="text-xl text-center font-light py-3"
+          className="text-xl text-center font-light py-2"
           onChange={(e) => {
             setFirstname(e.target.value);
           }}
@@ -67,7 +67,7 @@ const Login = () => {
         <input
           type="text"
           placeholder="LastName"
-          className="text-xl text-center font-light py-3"
+          className="text-xl text-center font-light py-2"
           onChange={(e) => {
             setLastname(e.target.value);
           }}
@@ -78,7 +78,7 @@ const Login = () => {
         <input
           type="text"
           placeholder="PhoneNumber"
-          className="text-xl text-center font-light py-3"
+          className="text-xl text-center font-light py-2"
           onChange={(e) => {
             setNumber(e.target.value);
           }}
@@ -89,14 +89,14 @@ const Login = () => {
         <input
           type="text"
           placeholder="Address"
-          className="text-xl text-center font-light py-3"
+          className="text-xl text-center font-light py-2"
           onChange={(e) => {
             setAddress(e.target.value);
           }}
         />
       </div>
 
-      <div className="login-btn">
+      <div className="my-4 py-4">
         <input
           type="password"
           placeholder="Password"
@@ -115,8 +115,10 @@ const Login = () => {
         </button>
       </div>
 
-      <Link to="/">Home</Link>
-      <Link to="/login">Login</Link>
+      <div className="flex justify-center gap-6 my-5 py-4 px-3">
+        <Link to="/">Home</Link>
+        <Link to="/login">Login</Link>
+      </div>
     </div>
   );
 };
