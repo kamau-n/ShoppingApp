@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 //import {auth} from './config'
 import { useState } from "react";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
@@ -9,6 +9,7 @@ const Login = () => {
   const [useremail, setUseremail] = useState();
   const [password, setPassword] = useState();
   const [mess, setMesseges] = useState("");
+  const navigate = useNavigate();
 
   const signin = () => {
     console.log(useremail, password);
@@ -20,7 +21,7 @@ const Login = () => {
           // console.log(res.user);
           console.log(res.user);
           if (res.user) {
-            alert("there is a user who is logged in");
+            navigate("/");
           }
         })
         .catch((err) => {

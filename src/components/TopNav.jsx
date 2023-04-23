@@ -1,7 +1,22 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+
+const auth = getAuth();
 
 export default function TopNav({ logged }) {
+  const handleLogout = () => {
+    console.log(typeof auth);
+    signOut(auth)
+      .then(() => {
+        // Sign-out successful.
+        // navigate("/");
+        console.log("Signed out successfully");
+      })
+      .catch((error) => {
+        // An error happened.
+      });
+  };
   return (
     <div className="flex justify-between  my-4 py-3 ">
       <h2 className="font-bold text-xl uppercase">LA DOCHE</h2>
@@ -14,11 +29,20 @@ export default function TopNav({ logged }) {
       </div>
 
       {logged && (
-        <button className="py-2 px-7 bg-slate-700 text-white rounded font-bold">
-          <Link to="/account" className="text-white">
-            Account
-          </Link>
-        </button>
+        <div className=" flex gap-7">
+          <button className="py-2 px-7 bg-slate-700 text-white rounded font-bold">
+            <Link to="/account" className="text-white">
+              Account
+            </Link>
+          </button>
+          <button
+            className="py-2 px-7 bg-slate-700 text-white rounded font-bold"
+            onClick={() => {
+              handleLogout();
+            }}>
+            Logout
+          </button>
+        </div>
       )}
 
       {!logged && (

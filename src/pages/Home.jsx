@@ -69,7 +69,7 @@ export default function Home() {
                   <img
                     src={product.Link}
                     alt=""
-                    className="bg-cover h-60 rounded-md"
+                    className="bg-cover h-60 w-full rounded-md"
                   />
                 </div>
               ))}
@@ -90,7 +90,7 @@ export default function Home() {
               <img
                 src={burger}
                 alt="no image"
-                className="w-20 bg-cover p-2 h-16"
+                className="w-full bg-cover p-2 h-44"
               />
             </div>
 
@@ -106,7 +106,7 @@ export default function Home() {
               <img
                 src={jager}
                 alt="no image"
-                className="w-20 bg-cover p-2 h-16"
+                className="w-full bg-cover p-2 h-44"
               />
             </div>
             <div
@@ -121,7 +121,7 @@ export default function Home() {
               <img
                 src={burger}
                 alt="no image"
-                className="w-20 p-2 h-16"
+                className="w-full p-2 h-44"
                 onClick={() => {
                   navigate("/meals");
                 }}
@@ -132,7 +132,7 @@ export default function Home() {
                 <h2 className="text-l  px-3 font-bold">Snacks</h2>
                 <h2>12 Meal</h2>
               </div>
-              <img src={burger} alt="no image" className="w-20 p-2 h-16" />
+              <img src={burger} alt="no image" className="w-full p-2 h-44" />
             </div>
           </div>
         </div>

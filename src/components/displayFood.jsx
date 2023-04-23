@@ -6,7 +6,7 @@ export default function ({ data, type, navigation }) {
   console.log("type is " + type);
 
   return (
-    <div className="grid grid-cols-5 gap-4">
+    <div className="grid grid-cols-4 gap-4">
       {data.map((product) => (
         <div
           className="mx-4 border-2 rounded-sm "
@@ -14,7 +14,7 @@ export default function ({ data, type, navigation }) {
           onClick={() => {
             navigate(`/product/${product.id}`, { state: { type: type } });
           }}>
-          <img src={product.Link} alt="" className="w-full h-52" />
+          <img src={product.Link} alt="" className="w-full h-48" />
           <h2 className="font-mono px-2 py-3">{product.Name}</h2>
           <div className="flex my-3 mx-5 p-3 justify-between">
             <h2 className="p-3 text-xl font-bold">{product.Price}</h2>
