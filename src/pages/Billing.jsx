@@ -6,7 +6,7 @@ import { MpesaStk } from "react-mpesa-stk";
 //load the styles
 import "react-mpesa-stk/dist/index.css";
 import { Link, useLocation } from "react-router-dom";
-import daraja from "../Utilities/daraja";
+// import daraja from "../Utilities/daraja";
 import axios from "axios";
 
 export default function Billing() {
@@ -47,32 +47,32 @@ export default function Billing() {
     setInputs((values) => ({ ...values, [name]: value }));
   };
 
-  const initiatePayment = async (phoneNumber, amount) => {
-    console.log("am trying to make a payment");
-    try {
-      const response = await axios.post("http://localhost:3001/stkpush", {});
-      console.log(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  // const initiatePayment = async (phoneNumber, amount) => {
+  //   console.log("am trying to make a payment");
+  //   try {
+  //     const response = await axios.post("http://localhost:3001/stkpush", {});
+  //     console.log(response.data);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
-  const credentials = {
-    title: "order", //eg. 'Pay for your order'
-    number: "",
-    shortcode: 174379, //eg 174379---obtained from M-Pesa daraja portal
-    passkey: "AULHeH0xk8iJVEYVVLdP7KBt4K4AXc1k", //obtained from mpesa daraja portal
-    transactionType: "CustomerPayBillOnline", //eg. CustomerPayBillOnline
-    businessShortcode: 247247, //eg 174379
-    amount: "1", //Amount to be paid by the customer eg. 100
-    phone: "254759155650", //Phone number of the customer eg. 254712345000
-    callbackUrl: "localhost:3000", //Callback url to be called after payment
-    accountReference: "order number", //Account reference eg. order number
-    transactionDesc: "order", //Transaction description eg. Order for pizza
-    mpesaAuth:
-      "QVVMSGVIMHhrOGlKVkVZVlZMZFA3S0J0NEs0QVhjMWs6QnlNbEdwcVJraHlNVDVUbw", //Mpesa auth token obtained from mpesa daraja portal
-    environment: "sandbox", //environment to be used eg. sandbox or production--you can use sandbox for testing
-  };
+  // const credentials = {
+  //   title: "order", //eg. 'Pay for your order'
+  //   number: "",
+  //   shortcode: 174379, //eg 174379---obtained from M-Pesa daraja portal
+  //   passkey: "AULHeH0xk8iJVEYVVLdP7KBt4K4AXc1k", //obtained from mpesa daraja portal
+  //   transactionType: "CustomerPayBillOnline", //eg. CustomerPayBillOnline
+  //   businessShortcode: 247247, //eg 174379
+  //   amount: "1", //Amount to be paid by the customer eg. 100
+  //   phone: "254759155650", //Phone number of the customer eg. 254712345000
+  //   callbackUrl: "localhost:3000", //Callback url to be called after payment
+  //   accountReference: "order number", //Account reference eg. order number
+  //   transactionDesc: "order", //Transaction description eg. Order for pizza
+  //   mpesaAuth:
+  //     "QVVMSGVIMHhrOGlKVkVZVlZMZFA3S0J0NEs0QVhjMWs6QnlNbEdwcVJraHlNVDVUbw", //Mpesa auth token obtained from mpesa daraja portal
+  //   environment: "sandbox", //environment to be used eg. sandbox or production--you can use sandbox for testing
+  // };
 
   return (
     <div className="w-3/5 mx-auto my-10 py-4 px-3">
@@ -189,11 +189,7 @@ export default function Billing() {
         </h2>
 
         <div className="flex justify-between">
-          <button
-            onClick={() => {
-              initiatePayment(759155650, 1);
-            }}
-            className="bg-green-500 font-bold text-white text-xl py-3 px-2 ">
+          <button className="bg-green-500 font-bold text-white text-xl py-3 px-2 ">
             COMPLETE WITH MPESA
           </button>
           {/* <MpesaStk
