@@ -4,6 +4,14 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
+import { db, storage } from "../config/config";
+import {
+  collection,
+  getDocs,
+  addDoc,
+  doc,
+  deleteDoc,
+} from "firebase/firestore";
 const auth = getAuth();
 
 const Login = () => {
@@ -15,6 +23,23 @@ const Login = () => {
   const [lastname, setLastname] = useState();
   const [number, setNumber] = useState();
 
+  const registerUser = (id) => {
+    console.log("am registering a user");
+    addDoc(collection(db, "Users"), {
+      user_id: id,
+      user_address: address,
+      phoneNumber: number,
+      user_first_name: firstname,
+      user_last_name: lastname,
+    })
+      .then((res) => {
+        console.log(res);
+        setError("user created successfully");
+      })
+      .catch((err) => {
+        setError(err.message);
+      });
+  };
   const signup = () => {
     if (
       useremail == null ||
@@ -27,7 +52,8 @@ const Login = () => {
     } else {
       createUserWithEmailAndPassword(auth, useremail, password)
         .then((res) => {
-          console.log(res);
+          console.log(res.user.uid);
+          registerUser(res.user.uid);
         })
         .catch((err) => {
           setError(err.message);

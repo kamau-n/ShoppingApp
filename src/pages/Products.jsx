@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { collection, doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../config/config";
@@ -16,7 +16,7 @@ export default function ({ route, navigation }) {
   const [show, setShow] = useState(false);
   console.log(state);
 
-  useState(async () => {
+  useEffect(async () => {
     const docRef = doc(db, `${state.type}`, id);
 
     try {

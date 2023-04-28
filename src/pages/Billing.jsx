@@ -6,6 +6,8 @@ import { MpesaStk } from "react-mpesa-stk";
 //load the styles
 import "react-mpesa-stk/dist/index.css";
 import { Link, useLocation } from "react-router-dom";
+import daraja from "../Utilities/daraja";
+import axios from "axios";
 
 export default function Billing() {
   const [inputs, setInputs] = useState({});
@@ -43,6 +45,16 @@ export default function Billing() {
     const name = event.target.name;
     const value = event.target.value;
     setInputs((values) => ({ ...values, [name]: value }));
+  };
+
+  const initiatePayment = async (phoneNumber, amount) => {
+    console.log("am trying to make a payment");
+    try {
+      const response = await axios.post("http://localhost:3001/stkpush", {});
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const credentials = {
@@ -178,7 +190,9 @@ export default function Billing() {
 
         <div className="flex justify-between">
           <button
-            onClick={handleSubmit}
+            onClick={() => {
+              initiatePayment(759155650, 1);
+            }}
             className="bg-green-500 font-bold text-white text-xl py-3 px-2 ">
             COMPLETE WITH MPESA
           </button>

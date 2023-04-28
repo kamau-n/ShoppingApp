@@ -7,6 +7,8 @@
 
 # #backend
 /config
+src/Utilities/
+
 
 # testing
 /coverage

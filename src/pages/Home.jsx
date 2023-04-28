@@ -7,7 +7,7 @@ import starter from "../assets/starters.jpg";
 import TopNav from "../components/TopNav";
 import Footer from "../components/Footer";
 import { db } from "../config/config";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
 const auth = getAuth();
@@ -15,6 +15,7 @@ const auth = getAuth();
 export default function Home() {
   const drinkCollection = collection(db, "Fmeals");
   const [fMeals, setFmeals] = useState([]);
+  const [user, setUser] = useState({});
   const navigate = useNavigate();
 
   const fetchFeatured = () => {
@@ -26,10 +27,23 @@ export default function Home() {
     getFeatured();
   };
 
+  const getUser = async (id) => {
+    const docRef = doc(db, "Users", id);
+
+    try {
+      const docSnap = await getDoc(docRef);
+      console.log(docSnap.data());
+      setUser(docSnap.data());
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const userLogin = () => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setLogged(true);
+        getUser(user.uid);
         console.log(user);
         //console.log(user.uid);
       } else {
@@ -82,57 +96,81 @@ export default function Home() {
             navigate("/meals");
           }}>
           <div className="grid grid-cols-4  gap-3">
-            <div className="border-r-1 flex gap-8 border-slate-200">
-              <div className="py-3">
-                <h2 className="text-l  px-3 font-bold"> Meals</h2>
-                <h2>Alot of them</h2>
-              </div>
-              <img
-                src={burger}
-                alt="no image"
-                className="w-full bg-cover p-2 h-44"
-              />
+            <div
+              className=" flex flex-col py-10  h-60  bg-cover bg-center"
+              style={{
+                background: `linear-gradient(rgba(1,0,0,0.6),rgba(1,0,0,0.5)) ,url(https://liquorsquare.co.ke/lsqr-media/2022/10/Coca-Cola-Coke-Soft-Drink-2-Litres.jpg) `,
+                backgroundPosition: "center",
+                backgroundSize: "cover",
+              }}>
+              <h2 className=" text-center py-2   px-3 text-2xl font-bold text-white">
+                Soda
+              </h2>
+
+              <button className="bg-blue-500 text-white py-2 w-1/2 mx-auto px-4 rounded-md">
+                Shop Now
+              </button>
             </div>
 
             <div
-              className=" flex gap-8 border-slate-200"
-              onClick={() => {
-                navigate("/drinks");
+              className=" flex flex-col py-10  h-60  bg-cover bg-center"
+              style={{
+                background: `linear-gradient(rgba(1,0,0,0.6),rgba(1,0,0,0.5)) ,url(${jager}) `,
+                backgroundPosition: "center",
+                backgroundSize: "cover",
               }}>
-              <div className="py-3">
-                <h2 className="text-l  px-3 font-bold"> Drinks</h2>
-                <h2>12 Meal</h2>
-              </div>
-              <img
-                src={jager}
-                alt="no image"
-                className="w-full bg-cover p-2 h-44"
-              />
+              <h2 className=" text-center py-2   px-3 text-2xl font-bold text-white">
+                Alchoholic Drinks
+              </h2>
+
+              <button className="bg-blue-500 text-white py-2 w-1/2 mx-auto px-4 rounded-md">
+                Shop Now
+              </button>
             </div>
             <div
-              className=" flex gap-8 border-slate-200"
-              onClick={() => {
-                navigate("/meals");
+              className=" flex flex-col py-10  h-60  bg-cover bg-center"
+              style={{
+                background: `linear-gradient(rgba(1,0,0,0.6),rgba(1,0,0,0.5)) ,url(https://www.foodandwine.com/thmb/pwFie7NRkq4SXMDJU6QKnUKlaoI=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Ultimate-Veggie-Burgers-FT-Recipe-0821-5d7532c53a924a7298d2175cf1d4219f.jpg) `,
+                backgroundPosition: "center",
+                backgroundSize: "cover",
               }}>
-              <div className="py-3">
-                <h2 className="text-l  px-3 font-bold"> Starter</h2>
-                <h2>12 Meal</h2>
-              </div>
-              <img
-                src={burger}
-                alt="no image"
-                className="w-full p-2 h-44"
-                onClick={() => {
-                  navigate("/meals");
-                }}
-              />
+              <h2 className=" text-center py-2   px-3 text-2xl font-bold text-white">
+                Fast Foods
+              </h2>
+
+              <button className="bg-blue-500 text-white py-2 w-1/2 mx-auto px-4 rounded-md">
+                Shop Now
+              </button>
             </div>
-            <div className=" flex gap-8 border-slate-200">
-              <div className="py-3">
-                <h2 className="text-l  px-3 font-bold">Snacks</h2>
-                <h2>12 Meal</h2>
-              </div>
-              <img src={burger} alt="no image" className="w-full p-2 h-44" />
+            <div
+              className=" flex flex-col py-10  h-60  bg-cover bg-center"
+              style={{
+                background: `linear-gradient(rgba(1,0,0,0.6),rgba(1,0,0,0.5)) ,url(${burger}) `,
+                backgroundPosition: "center",
+                backgroundSize: "cover",
+              }}>
+              <h2 className=" text-center py-2   px-3 text-2xl font-bold text-white">
+                Full Meals
+              </h2>
+
+              <button className="bg-blue-500 text-white py-2 w-1/2 mx-auto px-4 rounded-md">
+                Shop Now
+              </button>
+            </div>
+            <div
+              className=" flex flex-col py-10  h-60  bg-cover bg-center"
+              style={{
+                background: `linear-gradient(rgba(1,0,0,0.6),rgba(1,0,0,0.5)) ,url(https://cdn.loveandlemons.com/wp-content/uploads/2021/06/summer-desserts-500x500.jpg) `,
+                backgroundPosition: "center",
+                backgroundSize: "cover",
+              }}>
+              <h2 className=" text-center py-2   px-3 text-2xl font-bold text-white">
+                Desserts
+              </h2>
+
+              <button className="bg-blue-500 text-white py-2 w-1/2 mx-auto px-4 rounded-md">
+                Shop Now
+              </button>
             </div>
           </div>
         </div>
