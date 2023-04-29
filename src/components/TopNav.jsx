@@ -18,7 +18,7 @@ export default function TopNav({ logged }) {
       });
   };
   return (
-    <div className="flex justify-between  my-4 py-3 ">
+    <div className="sm:flex justify-between  my-4 py-3 ">
       <h2 className="font-bold text-xl uppercase">LA DOCHE</h2>
       <div className="flex gap-3 font-mono">
         <Link to="/">Home</Link>

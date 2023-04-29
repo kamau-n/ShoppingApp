@@ -63,15 +63,15 @@ export default function Home() {
   }, []);
   return (
     <div className="bg-slate-100">
-      <div className=" w-3/4 p-2 my-3   mx-auto  ">
+      <div className=" sm:w-3/4 p-2 my-3  w-full  sm:mx-auto  ">
         <TopNav logged={logged} />
 
-        <div className="py-10 px-5  flex my-6 ">
-          <div className="w-1/2  flex-1">
+        <div className="py-10 px-5  sm:flex  my-6  flex ">
+          <div className="sm:w-1/2  flex-1 ">
             <SimpleSlider />
           </div>
 
-          <div className=" py-2 w-1/2  bg-white flex-1">
+          <div className=" py-2 sm:w-1/2  bg-white sm:flex-1">
             <div className="grid grid-cols-2 gap-4 ">
               {fMeals.map((product) => (
                 <div
@@ -95,7 +95,8 @@ export default function Home() {
           onClick={() => {
             navigate("/meals");
           }}>
-          <div className="grid grid-cols-4  gap-3">
+          <h2 className="font-xl py-2 px-3 m-3 font-bold ">Our Categories</h2>
+          <div className="sm:grid grid-cols-4  gap-3">
             <div
               className=" flex flex-col py-10  h-60  bg-cover bg-center"
               style={{

@@ -6,7 +6,7 @@ export default function ({ data, type, navigation }) {
   console.log("type is " + type);
 
   return (
-    <div className="grid grid-cols-4 gap-4">
+    <div className="sm:grid grid-cols-4 gap-4">
       {data.map((product) => (
         <div
           className="mx-4 border-2 rounded-sm "
@@ -18,7 +18,7 @@ export default function ({ data, type, navigation }) {
           <h2 className="font-mono px-2 py-3">{product.Name}</h2>
           <div className="flex my-3 mx-5 p-3 justify-between">
             <h2 className="p-3 text-xl font-bold">{product.Price}</h2>
-            <button className="font-bold text-white px-5 py-2 bg-blue-700 rounded">
+            <button className="font-bold text-white px-5 sm:py-2 py-1 bg-blue-700 rounded">
               add
             </button>
           </div>

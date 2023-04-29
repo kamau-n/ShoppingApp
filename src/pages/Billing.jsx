@@ -76,7 +76,9 @@ export default function Billing() {
 
   return (
     <div className="w-3/5 mx-auto my-10 py-4 px-3">
-      <h2 className="text-2xl font-bold text-left">Billing Details</h2>
+      <h2 className="text-2xl font-bold sm:text-left text-center">
+        Billing Details
+      </h2>
       {show && (
         <div className="my-5 mx-3">
           <Alert
@@ -90,7 +92,7 @@ export default function Billing() {
       )}
 
       <div className="text-left space-y-5">
-        <div className="flex flex-row gap-4">
+        <div className="sm:flex sm:flex-row gap-4 flex-col ">
           <div className="flex  basis-1/2  flex-col">
             <span className="text-l font-bold">First Name</span>
             <input
@@ -188,7 +190,7 @@ export default function Billing() {
           Payment method
         </h2>
 
-        <div className="flex justify-between">
+        <div className="sm:flex justify-between flex flex-col sm:gap:6">
           <button className="bg-green-500 font-bold text-white text-xl py-3 px-2 ">
             COMPLETE WITH MPESA
           </button>

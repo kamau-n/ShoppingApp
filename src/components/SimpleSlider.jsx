@@ -53,7 +53,7 @@ export default function SimpleSlider() {
               <img
                 src={prod.link}
                 alt="no image"
-                className=" bg-cover rounded-md "
+                className=" sm:bg-cover w-60 mx-auto rounded-md "
               />
               {/* <h3 className="px-2 py-2 font-mono">{prod.name}</h3>
               <div className="px-3 py-3 flex  justify-between m-4"> 
