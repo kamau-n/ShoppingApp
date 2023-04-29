@@ -54,32 +54,32 @@ const Cart = () => {
 
   return (
     <div className="">
-      <div className=" w-5/6 p-2 my-3 bg-slate-400 mx-auto">
-        <div className="my-7 w-3/4 flex mx-auto py-5 px-3">
+      <div className=" sm:w-5/6 p-2 my-3 bg-slate-400 sm:mx-auto">
+        <div className="my-7 sm:w-3/4 sm:flex  sm:flex-row flex flex-col  mx-auto py-5 px-3">
           <div className="bg-white basis-2/3 px-4 py-4">
-            <h2 className="text-2xl text-left font-semibold font-mono">
+            <h2 className="sm:text-2xl  tex-l text-left font-semibold font-mono">
               Shopping cart
             </h2>
             {items.map((item) => {
               let total = item.name.price * item.name.quantity;
 
               return (
-                <div className="w-3/4 mx-auto my-6  border-t-2 border-b-2 gap-4 py-4 px-2 flex ">
+                <div className="sm:w-3/4 sm:mx-auto my-6  border-t-2 border-b-2 gap-4 py-4 px-2 flex ">
                   <img
                     src={item.name.link}
                     alt=" no image"
-                    className="w-36 h-24 "
+                    className="sm:w-36  w-16 h-24 "
                   />
-                  <h2 className="font-mono py-6 font-bold text-l">
+                  <h2 className="font-mono py-6 font-bold text-xs sm:text-xl">
                     {item.name.name}
                   </h2>
-                  <h2 className="font-mono py-6 font-bold text-l">
+                  <h2 className="font-mono py-6 font-bold text-xs sm:text-xl">
                     {item.name.quantity}
                   </h2>
-                  <h2 className="font-mono py-6 font-bold text-l">
+                  <h2 className="font-mono py-6 font-bold text-xs sm:text-xl">
                     {item.name.price}
                   </h2>
-                  <h2 className="font-mono py-6 font-bold text-l">
+                  <h2 className="font-mono py-6 font-bold text-xs sm:text-xl">
                     TOTAL: {total}
                   </h2>
                   <button
@@ -95,11 +95,11 @@ const Cart = () => {
             <Link to="/">Back to shopping </Link>
           </div>
           <div className="bg-slate-300 px-3 basis-1/3 py-5">
-            <h2 className="py-5 font-bold font-mono text-left text-2xl">
+            <h2 className="py-5 font-bold font-mono text-left  text-l sm:text-2xl">
               Summary
             </h2>
             <div className="flex justify-between px-2 my-6">
-              <h3 className="text-left ">ITEMS </h3>
+              <h3 className="text-left text-l">ITEMS </h3>
               <span>{total}</span>
             </div>
 
