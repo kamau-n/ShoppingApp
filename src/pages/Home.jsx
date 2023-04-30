@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import SimpleSlider from "../components/SimpleSlider";
 import burger from "../assets/peperoni.jpg";
 import jager from "../assets/download.jpeg";
+import Toolbar from "@mui/material/Toolbar";
 import starter from "../assets/starters.jpg";
 import TopNav from "../components/TopNav";
 import Footer from "../components/Footer";
@@ -105,10 +106,10 @@ export default function Home() {
           onClick={() => {
             navigate("/meals");
           }}>
-          <h2 className="sm:text-2xl py-2 text-left px-3 mx-3 my-7 font-bold ">
+          <h2 className="sm:text-2xl py-2 sm:text-left text-center px-3 mx-3 my-7 font-bold ">
             Our Categories
           </h2>
-          <div className="sm:grid sm:grid-cols-4  sm:space-y-6 rounded-sm sm:gap-3">
+          <div className="sm:grid sm:grid-cols-4   space-y-8 rounded-sm sm:gap-3">
             <div
               className=" flex flex-col py-10  h-60  bg-cover bg-center"
               style={{
@@ -187,7 +188,7 @@ export default function Home() {
             </div>
           </div>
           <div className="w-4/4 bg-slate-100 my-5  py-3 ">
-            <h2 className="sm:text-2xl  text-left font-bold my-7 py-2 px-2 ">
+            <h2 className="sm:text-2xl sm:text-left text-center font-bold my-7 py-2 px-2 ">
               Featured Meals
             </h2>
             <div className=" sm:grid sm:grid-cols-4 gap-6">
@@ -199,16 +200,16 @@ export default function Home() {
                       alt="no image"
                       className="w-3/4 mx-auto h-60 my-6"
                     />
-                    <div className="space-y-6">
-                      <h2 className="text-red-300 text-left font-semibold">
+                    <div className="space-y-6 ">
+                      <h2 className="text-red-300 sm:text-left text-center font-semibold">
                         Featured
                       </h2>
 
-                      <h2 className="text-black text-left font-semibold">
+                      <h2 className="text-black sm:text-left text-center font-semibold">
                         {meal.Name}
                       </h2>
 
-                      <h2 className="text-black text-left font-semibold">
+                      <h2 className="text-black sm:text-left text-center font-semibold">
                         $ : {meal.Price}
                       </h2>
                     </div>

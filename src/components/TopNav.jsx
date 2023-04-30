@@ -1,7 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import bars from "../assets/bars.png";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import { AppBar } from "@mui/material";
+import { AppBar, IconButton, Toolbar } from "@mui/material";
 
 const auth = getAuth();
 
@@ -20,52 +21,53 @@ export default function TopNav({ logged }) {
   };
   return (
     <div className="sm:flex justify-between  my-4 py-3 ">
-      <h2 className="font-bold text-xl uppercase">LA DOCHE</h2>
+      <div className="flex justify-between">
+        <h2 className="font-bold text-xl uppercase">LA DOCHE</h2>
+        <img
+          src={bars}
+          width={30}
+          className="sm:hidden"
+          alt=""
+          onClick={() => {
+            document.getElementById("topbar").classList.toggle("hidden");
+          }}
+        />
+      </div>
 
-      <button
-        class="bg-blue-500 sm:hidden hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        onClick={() => {
-          document.getElementById("topbar").classList.toggle("hidden");
-        }}
+      <div
+        id="topbar"
+        className="sm:flex gap-3  sm:flex-row hidden flex  align-sub sm:justify-center justify-start flex-col font-mono">
+        <Link to="/">Home</Link>
+        <Link to="/cart">Cart</Link>
+        <Link to="/drinks">Drinks</Link>
+        <Link to="/meals">Meals</Link>
+        <Link to="/about">About</Link>
+      </div>
 
-        // onClick="document.getElementById('topbar').classList.toggle('hidden')"
-      >
-        Toggle Visibility
-      </button>
-      <div id="topbar" class="hidden">
-        <div className="sm:flex gap-3  sm:flex-row flex  sm:justify-center justify-start flex-col font-mono">
-          <Link to="/">Home</Link>
-          <Link to="/cart">Cart</Link>
-          <Link to="/drinks">Drinks</Link>
-          <Link to="/meals">Meals</Link>
-          <Link to="/about">About</Link>
-        </div>
-
-        {logged && (
-          <div className=" sm:flex gap-7   ">
-            <button className="py-2 px-7 bg-slate-700 w-1/2   text-white rounded font-bold">
-              <Link to="/account" className="text-white">
-                Account
-              </Link>
-            </button>
-            <button
-              className="py-2 px-7 bg-slate-700 text-white w-1/2 rounded font-bold"
-              onClick={() => {
-                handleLogout();
-              }}>
-              Logout
-            </button>
-          </div>
-        )}
-
-        {!logged && (
-          <button className="py-2 px-7 bg-slate-700 text-white rounded w-1/2 font-bold">
-            <Link to="/login" className="text-white">
-              Login
+      {logged && (
+        <div className=" sm:flex gap-7  flex justify-between  ">
+          <button className="py-2 px-7 bg-slate-700 w-1/3   text-white rounded font-bold">
+            <Link to="/account" className="text-white">
+              Account
             </Link>
           </button>
-        )}
-      </div>
+          <button
+            className="py-2 px-7 bg-slate-700 text-white w-1/3 rounded font-bold"
+            onClick={() => {
+              handleLogout();
+            }}>
+            Logout
+          </button>
+        </div>
+      )}
+
+      {!logged && (
+        <button className="py-2 px-7 bg-slate-700 text-white rounded  font-bold">
+          <Link to="/login" className="text-white">
+            Login
+          </Link>
+        </button>
+      )}
     </div>
   );
 }
