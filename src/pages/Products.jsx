@@ -16,17 +16,19 @@ export default function ({ route, navigation }) {
   const [show, setShow] = useState(false);
   console.log(state);
 
-  // useEffect(async () => {
-  //   const docRef = doc(db, `${state.type}`, id);
+  useEffect(() => {
+    const docRef = doc(db, `${state.type}`, id);
 
-  //   try {
-  //     const docSnap = await getDoc(docRef);
-  //     console.log(docSnap.data());
-  //     setDetails(docSnap.data());
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // });
+    try {
+      // const docSnap =
+      getDoc(docRef).then((res) => {
+        console.log(res.data());
+        setDetails(res.data());
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  });
   return (
     <div>
       <div className=" w-5/6 p-2 my-3 mx-auto  ">

@@ -9,6 +9,8 @@ const Cart = () => {
   const [value, setValue] = useState(0);
   const [total, setTotal] = useState(0);
   const [shipping, setShipping] = useState(0);
+
+  const [refreshData, setRefreshData] = useState(false);
   const navigate = useNavigate();
 
   const allStorage = () => {
@@ -33,6 +35,7 @@ const Cart = () => {
     console.log(new_data);
     localStorage.removeItem("ladoche_shopping_cart");
     localStorage.setItem("ladoche_shopping_cart", JSON.stringify(new_data));
+    setRefreshData(!refreshData);
   };
   const getTotal = (data) => {
     console.log("i have been accessed");
@@ -50,7 +53,7 @@ const Cart = () => {
 
   useEffect(() => {
     allStorage();
-  }, []);
+  }, [total]);
 
   return (
     <div className="">

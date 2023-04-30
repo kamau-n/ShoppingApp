@@ -6,10 +6,10 @@ export default function ({ data, type, navigation }) {
   console.log("type is " + type);
 
   return (
-    <div className="sm:grid sm:grid-cols-4 space-y-7 grid grid-cols-2 gap-4">
+    <div className="sm:grid sm:grid-cols-4 space-y-7  gap-4">
       {data.map((product) => (
         <div
-          className="mx-4 border-2 rounded-sm "
+          className="sm:mx-4 border-2 rounded-sm "
           key={product.id}
           onClick={() => {
             navigate(`/product/${product.id}`, { state: { type: type } });

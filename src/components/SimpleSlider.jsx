@@ -17,6 +17,7 @@ export default function SimpleSlider() {
     slidesToShow: 2,
     slidesToScroll: 2,
     initialSlide: 0,
+
     responsive: [
       {
         breakpoint: 1024,
@@ -48,12 +49,12 @@ export default function SimpleSlider() {
     <Slider {...settings}>
       {Products.map((prod) => {
         return (
-          <div className="mx-1">
+          <div className="mx-1 space-x-4">
             <div key={prod.id} className=" ">
               <img
                 src={prod.link}
                 alt="no image"
-                className=" sm:bg-cover mx-auto rounded-md  "
+                className=" sm:bg-cover mx-auto  rounded-md  "
               />
               {/* <h3 className="px-2 py-2 font-mono">{prod.name}</h3>
               <div className="px-3 py-3 flex  justify-between m-4"> 
