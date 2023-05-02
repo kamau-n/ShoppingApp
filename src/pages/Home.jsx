@@ -25,7 +25,7 @@ export default function Home() {
     const getFeatured = async () => {
       const data = await getDocs(drinkCollection);
       setFmeals(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-      console.log(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      // console.log(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     };
     getFeatured();
   };
@@ -33,7 +33,7 @@ export default function Home() {
     const getFeatured2 = async () => {
       const data = await getDocs(mealCollection);
       setDrinks(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-      console.log(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      // console.log(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     };
     getFeatured2();
   };
@@ -55,7 +55,7 @@ export default function Home() {
       if (user) {
         setLogged(true);
         getUser(user.uid);
-        console.log(user);
+        console.log(user.uid);
         //console.log(user.uid);
       } else {
         setLogged(false);
@@ -74,7 +74,7 @@ export default function Home() {
   }, []);
   return (
     <div className="bg-slate-100 w-full">
-      <div className=" sm:w-3/4 p-2 my-3    sm:mx-auto  ">
+      <div className=" sm:w-3/4 p-2 my-3  px-6  sm:mx-auto  ">
         <TopNav logged={logged} />
 
         <div className="py-10 px-5  sm:flex  my-6   ">

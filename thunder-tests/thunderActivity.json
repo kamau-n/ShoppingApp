@@ -1,0 +1,35 @@
+[
+  {
+    "_id": "15dacf9e-6fe0-4567-9905-c5910b70c6f8",
+    "colId": "history",
+    "containerId": "",
+    "name": "localhost:3001",
+    "url": "localhost:3001",
+    "method": "GET",
+    "sortNum": 0,
+    "created": "2023-05-02T15:46:10.251Z",
+    "modified": "2023-05-02T15:46:10.251Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "5071405c-4aac-4079-a4a6-cbcc76062068",
+    "colId": "history",
+    "containerId": "",
+    "name": "localhost:3001/stkPush",
+    "url": "localhost:3001/stkPush",
+    "method": "POST",
+    "sortNum": 0,
+    "created": "2023-05-02T15:46:20.300Z",
+    "modified": "2023-05-02T15:51:33.230Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"amount\":\"1\", \"phone\":\"0759155650\", \"Order_ID\":\"496u46\"\n}",
+      "form": []
+    },
+    "tests": []
+  }
+]

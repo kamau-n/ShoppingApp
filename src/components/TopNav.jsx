@@ -34,40 +34,40 @@ export default function TopNav({ logged }) {
         />
       </div>
 
-      <div
-        id="topbar"
-        className="sm:flex gap-3  sm:flex-row hidden flex  align-sub sm:justify-center justify-start flex-col font-mono">
-        <Link to="/">Home</Link>
-        <Link to="/cart">Cart</Link>
-        <Link to="/drinks">Drinks</Link>
-        <Link to="/meals">Meals</Link>
-        <Link to="/about">About</Link>
-      </div>
+      <div className="sm:flex gap-96 hidden  " id="topbar">
+        <div className="sm:flex gap-3  sm:flex-row flex  align-sub sm:justify-center justify-start flex-col font-mono">
+          <Link to="/">Home</Link>
+          <Link to="/cart">Cart</Link>
+          <Link to="/drinks">Drinks</Link>
+          <Link to="/meals">Meals</Link>
+          <Link to="/about">About</Link>
+        </div>
 
-      {logged && (
-        <div className=" sm:flex gap-7  flex justify-between  ">
-          <button className="py-2 px-7 bg-slate-700 w-1/3   text-white rounded font-bold">
-            <Link to="/account" className="text-white">
-              Account
+        {logged && (
+          <div className=" sm:flex gap-4 sm:flex-row  flex flex-col  sm:justify-between  ">
+            <button className="py-2 px-5 bg-slate-700 w-1/3  mx-auto text-white rounded font-bold">
+              <Link to="/account" className="text-white">
+                Account
+              </Link>
+            </button>
+            <button
+              className="py-2 px-7 bg-slate-700 text-white mx-auto w-1/3 rounded font-bold"
+              onClick={() => {
+                handleLogout();
+              }}>
+              Logout
+            </button>
+          </div>
+        )}
+
+        {!logged && (
+          <button className="py-2 px-7 bg-slate-700 text-white rounded  font-bold">
+            <Link to="/login" className="text-white">
+              Login
             </Link>
           </button>
-          <button
-            className="py-2 px-7 bg-slate-700 text-white w-1/3 rounded font-bold"
-            onClick={() => {
-              handleLogout();
-            }}>
-            Logout
-          </button>
-        </div>
-      )}
-
-      {!logged && (
-        <button className="py-2 px-7 bg-slate-700 text-white rounded  font-bold">
-          <Link to="/login" className="text-white">
-            Login
-          </Link>
-        </button>
-      )}
+        )}
+      </div>
     </div>
   );
 }

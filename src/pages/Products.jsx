@@ -62,16 +62,16 @@ export default function ({ route, navigation }) {
             <h3 className="font-bold text-3xl text-left py-8">
               {details.Price}
             </h3>
-            <div className="flex justify-between">
-              <div className="flex gap-3">
+            <div className="sm:flex  sm:justify-between">
+              <div className="sm:flex  flex flex-row justify-center  align-middle gap-3">
                 <button
                   onClick={() => {
                     setQuantity(quantity - 1);
                   }}
-                  className="bg-black py-1 px-4  text-white text-xl ">
+                  className="bg-black py-2 px-4  text-white text-xl ">
                   -
                 </button>
-                <h2 className="text-2xl font-bold py-2">{quantity}</h2>
+                <h2 className="text-2xl font-bold py-7">{quantity}</h2>
                 <button
                   onClick={() => {
                     setQuantity(quantity + 1);
@@ -106,7 +106,7 @@ export default function ({ route, navigation }) {
                     console.log(err);
                   }
                 }}
-                className=" bg-black text-white text-xl  font-bold py-3 px-3">
+                className=" bg-black text-white text-xl my-5 sm:w-1/3  w-3/4 mx-auto font-bold py-3 px-3">
                 Add To Cart
               </button>
             </div>
