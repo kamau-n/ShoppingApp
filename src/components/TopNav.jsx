@@ -20,9 +20,9 @@ export default function TopNav({ logged }) {
       });
   };
   return (
-    <div className="sm:flex justify-between  my-4 py-3 ">
-      <div className="flex justify-between">
-        <h2 className="font-bold text-xl uppercase">LA DOCHE</h2>
+    <div className="sm:flex justify-between  bg-slate-100 px-3 w-full shadow-md my-4 py-3 ">
+      <div className="flex justify-between ">
+        <h2 className="font-bold text-xl uppercase font-mono">LA DOCHE</h2>
         <img
           src={bars}
           width={30}

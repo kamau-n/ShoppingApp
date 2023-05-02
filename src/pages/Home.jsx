@@ -74,7 +74,7 @@ export default function Home() {
   }, []);
   return (
     <div className="bg-slate-100 w-full">
-      <div className=" sm:w-3/4 p-2 my-3  px-6  sm:mx-auto  ">
+      <div className=" sm:w-4/5 p-2 my-0 px-1  sm:mx-auto  ">
         <TopNav logged={logged} />
 
         <div className="py-10 px-5  sm:flex  my-6   ">

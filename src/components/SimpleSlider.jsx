@@ -14,16 +14,16 @@ export default function SimpleSlider() {
     customPaging: (i) => <div className="dot" />,
     infinite: false,
     speed: 500,
-    slidesToShow: 2,
-    slidesToScroll: 2,
+    slidesToShow: 1,
+    slidesToScroll: 1,
     initialSlide: 0,
 
     responsive: [
       {
         breakpoint: 1024,
         settings: {
-          slidesToShow: 3,
-          slidesToScroll: 3,
+          slidesToShow: 1,
+          slidesToScroll: 1,
           infinite: true,
           dots: true,
         },
@@ -31,9 +31,9 @@ export default function SimpleSlider() {
       {
         breakpoint: 600,
         settings: {
-          slidesToShow: 3,
-          slidesToScroll: 3,
-          initialSlide: 3,
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          initialSlide: 1,
         },
       },
       {
@@ -49,13 +49,35 @@ export default function SimpleSlider() {
     <Slider {...settings}>
       {Products.map((prod) => {
         return (
-          <div className="mx-1 space-x-4">
-            <div key={prod.id} className=" ">
-              <img
-                src={prod.link}
-                alt="no image"
-                className=" sm:bg-cover mx-auto  rounded-md  "
-              />
+          <div className="">
+            <div
+              key={prod.id}
+              className="sm:flex sm:flex-row  flex flex-col-reverse sm:justify-between ">
+              <div className="basis-1/2 flex space-y-5 flex-col justify-center align-middle my-8">
+                <h2 className="text-green-300 sm:text-left font-semibold text-xl">
+                  Our Special Dish
+                </h2>
+                <h2 className="text-4xl  text-blue-300 sm:text-left font-bold font-serif">
+                  {prod.name}
+                </h2>
+                <p className="text-2xl py-3 sm:text-left  ">
+                  Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                  Ipsum vel eum, nobis tenetur adipisci dolor. Molestias minima
+                </p>
+                <div className="sm:text-left text-center">
+                  <button className="bg-blue-600 px-8 text-xl font-bold text-white rounded-md py-3">
+                    order now
+                  </button>
+                </div>
+              </div>
+              <div className="basis-1/2">
+                <img
+                  src={prod.link}
+                  alt="no image"
+                  className=" sm:bg-cover mx-auto    rounded-md  "
+                />
+              </div>
+
               {/* <h3 className="px-2 py-2 font-mono">{prod.name}</h3>
               <div className="px-3 py-3 flex  justify-between m-4"> 
                  <h2 className="font-bold py-2">{prod.price}</h2>
