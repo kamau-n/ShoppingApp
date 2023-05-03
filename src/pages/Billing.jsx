@@ -75,7 +75,7 @@ export default function Billing() {
   // };
 
   return (
-    <div className="w-3/5 mx-auto my-10 py-4 px-3">
+    <div className="sm:w-3/5 w-5/6 mx-auto my-10 py-4 px-3">
       <h2 className="text-2xl font-bold sm:text-left text-center">
         Billing Details
       </h2>
@@ -190,7 +190,7 @@ export default function Billing() {
           Payment method
         </h2>
 
-        <div className="sm:flex justify-between flex flex-col sm:gap:6">
+        <div className="sm:flex justify-between flex flex-col space-y-5 sm:gap:6">
           <button className="bg-green-500 font-bold text-white text-xl py-3 px-2 ">
             COMPLETE WITH MPESA
           </button>
@@ -206,7 +206,9 @@ export default function Billing() {
           </button>
         </div>
       </div>
-      <Link to="/">Back to shopping </Link>
+      <Link to="/" className="text-xl my-5 py-4">
+        Back to shopping{" "}
+      </Link>
     </div>
   );
 }

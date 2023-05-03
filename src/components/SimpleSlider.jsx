@@ -52,15 +52,15 @@ export default function SimpleSlider() {
           <div className="">
             <div
               key={prod.id}
-              className="sm:flex sm:flex-row  flex flex-col-reverse sm:justify-between ">
+              className="sm:flex sm:flex-row p-4 flex flex-col-reverse sm:justify-between ">
               <div className="basis-1/2 flex space-y-5 flex-col justify-center align-middle my-8">
                 <h2 className="text-green-300 sm:text-left font-semibold text-xl">
                   Our Special Dish
                 </h2>
-                <h2 className="text-4xl  text-blue-300 sm:text-left font-bold font-serif">
+                <h2 className="sm:text-4xl text-2xl  text-blue-300 sm:text-left font-bold font-serif">
                   {prod.name}
                 </h2>
-                <p className="text-2xl py-3 sm:text-left  ">
+                <p className="sm:text-2xl text-xl py-3 sm:text-left  ">
                   Lorem ipsum dolor sit amet, consectetur adipisicing elit.
                   Ipsum vel eum, nobis tenetur adipisci dolor. Molestias minima
                 </p>

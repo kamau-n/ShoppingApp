@@ -104,8 +104,8 @@ const Product = () => {
 
   return (
     <div>
+      <TopNav />
       <main className=" w-5/6 p-2 my-3 mx-auto  ">
-        <TopNav />
         <h2 className="uppercase text-xl my-5 py-3  font-bold">
           Available Meals
         </h2>

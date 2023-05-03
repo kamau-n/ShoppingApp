@@ -14,7 +14,7 @@ export default function ({ route, navigation }) {
   const [quantity, setQuantity] = useState(1);
   const { state } = useLocation();
   const [show, setShow] = useState(false);
-  console.log(state);
+  //console.log(state);
 
   useEffect(() => {
     const docRef = doc(db, `${state.type}`, id);
@@ -22,13 +22,14 @@ export default function ({ route, navigation }) {
     try {
       // const docSnap =
       getDoc(docRef).then((res) => {
-        console.log(res.data());
+        console.log(docRef);
+        //console.log(res.data());
         setDetails(res.data());
       });
     } catch (error) {
       console.log(error);
     }
-  });
+  }, []);
   return (
     <div>
       <div className=" w-5/6 p-2 my-3 mx-auto  ">
