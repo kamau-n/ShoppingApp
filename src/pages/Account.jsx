@@ -1,15 +1,40 @@
-import React from "react";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
+import { db } from "../config/config";
+import { onAuthStateChanged } from "firebase/auth";
+import { getAuth } from "firebase/auth";
+const auth = getAuth();
 
 function Account() {
-  const customer = {
-    name: "John Doe",
-    email: "johndoe@example.com",
-    address: "123 Main St.",
-    city: "Anytown",
-    state: "CA",
-    zip: "12345",
-    phone: "555-555-5555",
+  const [user, setUser] = useState({});
+
+  const userLogin = () => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        getUser(user.uid);
+        // console.log(user);
+        // console.log(user.uid);
+      } else {
+      }
+    });
   };
+  const getUser = async (id) => {
+    const userRef = collection(db, "Users");
+
+    const q = query(collection(db, "Users"), where("user_id", "==", id));
+
+    console.log("getting users");
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      console.log(doc.id, " => ", doc.data());
+      setUser(doc.data());
+    });
+  };
+
+  useEffect(() => {
+    userLogin();
+  }, []);
 
   return (
     <div className="container mx-auto py-6">
@@ -18,25 +43,26 @@ function Account() {
           <div className="px-6 py-4">
             <h3 className="text-lg font-bold mb-2">Account Information</h3>
             <p className="text-gray-600 text-sm mb-2">
-              Name: <span className="font-medium">{customer.name}</span>
+              Name:{" "}
+              <span className="font-medium">
+                {user.user_first_name} {user.user_last_name}
+              </span>
             </p>
             <p className="text-gray-600 text-sm mb-2">
-              Email: <span className="font-medium">{customer.email}</span>
+              Email: <span className="font-medium">{user.user_email}</span>
             </p>
             <p className="text-gray-600 text-sm mb-2">
-              Address: <span className="font-medium">{customer.address}</span>
+              Address: <span className="font-medium">{user.user_address}</span>
             </p>
             <p className="text-gray-600 text-sm mb-2">
-              City: <span className="font-medium">{customer.city}</span>
+              City: <span className="font-medium">{user.user_city}</span>
             </p>
             <p className="text-gray-600 text-sm mb-2">
-              State: <span className="font-medium">{customer.state}</span>
+              County: <span className="font-medium">{user.user_county}</span>
             </p>
-            <p className="text-gray-600 text-sm mb-2">
-              ZIP: <span className="font-medium">{customer.zip}</span>
-            </p>
+
             <p className="text-gray-600 text-sm">
-              Phone: <span className="font-medium">{customer.phone}</span>
+              Phone: <span className="font-medium">{user.phoneNumber}</span>
             </p>
           </div>
         </div>

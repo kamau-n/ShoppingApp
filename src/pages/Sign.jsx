@@ -21,6 +21,9 @@ const Login = () => {
   const [address, setAddress] = useState();
   const [firstname, setFirstname] = useState();
   const [lastname, setLastname] = useState();
+
+  const [city, setCity] = useState();
+  const [county, setCounty] = useState();
   const [number, setNumber] = useState();
 
   const registerUser = (id) => {
@@ -28,9 +31,13 @@ const Login = () => {
     addDoc(collection(db, "Users"), {
       user_id: id,
       user_address: address,
+      user_email: useremail,
       phoneNumber: number,
       user_first_name: firstname,
       user_last_name: lastname,
+      user_city: city,
+      user_county: county,
+      user_role: "customer",
     })
       .then((res) => {
         console.log(res);
@@ -118,6 +125,26 @@ const Login = () => {
           className="text-xl text-center font-light py-2"
           onChange={(e) => {
             setAddress(e.target.value);
+          }}
+        />
+      </div>
+      <div className="login-btn">
+        <input
+          type="text"
+          placeholder="City"
+          className="text-xl text-center font-light py-2"
+          onChange={(e) => {
+            setCity(e.target.value);
+          }}
+        />
+      </div>
+      <div className="login-btn">
+        <input
+          type="text"
+          placeholder="County"
+          className="text-xl text-center font-light py-2"
+          onChange={(e) => {
+            setCounty(e.target.value);
           }}
         />
       </div>

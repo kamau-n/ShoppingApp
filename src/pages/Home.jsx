@@ -9,12 +9,18 @@ import starter from "../assets/starters.jpg";
 import TopNav from "../components/TopNav";
 import Footer from "../components/Footer";
 import { db } from "../config/config";
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
-// import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 
-import "firebase/firestore";
 import Review from "../components/Review";
 const auth = getAuth();
 
@@ -45,29 +51,13 @@ export default function Home() {
     getFeatured2();
   };
 
-  // const getUser = (id) => {
-  //   dbs
-  //     .collection("Users")
-  //     .where("user_id", "==", id)
-  //     .get()
-  //     .then((querySnapshot) => {
-  //       querySnapshot.forEach((doc) => {
-  //         // Access each document here
-  //         console.log(doc.id, " => ", doc.data());
-  //       });
-  //     })
-  //     .catch((error) => {
-  //       console.log("Error getting documents: ", error);
-  //     });
-  // };
-
   const userLogin = () => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setLogged(true);
-        // getUser(user.uid);
+
         // console.log(user);
-        //console.log(user.uid);
+        // console.log(user.uid);
       } else {
         setLogged(false);
       }
