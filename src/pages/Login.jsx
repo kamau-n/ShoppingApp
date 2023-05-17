@@ -65,14 +65,16 @@ const Login = () => {
       </div>
       <div className="my-6">
         <button
-          className="py-3 px-28 text-white text-2xl bg-orange-500"
+          className="py-3 px-32 font-bold text-white text-2xl bg-orange-500"
           onClick={signin}>
           Login
         </button>
       </div>
 
-      <Link to="/">Home</Link>
-      <Link to="/signup">signup</Link>
+      <div className="my-10 space-x-8">
+        <Link to="/">Home</Link>
+        <Link to="/signup">signup</Link>
+      </div>
     </div>
   );
 };

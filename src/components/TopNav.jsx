@@ -49,9 +49,9 @@ export default function TopNav({ logged }) {
       </div>
       <div id="topbar" className="sm:flex hidden">
         {logged && (
-          <div className=" sm:flex gap-4 sm:flex-row  flex flex-col  sm:justify-between  ">
+          <div className=" sm:flex gap-2 sm:flex-row  flex flex-col  sm:justify-between  ">
             <button className="py-2 px-5 bg-slate-700 w-1/3  mx-auto text-white rounded font-bold">
-              <Link to="/account" className="text-white">
+              <Link to="/account" className="text-white text-l">
                 Account
               </Link>
             </button>
@@ -66,7 +66,9 @@ export default function TopNav({ logged }) {
         )}
 
         {!logged && (
-          <button className="py-2 px-7 bg-slate-700 text-white rounded  font-bold">
+          <button
+            id="topbar"
+            className="py-2 px-7 bg-slate-700 text-white rounded  font-bold">
             <Link to="/login" className="text-white">
               Login
             </Link>

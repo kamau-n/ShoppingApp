@@ -6,22 +6,26 @@ export default function ({ data, type, navigation }) {
   console.log("type is " + type);
 
   return (
-    <div className="sm:grid sm:grid-cols-5 space-y-7 bg-slate-100 px-5 py-7 gap-4">
+    <div className="sm:grid sm:grid-cols-4 rounded-md  bg-slate-200 sm:space-y-0 space-y-8   px-2 py-7 gap-4">
       {data.map((product) => (
         <div
-          className="sm:mx-4 border-2 sm:rounded-md bg-white  "
+          className="sm:mx-4 border-2 sm:rounded-md  shadow-xl bg-white  "
           key={product.id}
           onClick={() => {
             navigate(`/product/${product.id}`, { state: { type: type } });
           }}>
-          <img src={product.Link} alt="" className="w-full h-48" />
-          <h2 className="font-mono px-2 py-3">{product.Name}</h2>
-          <div className="flex my-3 mx-5 p-3 justify-between">
+          <img
+            src={product.Link}
+            alt=""
+            className="w-2/3 mx-auto m-2 py-3 rounded-full h-52"
+          />
+          <h2 className="font-mono px-2 text-xl py-3">{product.Name}</h2>
+          <div className="flex  flex-row-reverse my-3 mx-5 p-3 justify-between">
             <h2 className="p-3 sm:text-xl  text-xs font-bold">
-              {product.Price}
+              KSH: {product.Price}
             </h2>
-            <button className="font-bold text-white sm:text-xl text-xs sm:px-5 px-3 sm:py-2 py-0 bg-blue-700 rounded">
-              add
+            <button className="font-bold text-white sm:text-l text-xs sm:px-5 px-3 sm:py-2 py-0 bg-blue-700 rounded">
+              add to cart
             </button>
           </div>
         </div>

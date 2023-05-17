@@ -32,8 +32,8 @@ export default function ({ route, navigation }) {
   }, []);
   return (
     <div>
+      <TopNav />
       <div className=" w-5/6 p-2 my-3 mx-auto  ">
-        <TopNav />
         {show && (
           <div className="my-5 mx-3">
             <Alert

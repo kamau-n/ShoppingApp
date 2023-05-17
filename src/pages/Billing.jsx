@@ -14,14 +14,10 @@ export default function Billing() {
   const { state } = useLocation();
   const [message, setMessages] = useState("");
   const [show, setShow] = useState(false);
-  const handleSuccess = (data) => {
-    //handle success
-    console.log(data);
-  };
+  const [showOverlay, setShowOverlay] = useState(false);
 
-  const handleError = (error) => {
-    //handle error
-    console.log(error);
+  const toggleOverlay = () => {
+    setShowOverlay(!showOverlay);
   };
 
   function checkProperties(obj) {
@@ -33,47 +29,33 @@ export default function Billing() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    console.log(" i have been clicked");
     if (checkProperties(inputs)) {
       setMessages("some values are empty");
       setShow(true);
     } else {
       console.log(inputs);
+      axios
+        .post("http://localhost:3001/stkPush", {
+          amount: state.total,
+          phone: inputs.contact,
+          Order_ID: 35345,
+        })
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   };
 
   const handleChange = (event) => {
+    setMessages(" ");
     const name = event.target.name;
     const value = event.target.value;
     setInputs((values) => ({ ...values, [name]: value }));
   };
-
-  // const initiatePayment = async (phoneNumber, amount) => {
-  //   console.log("am trying to make a payment");
-  //   try {
-  //     const response = await axios.post("http://localhost:3001/stkpush", {});
-  //     console.log(response.data);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-
-  // const credentials = {
-  //   title: "order", //eg. 'Pay for your order'
-  //   number: "",
-  //   shortcode: 174379, //eg 174379---obtained from M-Pesa daraja portal
-  //   passkey: "AULHeH0xk8iJVEYVVLdP7KBt4K4AXc1k", //obtained from mpesa daraja portal
-  //   transactionType: "CustomerPayBillOnline", //eg. CustomerPayBillOnline
-  //   businessShortcode: 247247, //eg 174379
-  //   amount: "1", //Amount to be paid by the customer eg. 100
-  //   phone: "254759155650", //Phone number of the customer eg. 254712345000
-  //   callbackUrl: "localhost:3000", //Callback url to be called after payment
-  //   accountReference: "order number", //Account reference eg. order number
-  //   transactionDesc: "order", //Transaction description eg. Order for pizza
-  //   mpesaAuth:
-  //     "QVVMSGVIMHhrOGlKVkVZVlZMZFA3S0J0NEs0QVhjMWs6QnlNbEdwcVJraHlNVDVUbw", //Mpesa auth token obtained from mpesa daraja portal
-  //   environment: "sandbox", //environment to be used eg. sandbox or production--you can use sandbox for testing
-  // };
-
   return (
     <div className="sm:w-3/5 w-5/6 mx-auto my-10 py-4 px-3">
       <h2 className="text-2xl font-bold sm:text-left text-center">
@@ -153,7 +135,7 @@ export default function Billing() {
             className="p-2 border-2 border-slate-200 "
             name="contact"
             value={inputs.contact || ""}
-            placeholder="+254"
+            placeholder="254 in this form"
             onChange={handleChange}
           />
         </div>
@@ -191,16 +173,51 @@ export default function Billing() {
         </h2>
 
         <div className="sm:flex justify-between flex flex-col space-y-5 sm:gap:6">
-          <button className="bg-green-500 font-bold text-white text-xl py-3 px-2 ">
+          <button
+            className="bg-green-500 font-bold text-white text-xl py-3 px-2 "
+            onClick={toggleOverlay}>
             COMPLETE WITH MPESA
           </button>
-          {/* <MpesaStk
-          credentials={credentials} //credentials object
-          onPaySuccess={handleSuccess} //returned afer a successful payment
-          onPayError={handleError}
 
-          //returned after a failed payment
-        /> */}
+          <div
+            className="fixed inset-0 z-50"
+            style={{ display: showOverlay ? "block" : "none" }}>
+            <div className="absolute inset-0 bg-gray-700 opacity-70"></div>
+            <div className="absolute inset-0 flex items-center  justify-center">
+              <div></div>
+              <div className=" flex flex-col">
+                <button
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                  onClick={toggleOverlay}>
+                  close
+                </button>
+                <span className="text-xl  text-center">PhoneNumber</span>
+                <input
+                  type="text"
+                  name=""
+                  id=""
+                  className="px-2 py-5 text-xl text-center my-5  font-semibold"
+                  value={inputs.contact}
+                />
+                <span className="text-xl  text-center">Total Amount</span>
+                <input
+                  type="text"
+                  name=""
+                  id=""
+                  className="px-2 py-5 text-xl text-center my-5 font-semibold"
+                  value={state.total}
+                />
+                <button
+                  className="py-4 px-10  bg-green-600   rounded-sm text-white text-2xl  "
+                  onClick={(e) => {
+                    handleSubmit(e);
+                  }}>
+                  Make Payment
+                </button>
+              </div>
+            </div>
+          </div>
+
           <button className="bg-blue-500 font-bold text-white text-xl py-3 px-2 ">
             COMPLETE WITH CARD
           </button>

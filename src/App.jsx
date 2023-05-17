@@ -12,6 +12,7 @@ import Drinks from "./pages/Drinks";
 import Product from "./pages/Products";
 import Billing from "./pages/Billing";
 import Account from "./pages/Account";
+import About from "./pages/About";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="/product/:id" element={<Product />} />
           <Route path="/billing" element={<Billing />} />
           <Route path="/account" element={<Account />} />
+          <Route path="/about" element={<About />} />
         </Routes>
       </BrowserRouter>
     </div>
