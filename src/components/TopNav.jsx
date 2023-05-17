@@ -34,6 +34,7 @@ export default function TopNav({ logged }) {
           alt=""
           onClick={() => {
             document.getElementById("topbar").classList.toggle("hidden");
+            document.getElementById("topbar2").classList.toggle("hidden");
           }}
         />
       </div>
@@ -47,7 +48,7 @@ export default function TopNav({ logged }) {
           <Link to="/about">About</Link>
         </div>
       </div>
-      <div id="topbar" className="sm:flex hidden">
+      <div id="topbar2" className="sm:flex hidden">
         {logged && (
           <div className=" sm:flex gap-2 sm:flex-row  flex flex-col  sm:justify-between  ">
             <button className="py-2 px-5 bg-slate-700 w-1/3  mx-auto text-white rounded font-bold">
@@ -67,7 +68,7 @@ export default function TopNav({ logged }) {
 
         {!logged && (
           <button
-            id="topbar"
+            id="topbar3"
             className="py-2 px-7 bg-slate-700 text-white rounded  font-bold">
             <Link to="/login" className="text-white">
               Login
