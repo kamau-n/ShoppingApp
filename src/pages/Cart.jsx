@@ -138,12 +138,14 @@ const Cart = () => {
             <button
               className="font-bold bg-black p-2 text-white w-full mx-1"
               onClick={() => {
-                navigate("/billing", {
-                  state: {
-                    shipping: shipping,
-                    total: Number(value) + Number(shipping),
-                  },
-                });
+                if (shipping != 0) {
+                  navigate("/billing", {
+                    state: {
+                      shipping: shipping,
+                      total: Number(value) + Number(shipping),
+                    },
+                  });
+                } else alert("Shipping has not been selected");
               }}>
               CHECKOUT
             </button>

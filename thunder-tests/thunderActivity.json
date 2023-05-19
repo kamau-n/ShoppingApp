@@ -31,5 +31,66 @@
       "form": []
     },
     "tests": []
+  },
+  {
+    "_id": "cad9c236-7efc-4d0b-a35a-8fd98167d22b",
+    "colId": "history",
+    "containerId": "",
+    "name": "https://6994-154-159-237-119.ngrok-free.app/stkPushCallback/436346",
+    "url": "https://6994-154-159-237-119.ngrok-free.app/stkPushCallback/436346",
+    "method": "POST",
+    "sortNum": 0,
+    "created": "2023-05-18T11:54:50.393Z",
+    "modified": "2023-05-18T11:54:50.393Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "a402e106-c02e-465f-a525-9e494918597a",
+    "colId": "history",
+    "containerId": "",
+    "name": "https://6994-154-159-237-119.ngrok-free.app/stkPushCallback/35345",
+    "url": "https://6994-154-159-237-119.ngrok-free.app/stkPushCallback/35345",
+    "method": "POST",
+    "sortNum": 0,
+    "created": "2023-05-18T11:55:31.271Z",
+    "modified": "2023-05-18T11:55:31.271Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "5fdd814f-d225-4a27-9e94-7356a154458c",
+    "colId": "history",
+    "containerId": "",
+    "name": "https://6994-154-159-237-119.ngrok-free.app/stkPushCallback/35345",
+    "url": "https://6994-154-159-237-119.ngrok-free.app/stkPushCallback/35345",
+    "method": "GET",
+    "sortNum": 0,
+    "created": "2023-05-18T11:55:53.607Z",
+    "modified": "2023-05-18T11:55:53.607Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "d7840309-fea6-41bd-88ab-0315481674ce",
+    "colId": "history",
+    "containerId": "",
+    "name": "localhost:3001/stkpush",
+    "url": "localhost:3001/stkpush",
+    "method": "POST",
+    "sortNum": 0,
+    "created": "2023-05-18T11:58:52.557Z",
+    "modified": "2023-05-18T12:23:08.278Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{ \"amount\": \"1\", \"phone\": \"254715657906\", \"Order_ID\": \"35345\" }\n",
+      "form": []
+    },
+    "tests": []
   }
 ]

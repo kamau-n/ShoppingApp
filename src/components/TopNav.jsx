@@ -21,7 +21,7 @@ export default function TopNav({ logged }) {
       });
   };
   return (
-    <div className="sm:flex justify-between  bg-slate-100 px-6  w-full shadow-md my-0  py-5  ">
+    <div className="sm:flex justify-between  bg-slate-100 px-6  w-full shadow-md my-0  py-8  ">
       <div className="flex justify-between ">
         <div className="font-bold text-xl  flex gap-2 italic uppercase font-mono">
           <img src={icon} alt="" width={30} className="bg-cover" />
@@ -51,13 +51,13 @@ export default function TopNav({ logged }) {
       <div id="topbar2" className="sm:flex hidden">
         {logged && (
           <div className=" sm:flex gap-2 sm:flex-row  flex flex-col  sm:justify-between  ">
-            <button className="py-2 px-5 bg-slate-700 w-1/3  mx-auto text-white rounded font-bold">
+            <button className="py-2 px-5 bg-slate-700   mx-auto text-white rounded font-bold">
               <Link to="/account" className="text-white text-l">
                 Account
               </Link>
             </button>
             <button
-              className="py-2 px-7 bg-slate-700 text-white mx-auto w-1/3 rounded font-bold"
+              className="py-2 px-7 bg-slate-700 text-white mx-auto  rounded font-bold"
               onClick={() => {
                 handleLogout();
               }}>

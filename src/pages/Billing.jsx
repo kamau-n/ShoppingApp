@@ -96,16 +96,7 @@ export default function Billing() {
             />
           </div>
         </div>
-        <div className="flex flex-col">
-          <span className="text-l font-bold">Company Name (optional)</span>
-          <input
-            type="text"
-            className="p-2 border-2 border-slate-200 "
-            name="company_name"
-            value={inputs.company_name || ""}
-            onChange={handleChange}
-          />
-        </div>
+
         <div className="flex flex-col">
           <span className="text-l font-bold">County/Region</span>
           <input

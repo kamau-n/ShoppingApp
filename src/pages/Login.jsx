@@ -46,7 +46,7 @@ const Login = () => {
         <input
           type="email"
           placeholder="Enter Your Email"
-          className="text-xl   text-center font-light py-5"
+          className="text-2xl border-2   text-center font-light py-5"
           onChange={(e) => {
             setUseremail(e.target.value);
           }}
@@ -56,7 +56,7 @@ const Login = () => {
       <div className="my-5">
         <input
           type="password"
-          className="text-xl text-center font-light py-5"
+          className="text-2xl text-center font-light py-5 border-2 "
           placeholder="Enter your Password"
           onChange={(e) => {
             setPassword(e.target.value);
