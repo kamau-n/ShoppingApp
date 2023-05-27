@@ -11,11 +11,11 @@ export default function () {
             class="w-12 h-12 rounded-full mr-4"
           />
           <div>
-            <h3 class="text-xl font-bold">John Doe</h3>
+            <h3 class="text-l sm:text-xl font-bold">John Doe</h3>
             <p class="text-gray-600 text-sm">3 days ago</p>
           </div>
         </div>
-        <p class="text-gray-700 text-xl mt-4">
+        <p class="text-gray-700 text-sm x sm:text-xl mt-4">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris at
           mollis mauris. Nullam vitae sapien a libero pulvinar congue. Fusce id
           rutrum dolor. Donec vel maximus mauris.
@@ -29,11 +29,11 @@ export default function () {
             class="w-12 h-12 rounded-full mr-4"
           />
           <div>
-            <h3 class="text-xl  font-bold">John Doe</h3>
+            <h3 class="sm:text-xl text-l  font-bold">John Doe</h3>
             <p class="text-gray-600 text-sm">3 days ago</p>
           </div>
         </div>
-        <p class="text-gray-700 text-xl mt-4 line-highlight">
+        <p class="text-gray-700 text-sm x sm:text-xl mt-4 line-highlight">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris at
           mollis mauris. Nullam vitae sapien a libero pulvinar congue. Fusce id
           rutrum dolor. Donec vel maximus mauris.
@@ -47,11 +47,11 @@ export default function () {
             class="w-12 h-12 rounded-full mr-4"
           />
           <div>
-            <h3 class="  font-bold text-xl">John Doe</h3>
+            <h3 class="  font-bold text-sm x sm:text-xl">John Doe</h3>
             <p class="text-gray-600 text-sm">3 days ago</p>
           </div>
         </div>
-        <p class="text-gray-700 text-xl  mt-4">
+        <p class="text-gray-700 text-sm x sm:text-xl  mt-4">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris at
           mollis mauris. Nullam vitae sapien a libero pulvinar congue. Fusce id
           rutrum dolor. Donec vel maximus mauris.

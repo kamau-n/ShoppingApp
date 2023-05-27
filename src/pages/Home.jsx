@@ -232,7 +232,6 @@ export default function Home() {
                 </div>
               ))}
             </div>
-            s
           </div>
 
           <div className="w-4/4 bg-slate-100 my-5  py-3 ">

@@ -50,19 +50,17 @@ export default function ({ route, navigation }) {
             </Alert>
           </div>
         )}
-        <div className=" my-5 mx-3 py-5  px-3 sm:flex  gap-5 ">
+        <div className=" my-5 mx-3 py-5  px-3 sm:flex  gap-3 ">
           <div className="basis-1/2 py-4 px-3 m-4">
-            <img src={details.Link} alt="no image" className="sm:h-96 h-52" />
+            <img src={details.Link} alt="no image" className="sm:h-96  w-96 " />
           </div>
           <div className="basis-1/2 py-8 block px-3 m-4">
-            <h2 className="text-2xl  py-4 text-left font-mono">
+            <h2 className="sm:text-2xl  text-l py-4 text-left font-mono">
               {details.Name}
             </h2>
-            <p className="text-left font-mono py-8 font-xl">
+            <p className="text-left font-mono py-8 sm:text-xl text-sm font-xl">
               Lorem ipsum dolor, sit amet consectetur adipisicing elit. Sit et
-              ratione rem! Perspiciatis doloribus blanditiis non ratione error
-              asperiores veritatis praesentium possimus, mollitia tempore
-              adipisci at architecto laborum, sed sit.
+              ratione rem!
             </p>
             <h3 className="font-bold sm:text-3xl text-left py-8">
               {details.Price}
@@ -119,79 +117,79 @@ export default function ({ route, navigation }) {
             </div>
           </div>
         </div>
-        <div className="py-5 px-5 my-8 mx-3 ">
-          <h2 className="font-bold sm:text-2xl text-l text-center">
-            Rate This Product
-          </h2>
-          <div className="p-5  text-center sm:w-3/4 sm:mx-auto ">
-            <div className="sm:flex space-y-4  sm:space-x-11 py-5 px-3 my-5">
-              <input
-                type="text"
-                placeholder="Enter your name"
-                id=""
-                className="sm:py-4 py-2 px-5 border-2 text-xm sm:text-xl text-center"
-              />
-              <input
-                type="text"
-                placeholder="Enter your email"
-                id=""
-                className="sm:py-4 py-2 px-5 border-2 text-xm sm:text-xl text-center"
-              />
-            </div>
-            <div className="text-left sm:py-5 sm:flex   px-3 my-5">
-              <textarea
-                rows={6}
-                className="sm:py-4 py-2 px-5 border-2 text-xm sm:text-xl text-center"
-                placeholder="Enter your comment"
-              />
-              <div className="px-5">
-                <h2 className="my-4 py-3">Stars Rating</h2>
-                <div className="sm:flex sm:justify-around gap-6">
-                  <span
-                    className="rounded-full border-2 text-center py-4 px-4  w-16 h-16  text-xl"
-                    onClick={() => {
-                      setRating(1);
-                    }}>
-                    1
-                  </span>
-                  <span
-                    onClick={() => {
-                      setRating(2);
-                    }}
-                    className="rounded-full border-2 text-center py-4 px-4  w-16 h-16  text-xl">
-                    2
-                  </span>
-                  <span
-                    onClick={() => {
-                      setRating(3);
-                    }}
-                    className="rounded-full border-2 text-center py-4 px-4  w-16 h-16  text-xl">
-                    3
-                  </span>
-                  <span
-                    onClick={() => {
-                      setRating(4);
-                    }}
-                    className="rounded-full border-2 text-center py-4 px-4  w-16 h-16  text-xl">
-                    4
-                  </span>
-                  <span
-                    onClick={() => {
-                      setRating(5);
-                    }}
-                    className="rounded-full border-2 text-center py-4 px-4 h-10 w-10 sm:w-16 sm:h-16  text-xl">
-                    5
-                  </span>
-                </div>
+      </div>
+      <div className="p-4 w-5/6 mx-auto ">
+        <h2 className="font-bold sm:text-2xl text-l text-center">
+          Rate This Product
+        </h2>
+        <div className="">
+          <div className="sm:flex sm:space-y-0 my-6 py-4 justify-around space-y-4">
+            <input
+              type="text"
+              placeholder="Enter your name"
+              id=""
+              className="sm:py-4 py-2 px-5 border-2 text-xm sm:text-xl text-center"
+            />
+            <input
+              type="text"
+              placeholder="Enter your email"
+              id=""
+              className="sm:py-4 py-2 px-5 border-2 text-xm sm:text-xl text-center"
+            />
+          </div>
+          <div className=" sm:flex sm:justify-around my-7 py-3">
+            <textarea
+              rows={6}
+              className="sm:py-4 py-2 px-5 border-2 text-xm sm:text-xl text-center"
+              placeholder="Enter your comment"
+            />
+            <div className=" py-4">
+              <h2 className="my-4 py-3">Stars Rating</h2>
+              <div className="flex sm:space-x-4 space-x-2">
+                <span
+                  className="rounded-full border-2 text-center p-2 sm:py-4 sm:px-4  sm:w-16 sm:h-16 h-12 w-12  text-xl"
+                  onClick={() => {
+                    setRating(1);
+                  }}>
+                  1
+                </span>
+                <span
+                  onClick={() => {
+                    setRating(2);
+                  }}
+                  className="rounded-full border-2 text-center p-2 sm:py-4 sm:px-4  sm:w-16 sm:h-16 h-12 w-12  text-xl">
+                  2
+                </span>
+                <span
+                  onClick={() => {
+                    setRating(3);
+                  }}
+                  className="rounded-full border-2 text-center p-2 sm:py-4 sm:px-4  sm:w-16 sm:h-16 h-12 w-12  text-xl">
+                  3
+                </span>
+                <span
+                  onClick={() => {
+                    setRating(4);
+                  }}
+                  className="rounded-full border-2 text-center p-2 sm:py-4 sm:px-4  sm:w-16 sm:h-16 h-12 w-12  text-xl">
+                  4
+                </span>
+                <span
+                  onClick={() => {
+                    setRating(5);
+                  }}
+                  className="rounded-full border-2 text-center p-2 sm:py-4 sm:px-4  sm:w-16 sm:h-16 h-12 w-12  text-xl">
+                  5
+                </span>
               </div>
             </div>
-            <div>
-              <button
-                className="sm:px-28 px-10 my-5 text-center  sm:text-xl text-xs text-white font-bold  sm:w-2/4 sm:py-4 py-3 bg-blue-400"
-                onClick={handleRating}>
-                Submit Rating
-              </button>
-            </div>
+          </div>
+          <div>
+            <button
+              className="sm:px-28 px-10 my-5 text-center  sm:text-xl text-xs text-white font-bold  sm:w-2/4 sm:py-4 py-3 bg-blue-400"
+              onClick={handleRating}>
+              Submit Rating
+            </button>
           </div>
         </div>
       </div>

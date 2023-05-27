@@ -4,10 +4,24 @@ import bars from "../assets/bars.png";
 import icon from "../assets/icon.png";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { AppBar, IconButton, Toolbar } from "@mui/material";
+import { Face, FaceRounded } from "@material-ui/icons";
+import { useState } from "react";
 
 const auth = getAuth();
 
 export default function TopNav({ logged }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const options = ["Account", "Logout", "Option 3"];
+  const handleToggle = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const handleOptionClick = (option) => {
+    console.log("Selected option:", option);
+    setIsOpen(false);
+  };
+
   const handleLogout = () => {
     console.log(typeof auth);
     signOut(auth)
@@ -48,22 +62,44 @@ export default function TopNav({ logged }) {
           <Link to="/about">About</Link>
         </div>
       </div>
-      <div id="topbar2" className="sm:flex hidden">
+      <div id="topbar2" className="sm:flex hidden ">
         {logged && (
-          <div className=" sm:flex gap-2 sm:flex-row  flex flex-col  sm:justify-between  ">
-            <button className="py-2 px-5 bg-slate-700   mx-auto text-white rounded font-bold">
-              <Link to="/account" className="text-white text-l">
-                Account
-              </Link>
-            </button>
-            <button
-              className="py-2 px-7 bg-slate-700 text-white mx-auto  rounded font-bold"
-              onClick={() => {
-                handleLogout();
-              }}>
-              Logout
-            </button>
+          <div className="flex justify-center">
+            <div className="relative">
+              <button
+                type="button"
+                className=" py-2 px-4 text-sm bg-gray-200 text-gray-800  shadow-md focus:outline-none focus:ring-2 flex focus:ring-blue-500"
+                onClick={handleToggle}>
+                <FaceRounded fontSize="large" />
+                <span className="text-xl pt-1 font-bold">Account</span>
+              </button>
+              {isOpen && (
+                <ul className="absolute top-full left-0 mt-2 py-1 px-4 bg-white text-gray-800 rounded-md shadow-md">
+                  <li className="py-2 px-4 text-l font-semibold hover:bg-gray-200 cursor-pointer">
+                    <Link to="/account">Profile</Link>
+                  </li>
+                  <li className="py-2 px-4 text-l font-semibold hover:bg-gray-200 cursor-pointer">
+                    Logout
+                  </li>
+                </ul>
+              )}
+            </div>
           </div>
+
+          // <div className=" sm:flex gap-2 sm:flex-row  flex flex-col  sm:justify-between  ">
+          //   <button className="py-2 px-5 sm:bg-slate-700   mx-auto sm:text-white text-black rounded font-bold">
+          //     <Link to="/account" className="sm:text-white text-l">
+          //       Account
+          //     </Link>
+          //   </button>
+          //   <button
+          //     className="py-2 px-7 sm:bg-slate-700 sm:text-white mx-auto  rounded font-bold"
+          //     onClick={() => {
+          //       handleLogout();
+          //     }}>
+          //     Logout
+          //   </button>
+          // </div>
         )}
 
         {!logged && (

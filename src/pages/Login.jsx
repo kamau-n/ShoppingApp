@@ -36,17 +36,17 @@ const Login = () => {
 
   return (
     <div className="my-10 py-5 ">
-      <h2 className="text-2xl font-bold py-5 my-3">LA DOCHE</h2>
+      <h2 className="sm:text-2xl font-bold py-5 my-3">LA DOCHE</h2>
       <h3 className="p-3 m-4 text-center text-red-500 text-xl font-bold">
         {mess}
       </h3>
       <h2 className="uppercase font-mono font-bold text-center">Login </h2>
 
-      <div className="my-5">
+      <div className="sm:my-5 my-3">
         <input
           type="email"
           placeholder="Enter Your Email"
-          className="text-2xl border-2   text-center font-light py-5"
+          className="sm:text-2xl border-2  text-l  text-center font-light py-3 sm:py-5"
           onChange={(e) => {
             setUseremail(e.target.value);
           }}
@@ -56,7 +56,7 @@ const Login = () => {
       <div className="my-5">
         <input
           type="password"
-          className="text-2xl text-center font-light py-5 border-2 "
+          className="sm:text-2xl texl-l text-center font-light sm:py-5 py-3 border-2 "
           placeholder="Enter your Password"
           onChange={(e) => {
             setPassword(e.target.value);
@@ -65,7 +65,7 @@ const Login = () => {
       </div>
       <div className="my-6">
         <button
-          className="py-3 px-32 font-bold text-white text-2xl bg-orange-500"
+          className="py-3 sm:px-32 px-28 font-bold text-white text-l sm:text-2xl bg-orange-500"
           onClick={signin}>
           Login
         </button>
