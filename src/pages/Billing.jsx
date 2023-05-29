@@ -57,8 +57,8 @@ export default function Billing() {
     setInputs((values) => ({ ...values, [name]: value }));
   };
   return (
-    <div className="sm:w-3/5 w-5/6 mx-auto my-10 py-4 px-3">
-      <h2 className="text-2xl font-bold sm:text-left text-center">
+    <div className="sm:w-3/5 w-11/12 sm:mx-auto mx-auto my-10 py-4 px-3">
+      <h2 className="sm:text-2xl sm:text-l text-sm font-semibold sm:text-left text-center">
         Billing Details
       </h2>
       {show && (
@@ -73,10 +73,10 @@ export default function Billing() {
         </div>
       )}
 
-      <div className="text-left space-y-5">
+      <div className="text-left  space-y-5">
         <div className="sm:flex sm:flex-row gap-4 flex-col ">
-          <div className="flex  basis-1/2  flex-col">
-            <span className="text-l font-bold">First Name</span>
+          <div className="flex  sm:basis-1/2  flex-col">
+            <span className="sm:text-l text-sm font-semibold">First Name</span>
             <input
               type="text"
               name="first_name"
@@ -86,7 +86,7 @@ export default function Billing() {
             />
           </div>
           <div className="flex  basis-1/2  flex-col">
-            <span className="text-l font-bold">Last Name</span>
+            <span className="sm:text-l text-sm font-semibold">Last Name</span>
             <input
               type="text"
               name="last_name"
@@ -98,7 +98,7 @@ export default function Billing() {
         </div>
 
         <div className="flex flex-col">
-          <span className="text-l font-bold">County/Region</span>
+          <span className="sm:text-l text-sm font-semibold">County/Region</span>
           <input
             type="text"
             className="p-2 border-2 border-slate-200 "
@@ -109,7 +109,7 @@ export default function Billing() {
         </div>
 
         <div className="flex flex-col">
-          <span className="text-l font-bold">Address</span>
+          <span className="sm:text-l text-sm font-semibold">Address</span>
           <input
             type="text"
             className="p-2 border-2 border-slate-200 "
@@ -120,7 +120,7 @@ export default function Billing() {
         </div>
 
         <div className="flex flex-col">
-          <span className="text-l font-bold">Phone</span>
+          <span className="sm:text-l text-sm font-semibold">Phone</span>
           <input
             type="text"
             className="p-2 border-2 border-slate-200 "
@@ -131,7 +131,7 @@ export default function Billing() {
           />
         </div>
         <div className="flex flex-col">
-          <span className="text-l font-bold">Email Address</span>
+          <span className="sm:text-l text-sm font-semibold">Email Address</span>
           <input
             type="email"
             className="p-2 border-2 border-slate-200 "
@@ -142,7 +142,9 @@ export default function Billing() {
         </div>
       </div>
       <div className="text-left">
-        <h2 className="text-left text-2xl font-bold my-3 py-3">Your Order</h2>
+        <h2 className="text-left sm:text-2xl text-xl font-bold my-3 py-3">
+          Your Order
+        </h2>
         <div className=" block justify-between bg-black px-3 py-3">
           <div className="flex  flex-cols justify-between">
             <h2 className="text-white font-bold">Products</h2>
@@ -209,13 +211,13 @@ export default function Billing() {
             </div>
           </div>
 
-          <button className="bg-blue-500 font-bold text-white text-xl py-3 px-2 ">
+          <button className="bg-blue-500 font-bold text-white text-l sm:text-xl py-3 px-2 ">
             COMPLETE WITH CARD
           </button>
         </div>
       </div>
       <Link to="/" className="text-xl my-5 py-4">
-        Back to shopping{" "}
+        Back to shopping
       </Link>
     </div>
   );

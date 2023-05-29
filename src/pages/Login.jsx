@@ -35,9 +35,9 @@ const Login = () => {
   };
 
   return (
-    <div className="my-10 py-5 ">
+    <div className="my-16 py-5 sm:w-1/4 w-5/6 mx-7 sm:mx-auto border-2 ">
       <h2 className="sm:text-2xl font-bold py-5 my-3">LA DOCHE</h2>
-      <h3 className="p-3 m-4 text-center text-red-500 text-xl font-bold">
+      <h3 className="p-3 mx-4 my-2 text-center text-red-500 text-xl font-bold">
         {mess}
       </h3>
       <h2 className="uppercase font-mono font-bold text-center">Login </h2>
@@ -46,7 +46,7 @@ const Login = () => {
         <input
           type="email"
           placeholder="Enter Your Email"
-          className="sm:text-2xl border-2  text-l  text-center font-light py-3 sm:py-5"
+          className="sm:text-xl border-2  text-l  text-center font-light py-3 sm:py-3"
           onChange={(e) => {
             setUseremail(e.target.value);
           }}
@@ -56,7 +56,7 @@ const Login = () => {
       <div className="my-5">
         <input
           type="password"
-          className="sm:text-2xl texl-l text-center font-light sm:py-5 py-3 border-2 "
+          className="sm:text-xl texl-l text-center font-light sm:py-3 py-3 border-2 "
           placeholder="Enter your Password"
           onChange={(e) => {
             setPassword(e.target.value);

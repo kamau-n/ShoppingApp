@@ -6,7 +6,7 @@ export default function ({ data, type, navigation }) {
   console.log("type is " + type);
 
   return (
-    <div className="sm:grid sm:grid-cols-4 rounded-md  bg-slate-200 sm:space-y-0 space-y-8   px-2 py-7 gap-4">
+    <div className="grid grid-col-2  md:grid-cols-2  lg:grid-cols-4 rounded-md  bg-slate-200 sm:space-y-0 space-y-8   px-2 py-7 gap-4">
       {data.map((product) => (
         <div
           className="sm:mx-4 border-2 sm:rounded-md  shadow-xl bg-white  "

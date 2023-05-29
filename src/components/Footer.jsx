@@ -27,7 +27,7 @@ export default function Footer() {
           </ul>
         </div>
       </div>
-      <div className="flex  justify-around py-16">
+      <div className="sm:flex  sm:justify-around py-16">
         <h3 className="text-xl text-white">Term of Service</h3>
         <h3 className="text-xl text-white">Privacy</h3>
         <h3 className="text-xl text-white">Content Policy</h3>

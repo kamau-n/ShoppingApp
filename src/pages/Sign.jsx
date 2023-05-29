@@ -70,90 +70,90 @@ const Login = () => {
   };
 
   return (
-    <div className="my-10">
+    <div className="my-10 sm:w-1/4 p-4 w-5/6 mx-7 sm:mx-auto border-2">
       <h2>LA DOCHE</h2>
 
       <span className="errors">{errors}</span>
-      <div className="login-btn">
+      <div className="my-2 py-2">
         <input
           type="email"
           placeholder="Email"
-          className="text-xl text-center font-light py-2"
+          className="sm:text-xl text-l text-center font-light py-2  border-2"
           onChange={(e) => {
             setUseremail(e.target.value);
           }}
         />
       </div>
 
-      <div className="login-btn">
+      <div className="my-2 py-2">
         <input
           type="Text"
           placeholder="FirstName"
-          className="text-xl text-center font-light py-2"
+          className="sm:text-xl  text-l text-center font-light py-2  border-2"
           onChange={(e) => {
             setFirstname(e.target.value);
           }}
         />
       </div>
 
-      <div className="login-btn">
+      <div className="my-2 py-2">
         <input
           type="text"
           placeholder="LastName"
-          className="text-xl text-center font-light py-2"
+          className="sm:text-xl text-l text-center font-light py-2  border-2"
           onChange={(e) => {
             setLastname(e.target.value);
           }}
         />
       </div>
 
-      <div className="login-btn">
+      <div className="my-2 py-2">
         <input
           type="text"
           placeholder="PhoneNumber"
-          className="text-xl text-center font-light py-2"
+          className="sm:text-xl text-l text-center font-light py-2  border-2"
           onChange={(e) => {
             setNumber(e.target.value);
           }}
         />
       </div>
 
-      <div className="login-btn">
+      <div className="my-2 py-2">
         <input
           type="text"
           placeholder="Address"
-          className="text-xl text-center font-light py-2"
+          className="sm:text-xl text-l text-center font-light py-2  border-2"
           onChange={(e) => {
             setAddress(e.target.value);
           }}
         />
       </div>
-      <div className="login-btn">
+      <div className="my-2 py-2">
         <input
           type="text"
           placeholder="City"
-          className="text-xl text-center font-light py-2"
+          className="sm:text-xl text-l text-center font-light py-2  border-2"
           onChange={(e) => {
             setCity(e.target.value);
           }}
         />
       </div>
-      <div className="login-btn">
+      <div className="my-2 py-2">
         <input
           type="text"
           placeholder="County"
-          className="text-xl text-center font-light py-2"
+          className="sm:text-xl text-l text-center font-light py-3 border-2"
           onChange={(e) => {
             setCounty(e.target.value);
           }}
         />
       </div>
 
-      <div className="my-4 py-4">
+      <div className="my-2 py-2">
         <input
           type="password"
           placeholder="Password"
-          className="text-xl text-center font-light py-3"
+          className="sm:text-xl text-l text-center font-light py-3 border-2"
           onChange={(e) => {
             setPassword(e.target.value);
           }}
@@ -162,7 +162,7 @@ const Login = () => {
 
       <div>
         <button
-          className="py-3 px-20  text-2xl text-white font-bold bg-orange-400 "
+          className="py-3 sm:px-32 px-24  text-l sm:text-xl text-white font-bold bg-orange-400 "
           onClick={signup}>
           SignUp
         </button>

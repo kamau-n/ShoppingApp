@@ -4,7 +4,15 @@ import bars from "../assets/bars.png";
 import icon from "../assets/icon.png";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { AppBar, IconButton, Toolbar } from "@mui/material";
-import { Face, FaceRounded } from "@material-ui/icons";
+import {
+  ArrowBack,
+  CardTravelSharp,
+  Face,
+  FaceRounded,
+  KeyboardArrowLeftSharp,
+  Person,
+  ShoppingBasket,
+} from "@material-ui/icons";
 import { useState } from "react";
 
 const auth = getAuth();
@@ -43,7 +51,7 @@ export default function TopNav({ logged }) {
         </div>
         <img
           src={bars}
-          width={30}
+          width={36}
           className="sm:hidden"
           alt=""
           onClick={() => {
@@ -70,15 +78,19 @@ export default function TopNav({ logged }) {
                 type="button"
                 className=" py-2 px-4 text-sm bg-gray-200 text-gray-800  shadow-md focus:outline-none focus:ring-2 flex focus:ring-blue-500"
                 onClick={handleToggle}>
-                <FaceRounded fontSize="large" />
+                <Person fontSize="large" />
                 <span className="text-xl pt-1 font-bold">Account</span>
               </button>
               {isOpen && (
                 <ul className="absolute top-full left-0 mt-2 py-1 px-4 bg-white text-gray-800 rounded-md shadow-md">
                   <li className="py-2 px-4 text-l font-semibold hover:bg-gray-200 cursor-pointer">
-                    <Link to="/account">Profile</Link>
+                    <Link to="/account" className="flex gap-2">
+                      <FaceRounded />
+                      Profile
+                    </Link>
                   </li>
-                  <li className="py-2 px-4 text-l font-semibold hover:bg-gray-200 cursor-pointer">
+                  <li className="py-2 px-4 text-l font-semibold hover:bg-gray-200 flex gap-2 cursor-pointer">
+                    <ArrowBack />
                     Logout
                   </li>
                 </ul>
