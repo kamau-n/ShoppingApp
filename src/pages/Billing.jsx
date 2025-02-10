@@ -36,7 +36,7 @@ export default function Billing() {
     } else {
       console.log(inputs);
       axios
-        .post("http://localhost:3001/stkPush", {
+        .post("https://store.kamauharrison.co.ke/stkPush", {
           amount: state.total,
           phone: inputs.contact,
           Order_ID: 35345,
