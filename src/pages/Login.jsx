@@ -35,45 +35,35 @@ const Login = () => {
   };
 
   return (
-    <div className="my-16 py-5 sm:w-1/4 w-5/6 mx-7 sm:mx-auto border-2 ">
-      <h2 className="sm:text-2xl font-bold py-5 my-3">LA DOCHE</h2>
-      <h3 className="p-3 mx-4 my-2 text-center text-red-500 text-xl font-bold">
-        {mess}
-      </h3>
-      <h2 className="uppercase font-mono font-bold text-center">Login </h2>
-
-      <div className="sm:my-5 my-3">
+    <div className="max-w-md mx-auto mt-16 p-6 border-2 shadow-lg rounded-lg text-center">
+      <h2 className="text-3xl font-bold mb-4">LA DOCHE</h2>
+      {message && <p className="text-red-500 text-lg font-semibold">{message}</p>}
+      <h3 className="text-xl font-mono font-bold">Login</h3>
+      <div className="mt-4">
         <input
           type="email"
           placeholder="Enter Your Email"
-          className="sm:text-xl border-2  text-l  text-center font-light py-3 sm:py-3"
-          onChange={(e) => {
-            setUseremail(e.target.value);
-          }}
+          className="w-full p-3 border rounded-lg text-lg text-center"
+          onChange={(e) => setUseremail(e.target.value)}
         />
       </div>
-
-      <div className="my-5">
+      <div className="mt-4">
         <input
           type="password"
-          className="sm:text-xl texl-l text-center font-light sm:py-3 py-3 border-2 "
           placeholder="Enter your Password"
-          onChange={(e) => {
-            setPassword(e.target.value);
-          }}
+          className="w-full p-3 border rounded-lg text-lg text-center"
+          onChange={(e) => setPassword(e.target.value)}
         />
       </div>
-      <div className="my-6">
-        <button
-          className="py-3 sm:px-32 px-28 font-bold text-white text-l sm:text-2xl bg-orange-500"
-          onClick={signin}>
-          Login
-        </button>
-      </div>
-
-      <div className="my-10 space-x-8">
+      <button
+        className="mt-6 w-full bg-orange-500 text-white font-bold py-3 text-lg rounded-lg hover:bg-orange-600"
+        onClick={handleSignIn}
+      >
+        Login
+      </button>
+      <div className="mt-6 flex justify-center space-x-6 text-blue-500 font-semibold">
         <Link to="/">Home</Link>
-        <Link to="/signup">signup</Link>
+        <Link to="/signup">Sign Up</Link>
       </div>
     </div>
   );
