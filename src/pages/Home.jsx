@@ -203,36 +203,60 @@ export default function Home() {
             <h2 className=" sm:text-2xl text-l font-bold text-center  sm:text-left my-5 ">
               Favourite Meals
             </h2>
-            <div className="sm:grid sm:grid-cols-4 rounded-md  bg-slate-200 sm:space-y-0 space-y-8   px-2 py-7 gap-4">
-              {fMeals.map((product) => (
-                <div
-                  className="sm:mx-4 border-2 sm:rounded-md  shadow-xl bg-white  "
-                  key={product.id}
-                  onClick={() => {
-                    navigate(`/product/${product.id}`, {
-                      state: { type: type },
-                    });
-                  }}>
-                  <img
-                    src={product.Link}
-                    alt=""
-                    className="w-2/3 mx-auto m-2 py-3 rounded-full h-52"
-                  />
-                  <h2 className="font-mono px-2 sm:text-xl text-l py-3">
-                    {product.Name}
-                  </h2>
-                  <div className="flex  flex-row-reverse my-3 mx-5 p-3 justify-between">
-                    <h2 className="p-3 sm:text-l  text-xs font-bold">
-                      KSH: {product.Price}
-                    </h2>
-                    <button className="font-bold text-white sm:text-xl text-xs sm:px-5 px-3 sm:py-2 py-0 bg-blue-700 rounded">
-                      add to cart
-                    </button>
-                  </div>
-                </div>
-              ))}
+             <div className="bg-gradient-to-br from-slate-50 to-slate-100 p-6 sm:p-8 rounded-2xl shadow-lg">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
+        {fMeals.map((product) => (
+          <div
+            key={product.id}
+            className="group relative bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer"
+            onClick={() => navigate(`/product/${product.id}`, { state: { type } })}
+          >
+            {/* Image Container */}
+            <div className="relative overflow-hidden rounded-t-xl aspect-square">
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/5 group-hover:to-black/10 transition-opacity duration-300" />
+              <img
+                src={product.Link}
+                alt={product.Name}
+                className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out"
+              />
             </div>
+
+            {/* Content Container */}
+            <div className="p-5">
+              <h2 className="font-semibold text-lg text-gray-800 line-clamp-2 min-h-[3.5rem] mb-4">
+                {product.Name}
+              </h2>
+
+              <div className="flex items-center justify-between">
+                <div className="flex flex-col">
+                  <span className="text-sm text-gray-500 mb-1">Price</span>
+                  <span className="text-xl font-bold text-gray-900">
+                    KSH {product.Price.toLocaleString()}
+                  </span>
+                </div>
+
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    // Add to cart logic here
+                  }}
+                  className="relative overflow-hidden bg-blue-600 text-white px-4 py-2 rounded-lg font-medium
+                    transform transition-all duration-300 hover:bg-blue-700 active:scale-95
+                    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+                    before:absolute before:inset-0 before:bg-white/20 before:translate-x-[-100%] before:hover:translate-x-[100%] 
+                    before:transition-transform before:duration-300 before:ease-out"
+                >
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+
+            {/* Hover Effects */}
+            <div className="absolute inset-0 rounded-xl ring-1 ring-black/5 group-hover:ring-black/10 pointer-events-none transition-all duration-300" />
           </div>
+        ))}
+      </div>
+    </div>
 
           <div className="w-4/4 bg-slate-100 my-5  py-3 ">
             <div className=" ">
