@@ -1,0 +1,72 @@
+import React from 'react';
+
+interface SuccessModalProps {
+  image: string;
+  url: string;
+  copy: () => void;
+}
+
+export function SuccessModal({ image, url, copy }: SuccessModalProps) {
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 animate-fadeIn">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md transform transition-all duration-300 scale-100 animate-slideUp">
+        {/* Success Icon */}
+        <div className="pt-6 px-6">
+          <div className="bg-emerald-100 w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="w-8 h-8 text-emerald-600"
+            >
+              <path
+                fillRule="evenodd"
+                d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </div>
+
+          <h3 className="text-2xl font-semibold text-gray-900 text-center mb-2">
+            Upload Successful!
+          </h3>
+          <p className="text-gray-600 text-center mb-6">
+            Your image has been uploaded successfully
+          </p>
+        </div>
+
+        {/* Image Preview */}
+        <div className="px-6">
+          <div className="relative rounded-lg overflow-hidden bg-gray-100">
+            <img
+              src={image}
+              alt="Uploaded preview"
+              className="w-full h-48 object-contain"
+            />
+          </div>
+        </div>
+
+        {/* URL Section */}
+        <div className="p-6">
+          <div className="relative">
+            <div className="flex items-center bg-gray-50 rounded-lg border border-gray-200 pr-24">
+              <div className="flex-1 p-3 overflow-hidden">
+                <p className="text-sm text-gray-600 truncate" title={url}>
+                  {url}
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={copy}
+              className="absolute right-1 top-1 bottom-1 bg-blue-600 text-white rounded-md px-4 py-2 text-sm font-medium
+                hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+                transition-colors duration-200"
+            >
+              Copy
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
