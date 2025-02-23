@@ -2,6 +2,7 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { db } from "../config/config";
 import { onAuthStateChanged, getAuth } from "firebase/auth";
+import { Link } from "react-router-dom";
 const auth = getAuth();
 
 function Account() {
@@ -47,6 +48,22 @@ function Account() {
             <h3 className="text-lg font-bold mb-4">Account Settings</h3>
             <p>Update your account information here.</p>
             <button className="bg-purple-600 text-white font-bold py-2 px-4 mt-4 rounded hover:bg-purple-700">Update Account</button>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h3 className="text-lg font-bold mb-4">Category Settings</h3>
+            <p>Add or Delete a Category.</p>
+            <Link to="/categories" >
+            <button className="bg-purple-600 text-white font-bold py-2 px-4 mt-4 rounded hover:bg-purple-700">Add A Category</button>
+           </Link>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h3 className="text-lg font-bold mb-4">Add Products</h3>
+            <p>Add or Delete A Product.</p>
+            <Link to="/uploads" >
+            <button className="bg-purple-600 text-white font-bold py-2 px-4 mt-4 rounded hover:bg-purple-700">Add A Product</button>
+           </Link>
           </div>
         </div>
       ) : (

@@ -17,9 +17,12 @@ export default function ProductDetail() {
   const [show, setShow] = useState(false);
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
+  const productId=state?.product.id;
+
+  console.log(state);
 
   useEffect(() => {
-    const docRef = doc(db, `${state?.type}`, id);
+    const docRef = doc(db, "Product", productId);
     getDoc(docRef)
       .then((res) => {
         setDetails(res.data());
@@ -43,15 +46,15 @@ export default function ProductDetail() {
         <div className="flex flex-col sm:flex-row gap-6">
           <div className="flex-1">
             <img
-              src={details.Link}
+              src={details?.Link}
               alt="Product"
               className=" h-96 object-cover rounded-lg"
             />
           </div>
           <div className="flex-1 space-y-4">
-            <h2 className="text-3xl font-bold">{details.Name}</h2>
+            <h2 className="text-3xl font-bold">{details?.Name}</h2>
             <p className="text-gray-600">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-            <h3 className="text-2xl font-bold text-green-600">${details.Price}</h3>
+            <h3 className="text-2xl font-bold text-green-600">${details?.Price}</h3>
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setQuantity((q) => Math.max(1, q - 1))}

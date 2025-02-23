@@ -1,114 +1,136 @@
 import React from "react";
-import { Grid } from "@mui/material";
-import Products from "../assets/Assests";
 // import Item from "../Item";
-import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import {
-  getDownloadURL,
-  ref,
-  uploadBytesResumable,
-  listAll,
-} from "firebase/storage";
 
-import { db, storage } from "../config/config";
-import Header from "../components/Header";
+import { db } from "../config/config";
 
 import {
   collection,
   getDocs,
-  addDoc,
-  doc,
-  deleteDoc,
+  query,
+  where,
 } from "firebase/firestore";
 import {
   getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
   signOut,
 } from "firebase/auth";
 import DisplayFood from "../components/displayFood";
 import TopNav from "../components/TopNav";
 import Footer from "../components/Footer";
+import { useLocation } from "react-router-dom";
 
-const auth = getAuth();
 
 const Product = () => {
   const [cart, setCart] = useState([]);
 
   const [data, setData] = useState([]);
+  const { state } = useLocation();
+  console.log(state);
   const [drinks, setDrinks] = useState([]);
-  const mealCollection = collection(db, "Meals");
-  const drinkCollection = collection(db, "Drinks");
   const [noOrder, setNoOrders] = useState(0);
   const [user, setUser] = useState();
+  const [productsCollection, setProductsCollection] = useState();
+  const selectedCategory = state?.type;
+  const selectedCategoryCollection = collection(db, selectedCategory);
 
-  function allStorage() {
-    var values = [],
-      keys = Object.keys(localStorage),
-      i = keys.length;
 
-    while (i--) {
-      values.push(localStorage.getItem(keys[i]));
+  
+
+  // function allStorage() {
+  //   var values = [],
+  //     keys = Object.keys(localStorage),
+  //     i = keys.length;
+
+  //   while (i--) {
+  //     values.push(localStorage.getItem(keys[i]));
+  //   }
+
+  //   return values;
+  // }
+
+  // create a firebase query to get the products depending on the category
+  // get the category from the url
+  // use the category to query the database
+  // display the products
+  // create a function to add to cart
+
+  const fetchProducts = async () => {
+    try {
+      const q = query(
+        collection(db, "Product"), // Ensure you're using the correct collection name
+        where("Category", "==", selectedCategory)
+      );
+      const querySnapshot = await getDocs(q);
+      const products = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      console.log(products); // Log the results
+      setData(products); // Assuming you have a useState for products
+    } catch (error) {
+      console.error("Error fetching products:", error);
     }
+  };
 
-    return values;
-  }
 
   useEffect(() => {
-    listItem();
-    listItem2();
-    setNoOrders(allStorage().length);
-    getDrink();
+    fetchProducts();
+    // getDocs(q).then((querySnapshot) => {
+    //   querySnapshot.forEach((doc) => {
+    //     console.log(`${doc.id} => ${doc.data()}`);
+    //   })
+  
+    // })
+    // .catch((error) => {
+    //   console.log("Error getting documents: ", error);
+    // });
+      
+ 
   }, []);
 
-  const getDrink = () => {
-    const getDrinks = async () => {
-      const data = await getDocs(drinkCollection);
-      setDrinks(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-      console.log(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-    };
-    getDrinks();
-  };
+  // const getDrink = () => {
+  //   const getDrinks = async () => {
+  //     const data = await getDocs(drinkCollection);
+  //     setDrinks(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+  //     console.log(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+  //   };
+  //   getDrinks();
+  // };
 
-  const listItem = () => {
-    const getMeals = async () => {
-      const data = await getDocs(mealCollection);
-      setData(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-      //console.log(data.docs.map((doc)=>({...doc.data(),id:doc.id})))
-    };
-    getMeals();
-  };
+  // const listItem = () => {
+  //   const getProducts = async () => {
+  //     const data = await getDocs(mealCollection);
+  //     setData(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+  //     //console.log(data.docs.map((doc)=>({...doc.data(),id:doc.id})))
+  //   };
+  //   //getMeals();
+  // };
 
-  const logout = () => {
-    signOut(auth)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((error) => {
-        console.log("there was an error that occured");
-        // An error happened.
-      });
-  };
+  // const logout = () => {
+  //   signOut(auth)
+  //     .then((res) => {
+  //       console.log(res);
+  //     })
+  //     .catch((error) => {
+  //       console.log("there was an error that occured");
+  //       // An error happened.
+  //     });
+  // };
 
-  const listItem2 = () => {
-    // getuser()
-    const getDrinks = async () => {
-      const data = await getDocs(drinkCollection);
-      setDrinks(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-      //console.log(data.docs.map((doc)=>({...doc.data(),id:doc.id})))
-    };
-    getDrinks();
-  };
+  // const listItem2 = () => {
+  //   // getuser()
+  //   const getDrinks = async () => {
+  //     const data = await getDocs(drinkCollection);
+  //     setDrinks(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+  //     //console.log(data.docs.map((doc)=>({...doc.data(),id:doc.id})))
+  //   };
+  //   getDrinks();
+  // };
 
   return (
     <div>
       <TopNav />
       <main className=" w-11/12 p-2 my-3 mx-auto  bg-slate-200 ">
-        <h2 className="uppercase text-xl my-5 py-3  font-bold">
-          Available Meals
-        </h2>
+        <h5 className="uppercase text-xl my-5 py-3 text-center  font-bold">
+          Available Items
+        </h5>
         <DisplayFood data={data} type="Meals" />
       </main>
       <Footer />

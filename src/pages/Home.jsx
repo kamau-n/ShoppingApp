@@ -16,9 +16,11 @@ const auth = getAuth();
 export default function Home() {
   const drinkCollection = collection(db, "Fmeals");
   const mealCollection = collection(db, "Fdrinks");
+  const productsCollection = collection(db, "ProductsCategory");
   const [fMeals, setFmeals] = useState([]);
   const [fDrinks, setDrinks] = useState([]);
   const [logged, setLogged] = useState(false);
+  const [proCategory, setProCategory] = useState([]);
   const type = "Fmeals";
   const navigate = useNavigate();
 
@@ -27,8 +29,16 @@ export default function Home() {
     setFmeals(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
   };
 
+  const fetchProducts = async () => {
+    const data = await getDocs(productsCollection);
+    setProCategory(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    console.log(proCategory);
+
+  };
+
   useEffect(() => {
     fetchFeatured();
+    fetchProducts();
     
     onAuthStateChanged(auth, (user) => {
       setLogged(!!user);
@@ -39,33 +49,33 @@ export default function Home() {
     }
   }, []);
 
-  const categories = [
-    {
-      title: "Alcoholic Drinks",
-      image: "https://images.unsplash.com/photo-1470337458703-46ad1756a187?auto=format&fit=crop&q=80",
-      path: "/drinks"
-    },
-    {
-      title: "Soft Drinks",
-      image: "https://images.unsplash.com/photo-1581006852262-e4307cf6283a?auto=format&fit=crop&q=80",
-      path: "/drinks"
-    },
-    {
-      title: "Fast Foods",
-      image: "https://images.unsplash.com/photo-1561758033-d89a9ad46330?auto=format&fit=crop&q=80",
-      path: "/meals"
-    },
-    {
-      title: "Full Meals",
-      image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80",
-      path: "/meals"
-    },
-    {
-      title: "Desserts",
-      image: "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&q=80",
-      path: "/meals"
-    }
-  ];
+  // const categories = [
+  //   {
+  //     title: "Alcoholic Drinks",
+  //     image: "https://images.unsplash.com/photo-1470337458703-46ad1756a187?auto=format&fit=crop&q=80",
+  //     path: "/drinks"
+  //   },
+  //   {
+  //     title: "Soft Drinks",
+  //     image: "https://images.unsplash.com/photo-1581006852262-e4307cf6283a?auto=format&fit=crop&q=80",
+  //     path: "/drinks"
+  //   },
+  //   {
+  //     title: "Fast Foods",
+  //     image: "https://images.unsplash.com/photo-1561758033-d89a9ad46330?auto=format&fit=crop&q=80",
+  //     path: "/meals"
+  //   },
+  //   {
+  //     title: "Full Meals",
+  //     image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80",
+  //     path: "/meals"
+  //   },
+  //   {
+  //     title: "Desserts",
+  //     image: "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&q=80",
+  //     path: "/meals"
+  //   }
+  // ];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -83,10 +93,10 @@ export default function Home() {
         <section className="mb-16">
           <h2 className="text-3xl font-bold text-gray-900 mb-8">Our Categories</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {categories.map((category, index) => (
+            {proCategory.map((category, index) => (
               <div
                 key={index}
-                onClick={() => navigate(category.path)}
+                onClick={() => navigate("/product", { state: { type: category.id } })}
                 className="group relative h-64 overflow-hidden rounded-2xl cursor-pointer transform transition-all duration-300 hover:-translate-y-1"
               >
                 <div
@@ -97,7 +107,7 @@ export default function Home() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/20" />
                 <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <h3 className="text-2xl font-bold text-white mb-2">{category.title}</h3>
+                  <h3 className="text-2xl font-bold text-white mb-2">{category.name}</h3>
                   <button className="flex items-center text-sm font-medium text-white bg-blue-600/90 hover:bg-blue-700 transition-colors px-4 py-2 rounded-lg">
                     Shop Now
                     <ChevronRight className="h-4 w-4 ml-1" />
@@ -109,7 +119,7 @@ export default function Home() {
         </section>
 
         {/* Featured Meals Section */}
-        <section className="mb-16">
+        {/* <section className="mb-16">
           <h2 className="text-3xl font-bold text-gray-900 mb-8">Featured Meals</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {fMeals.map((product) => (
@@ -148,7 +158,7 @@ export default function Home() {
               </div>
             ))}
           </div>
-        </section>
+        </section> */}
 
         {/* Reviews Section */}
         <section className="bg-white rounded-2xl shadow-lg p-8 mb-16">

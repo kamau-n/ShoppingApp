@@ -65,8 +65,8 @@ export default function TopNav({ logged }) {
         <div className="sm:flex gap-3  sm:flex-row flex  align-middle sm:justify-start justify-start flex-col font-mono">
           <Link to="/">Home</Link>
           <Link to="/cart">Cart</Link>
-          <Link to="/drinks">Drinks</Link>
-          <Link to="/meals">Meals</Link>
+          {/* <Link to="/drinks">Drinks</Link>
+          <Link to="/meals">Meals</Link> */}
           <Link to="/about">About</Link>
         </div>
       </div>
@@ -89,8 +89,8 @@ export default function TopNav({ logged }) {
                       Profile
                     </Link>
                   </li>
-                  <li className="py-2 px-4 text-l font-semibold hover:bg-gray-200 flex gap-2 cursor-pointer">
-                    <ArrowBack />
+                  <li  onClick={()=>{handleLogout()}} className="py-2 px-4 text-l font-semibold hover:bg-gray-200 flex gap-2 cursor-pointer">
+                    <ArrowBack  />
                     Logout
                   </li>
                 </ul>

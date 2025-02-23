@@ -13,6 +13,7 @@ import Product from "./pages/Products";
 import Billing from "./pages/Billing";
 import Account from "./pages/Account";
 import About from "./pages/About";
+import AddCategory from "./pages/AddCategory.jsx";
 
 function App() {
   return (
@@ -20,7 +21,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/meals" element={<Meals />} />
+          <Route path="/product" element={<Meals />} />
           <Route path="/uploads" element={<Upload />} />
           <Route path="/login" element={<Login />} />
           <Route path="/cart" element={<Cart />} />
@@ -30,6 +31,14 @@ function App() {
           <Route path="/billing" element={<Billing />} />
           <Route path="/account" element={<Account />} />
           <Route path="/about" element={<About />} />
+          <Route path="/categories" element={<AddCategory />} />
+          
+
+          
+
+          
+
+          
         </Routes>
       </BrowserRouter>
     </div>
