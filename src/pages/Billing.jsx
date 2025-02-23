@@ -1,224 +1,261 @@
-import { Button } from "@material-ui/core";
-import { Alert } from "@mui/material";
 import React, { useState } from "react";
-import { MpesaStk } from "react-mpesa-stk";
-
-//load the styles
-import "react-mpesa-stk/dist/index.css";
 import { Link, useLocation } from "react-router-dom";
-// import daraja from "../Utilities/daraja";
+import { CreditCard, Wallet, ChevronLeft, X } from "lucide-react";
 import axios from "axios";
 
 export default function Billing() {
   const [inputs, setInputs] = useState({});
   const { state } = useLocation();
   const [message, setMessages] = useState("");
-  const [show, setShow] = useState(false);
   const [showOverlay, setShowOverlay] = useState(false);
 
   const toggleOverlay = () => {
     setShowOverlay(!showOverlay);
   };
 
-  function checkProperties(obj) {
+  const checkProperties = (obj) => {
     for (var key in obj) {
-      if (obj[key] !== null && obj[key] != "") return false;
+      if (obj[key] !== null && obj[key] !== "") return false;
     }
     return true;
-  }
+  };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(" i have been clicked");
+    
     if (checkProperties(inputs)) {
-      setMessages("some values are empty");
-      setShow(true);
-    } else {
-      console.log(inputs);
-      axios
-        .post("https://store.kamauharrison.co.ke/stkPush", {
-          amount: state.total,
-          phone: inputs.contact,
-          Order_ID: 35345,
-        })
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      setMessages("Please fill in all required fields");
+      return;
+    }
+
+    try {
+      const response = await axios.post("http://localhost:8000/stkPush", {
+        amount: state.total,
+        phone: inputs.contact,
+        desc: "order"+ new Date().getTime(),
+        account_ref: "order"+ new Date().getTime(),
+      });
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+      setMessages("Payment processing failed. Please try again.");
     }
   };
 
   const handleChange = (event) => {
-    setMessages(" ");
-    const name = event.target.name;
-    const value = event.target.value;
+    const { name, value } = event.target;
+    setMessages("");
     setInputs((values) => ({ ...values, [name]: value }));
   };
+
   return (
-    <div className="sm:w-3/5 w-11/12 sm:mx-auto mx-auto my-10 py-4 px-3">
-      <h2 className="sm:text-2xl sm:text-l text-sm font-semibold sm:text-left text-center">
-        Billing Details
-      </h2>
-      {show && (
-        <div className="my-5 mx-3">
-          <Alert
-            severity="error"
-            onClose={() => {
-              setShow(false);
-            }}>
-            Error Message — Some values are empty!
-          </Alert>
+    <div className="min-h-screen bg-gray-50 py-12">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center mb-8">
+          <Link
+            to="/cart"
+            className="flex items-center text-blue-600 hover:text-blue-800 transition-colors"
+          >
+            <ChevronLeft className="h-5 w-5 mr-1" />
+            <span className="font-medium">Back to Cart</span>
+          </Link>
         </div>
-      )}
 
-      <div className="text-left  space-y-5">
-        <div className="sm:flex sm:flex-row gap-4 flex-col ">
-          <div className="flex  sm:basis-1/2  flex-col">
-            <span className="sm:text-l text-sm font-semibold">First Name</span>
-            <input
-              type="text"
-              name="first_name"
-              value={inputs.first_name || ""}
-              onChange={handleChange}
-              className="p-2 border-2 border-slate-200 "
-            />
+        <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h1 className="text-2xl font-semibold text-gray-900">Checkout</h1>
           </div>
-          <div className="flex  basis-1/2  flex-col">
-            <span className="sm:text-l text-sm font-semibold">Last Name</span>
-            <input
-              type="text"
-              name="last_name"
-              value={inputs.last_name || ""}
-              onChange={handleChange}
-              className="p-2 border-2 border-slate-200 "
-            />
+
+          <div className="p-6">
+            {message && (
+              <div className="mb-6 bg-red-50 text-red-700 p-4 rounded-lg flex items-center">
+                <span className="flex-1">{message}</span>
+                <button onClick={() => setMessages("")} className="text-red-500 hover:text-red-700">
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+            )}
+
+            <div className="space-y-8">
+              {/* Billing Details */}
+              <section>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">Billing Details</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      First Name
+                    </label>
+                    <input
+                      type="text"
+                      name="first_name"
+                      value={inputs.first_name || ""}
+                      onChange={handleChange}
+                      className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Last Name
+                    </label>
+                    <input
+                      type="text"
+                      name="last_name"
+                      value={inputs.last_name || ""}
+                      onChange={handleChange}
+                      className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      County/Region
+                    </label>
+                    <input
+                      type="text"
+                      name="region"
+                      value={inputs.region || ""}
+                      onChange={handleChange}
+                      className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Phone Number
+                    </label>
+                    <input
+                      type="text"
+                      name="contact"
+                      value={inputs.contact || ""}
+                      onChange={handleChange}
+                      placeholder="254..."
+                      className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Address
+                    </label>
+                    <input
+                      type="text"
+                      name="address"
+                      value={inputs.address || ""}
+                      onChange={handleChange}
+                      className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Email Address
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={inputs.email || ""}
+                      onChange={handleChange}
+                      className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+              </section>
+
+              {/* Order Summary */}
+              <section className="bg-gray-50 rounded-xl p-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">Order Summary</h2>
+                <div className="space-y-3">
+                  <div className="flex justify-between text-gray-600">
+                    <span>Subtotal</span>
+                    <span>KSH {(state.total - state.shipping).toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between text-gray-600">
+                    <span>Shipping</span>
+                    <span>KSH {state.shipping.toLocaleString()}</span>
+                  </div>
+                  <div className="pt-3 border-t border-gray-200">
+                    <div className="flex justify-between text-lg font-semibold text-gray-900">
+                      <span>Total</span>
+                      <span>KSH {state.total.toLocaleString()}</span>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* Payment Methods */}
+              <section>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">Payment Method</h2>
+                <div className="space-y-4">
+                  <button
+                    onClick={toggleOverlay}
+                    className="w-full flex items-center justify-center space-x-2 bg-green-600 text-white py-4 px-6 rounded-lg font-medium hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors"
+                  >
+                    <Wallet className="h-5 w-5" />
+                    <span>Pay with M-PESA</span>
+                  </button>
+                  <button
+                    className="w-full flex items-center justify-center space-x-2 bg-blue-600 text-white py-4 px-6 rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+                  >
+                    <CreditCard className="h-5 w-5" />
+                    <span>Pay with Card</span>
+                  </button>
+                </div>
+              </section>
+            </div>
           </div>
-        </div>
-
-        <div className="flex flex-col">
-          <span className="sm:text-l text-sm font-semibold">County/Region</span>
-          <input
-            type="text"
-            className="p-2 border-2 border-slate-200 "
-            name="region"
-            value={inputs.region || ""}
-            onChange={handleChange}
-          />
-        </div>
-
-        <div className="flex flex-col">
-          <span className="sm:text-l text-sm font-semibold">Address</span>
-          <input
-            type="text"
-            className="p-2 border-2 border-slate-200 "
-            name="address"
-            value={inputs.address || ""}
-            onChange={handleChange}
-          />
-        </div>
-
-        <div className="flex flex-col">
-          <span className="sm:text-l text-sm font-semibold">Phone</span>
-          <input
-            type="text"
-            className="p-2 border-2 border-slate-200 "
-            name="contact"
-            value={inputs.contact || ""}
-            placeholder="254 in this form"
-            onChange={handleChange}
-          />
-        </div>
-        <div className="flex flex-col">
-          <span className="sm:text-l text-sm font-semibold">Email Address</span>
-          <input
-            type="email"
-            className="p-2 border-2 border-slate-200 "
-            name="email"
-            value={inputs.email || ""}
-            onChange={handleChange}
-          />
         </div>
       </div>
-      <div className="text-left">
-        <h2 className="text-left sm:text-2xl text-xl font-bold my-3 py-3">
-          Your Order
-        </h2>
-        <div className=" block justify-between bg-black px-3 py-3">
-          <div className="flex  flex-cols justify-between">
-            <h2 className="text-white font-bold">Products</h2>
-            <h2 className="text-white font-bold">{state.total}</h2>
-          </div>
-          <div className="flex flex-cols justify-between">
-            <h2 className="text-white font-bold">Shipping</h2>
-            <h2 className="text-white font-bold">{state.shipping}</h2>
-          </div>
-          <div className="flex justify-between">
-            <h3 className="text-white font-bold">Total</h3>
-            <h3 className="text-white font-bold">{state.total}</h3>
-          </div>
-        </div>
-      </div>
-      <div className="text-left">
-        <h2 className="text-left text-2xl font-bold my-3 py-3">
-          Payment method
-        </h2>
 
-        <div className="sm:flex justify-between flex flex-col space-y-5 sm:gap:6">
-          <button
-            className="bg-green-500 font-bold text-white text-xl py-3 px-2 "
-            onClick={toggleOverlay}>
-            COMPLETE WITH MPESA
-          </button>
-
-          <div
-            className="fixed inset-0 z-50"
-            style={{ display: showOverlay ? "block" : "none" }}>
-            <div className="absolute inset-0 bg-gray-700 opacity-70"></div>
-            <div className="absolute inset-0 flex items-center  justify-center">
-              <div></div>
-              <div className=" flex flex-col">
+      {/* M-PESA Payment Modal */}
+      {showOverlay && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex min-h-screen items-center justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+            <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+              <div className="absolute right-0 top-0 pr-4 pt-4">
                 <button
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                  onClick={toggleOverlay}>
-                  close
+                  onClick={toggleOverlay}
+                  className="text-gray-400 hover:text-gray-500 focus:outline-none"
+                >
+                  <X className="h-6 w-6" />
                 </button>
-                <span className="text-xl  text-center">PhoneNumber</span>
-                <input
-                  type="text"
-                  name=""
-                  id=""
-                  className="px-2 py-5 text-xl text-center my-5  font-semibold"
-                  value={inputs.contact}
-                />
-                <span className="text-xl  text-center">Total Amount</span>
-                <input
-                  type="text"
-                  name=""
-                  id=""
-                  className="px-2 py-5 text-xl text-center my-5 font-semibold"
-                  value={state.total}
-                />
-                <button
-                  className="py-4 px-10  bg-green-600   rounded-sm text-white text-2xl  "
-                  onClick={(e) => {
-                    handleSubmit(e);
-                  }}>
-                  Make Payment
-                </button>
+              </div>
+              
+              <div className="mt-3 text-center sm:mt-0 sm:text-left">
+                <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">
+                  M-PESA Payment
+                </h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Phone Number
+                    </label>
+                    <input
+                      type="text"
+                      readOnly
+                      value={inputs.contact || ""}
+                      className="w-full text-center py-3 text-lg font-medium bg-gray-50 rounded-lg"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Amount
+                    </label>
+                    <input
+                      type="text"
+                      readOnly
+                      value={`KSH ${state.total.toLocaleString()}`}
+                      className="w-full text-center py-3 text-lg font-medium bg-gray-50 rounded-lg"
+                    />
+                  </div>
+                  <button
+                    onClick={handleSubmit}
+                    className="w-full bg-green-600 text-white py-4 px-6 rounded-lg font-medium hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors"
+                  >
+                    Confirm Payment
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-
-          <button className="bg-blue-500 font-bold text-white text-l sm:text-xl py-3 px-2 ">
-            COMPLETE WITH CARD
-          </button>
         </div>
-      </div>
-      <Link to="/" className="text-xl my-5 py-4">
-        Back to shopping
-      </Link>
+      )}
     </div>
   );
 }

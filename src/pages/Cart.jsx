@@ -1,6 +1,6 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { ShoppingBag, X, ChevronLeft, Trash2 } from "lucide-react";
 import TopNav from "../components/TopNav";
 import Footer from "../components/Footer";
 
@@ -8,45 +8,33 @@ const Cart = () => {
   const [items, setItems] = useState([]);
   const [value, setValue] = useState(0);
   const [total, setTotal] = useState(0);
-  const [shipping, setShipping] = useState(0);
-
+  const [shipping, setShipping] = useState(300); // Default to normal delivery
   const [refreshData, setRefreshData] = useState(false);
   const navigate = useNavigate();
 
   const allStorage = () => {
-    let cart = localStorage.getItem("ladoche_shopping_cart");
-    // console.log(typeof cart);
+    const cart = localStorage.getItem("ladoche_shopping_cart");
     const data = JSON.parse(cart);
     setItems(data);
     getTotal(data);
     setTotal(data.length);
-
-    //console.log(typeof data);
   };
+
   const removeItem = (name, data) => {
-    console.log("i have been clicked");
-    console.log(name);
-    console.log(data[0]);
-
     const index = data.indexOf(name);
-    console.log(index);
-
     const new_data = data.splice(index, 1);
-    console.log(new_data);
     localStorage.removeItem("ladoche_shopping_cart");
     localStorage.setItem("ladoche_shopping_cart", JSON.stringify(new_data));
     setRefreshData(!refreshData);
   };
+
   const getTotal = (data) => {
-    console.log("i have been accessed");
     let total_for_all = 0;
     if (data.length > 0) {
-      data.map((y) => {
+      data.forEach((y) => {
         let total_for_one = y.name.price * y.name.quantity;
-        console.log("total for" + y.name.name + total_for_one);
         total_for_all = total_for_one + total_for_all;
       });
-      //console.log(total_for_all);
       setValue(total_for_all);
     }
   };
@@ -55,104 +43,142 @@ const Cart = () => {
     allStorage();
   }, [total]);
 
+  const handleCheckout = () => {
+    if (shipping !== 0) {
+      navigate("/billing", {
+        state: {
+          shipping: shipping,
+          total: Number(value) + Number(shipping),
+        },
+      });
+    } else {
+      alert("Please select a shipping method");
+    }
+  };
+
   return (
-    <div className="">
-      <div className=" sm:w-5/6 p-2 my-3 bg-slate-400 sm:mx-auto">
-        <div className="my-7 sm:w-3/4 sm:flex  sm:flex-row flex flex-col  mx-auto py-5 px-3">
-          <div className="bg-white basis-2/3 px-4 py-4">
-            <h2 className="sm:text-2xl  tex-l text-left font-semibold font-mono">
-              Shopping cart
-            </h2>
-            {items.map((item) => {
-              let total = item.name.price * item.name.quantity;
+    <div className="min-h-screen bg-gray-50">
+      <TopNav />
+      
+      <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+        <div className="flex items-center mb-8">
+          <Link
+            to="/"
+            className="flex items-center text-blue-600 hover:text-blue-800 transition-colors"
+          >
+            <ChevronLeft className="h-5 w-5 mr-1" />
+            <span className="font-medium">Continue Shopping</span>
+          </Link>
+        </div>
 
-              return (
-                <div className="sm:w-3/4 sm:mx-auto my-6  border-t-2 border-b-2 gap-4 py-4 px-2 flex ">
-                  <img
-                    src={item.name.link}
-                    alt=" no image"
-                    className="sm:w-36  w-16 h-24 "
-                  />
-                  <h2 className="font-mono py-6 font-bold text-xs sm:text-xl">
-                    {item.name.name}
-                  </h2>
-                  <h2 className="font-mono py-6 font-bold text-xs sm:text-xl">
-                    {item.name.quantity}
-                  </h2>
-                  <h2 className="font-mono py-6 font-bold text-xs sm:text-xl">
-                    {item.name.price}
-                  </h2>
-                  <h2 className="font-mono py-6 font-bold text-xs sm:text-xl">
-                    TOTAL: {total}
-                  </h2>
-                  <button
-                    onClick={() => {
-                      removeItem(item.name.name, items);
-                    }}
-                    className="pb-6 font-bold my-5 mx-8">
-                    x
-                  </button>
+        <div className="lg:grid lg:grid-cols-12 lg:gap-8">
+          {/* Cart Items */}
+          <div className="lg:col-span-8">
+            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+              <div className="px-6 py-4 border-b border-gray-200">
+                <div className="flex items-center">
+                  <ShoppingBag className="h-6 w-6 text-gray-400 mr-3" />
+                  <h2 className="text-xl font-semibold text-gray-900">Shopping Cart ({total} items)</h2>
                 </div>
-              );
-            })}
-            <Link to="/">Back to shopping </Link>
+              </div>
+
+              <div className="divide-y divide-gray-200">
+                {items.map((item, index) => {
+                  const total = item.name.price * item.name.quantity;
+                  return (
+                    <div key={index} className="p-6 flex items-center">
+                      <img
+                        src={item.name.link}
+                        alt={item.name.name}
+                        className="w-24 h-24 object-cover rounded-lg"
+                      />
+                      <div className="ml-6 flex-1">
+                        <h3 className="text-lg font-medium text-gray-900">{item.name.name}</h3>
+                        <div className="mt-1 flex items-center text-sm text-gray-500">
+                          <span>Quantity: {item.name.quantity}</span>
+                          <span className="mx-2">•</span>
+                          <span>KSH {item.name.price.toLocaleString()}</span>
+                        </div>
+                        <div className="mt-2 text-sm font-medium text-gray-900">
+                          Total: KSH {total.toLocaleString()}
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => removeItem(item.name.name, items)}
+                        className="ml-4 p-2 text-gray-400 hover:text-red-500 transition-colors"
+                      >
+                        <Trash2 className="h-5 w-5" />
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
-          <div className="bg-slate-300 px-3 basis-1/3 py-5">
-            <h2 className="py-5 font-bold font-mono text-left  text-l sm:text-2xl">
-              Summary
-            </h2>
-            <div className="flex justify-between px-2 my-6">
-              <h3 className="text-left text-l">ITEMS </h3>
-              <span>{total}</span>
-            </div>
 
-            <h3 className="text-left my-6">SHIPPING</h3>
-            <select
-              className="font-bold p-2 my-8"
-              onChange={(e) => {
-                setShipping(e.target.value);
-              }}>
-              <option className="font-bold p-2" selected value={300}>
-                Normal Delivery {300}
-              </option>
-              <option className="font-bold p-2" value={500}>
-                Standard Delivery {500}
-              </option>
+          {/* Summary */}
+          <div className="lg:col-span-4 mt-8 lg:mt-0">
+            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+              <div className="px-6 py-4 border-b border-gray-200">
+                <h2 className="text-xl font-semibold text-gray-900">Order Summary</h2>
+              </div>
+              
+              <div className="px-6 py-4">
+                <div className="space-y-4">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Items ({total})</span>
+                    <span className="font-medium text-gray-900">KSH {value.toLocaleString()}</span>
+                  </div>
 
-              <option className="font-bold p-2" value={800}>
-                Fast Delivery {800}
-              </option>
-            </select>
-            <h2 className="text-left mt-7 mb-2 ">COUPON CODE</h2>
-            <div className="text-left">
-              <input
-                type="text"
-                placeholder="Enter Code"
-                className="text-left w-full p-2"
-              />
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Shipping Method
+                    </label>
+                    <select
+                      className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                      value={shipping}
+                      onChange={(e) => setShipping(Number(e.target.value))}
+                    >
+                      <option value={300}>Normal Delivery - KSH 300</option>
+                      <option value={500}>Standard Delivery - KSH 500</option>
+                      <option value={800}>Fast Delivery - KSH 800</option>
+                    </select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Coupon Code
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Enter code"
+                      className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  <div className="border-t border-gray-200 pt-4">
+                    <div className="flex justify-between">
+                      <span className="text-base font-medium text-gray-900">Order Total</span>
+                      <span className="text-base font-medium text-gray-900">
+                        KSH {(Number(value) + Number(shipping)).toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  onClick={handleCheckout}
+                  className="mt-6 w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+                >
+                  Proceed to Checkout
+                </button>
+              </div>
             </div>
-            <div className="text-left flex px-2 py-3 border-t-2 font-bold justify-between my-6">
-              <h2>TOTAL PRICE</h2>
-              <span> {value}</span>
-            </div>
-            <button
-              className="font-bold bg-black p-2 text-white w-full mx-1"
-              onClick={() => {
-                if (shipping != 0) {
-                  navigate("/billing", {
-                    state: {
-                      shipping: shipping,
-                      total: Number(value) + Number(shipping),
-                    },
-                  });
-                } else alert("Shipping has not been selected");
-              }}>
-              CHECKOUT
-            </button>
           </div>
         </div>
       </div>
-      {/* <Footer /> */}
+      
+      <Footer />
     </div>
   );
 };

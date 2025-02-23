@@ -1,91 +1,57 @@
 import { collection, getDocs, query, where } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { db } from "../config/config";
-import { onAuthStateChanged } from "firebase/auth";
-import { getAuth } from "firebase/auth";
+import { onAuthStateChanged, getAuth } from "firebase/auth";
 const auth = getAuth();
 
 function Account() {
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(null);
 
-  const userLogin = () => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        getUser(user.uid);
-        // console.log(user);
-        // console.log(user.uid);
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (authUser) => {
+      if (authUser) {
+        fetchUser(authUser.uid);
       } else {
+        setUser(null);
       }
     });
-  };
-  const getUser = async (id) => {
+    return () => unsubscribe();
+  }, []);
+
+  const fetchUser = async (id) => {
     const userRef = collection(db, "Users");
-
-    const q = query(collection(db, "Users"), where("user_id", "==", id));
-
-    console.log("getting users");
+    const q = query(userRef, where("user_id", "==", id));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
-      console.log(doc.id, " => ", doc.data());
       setUser(doc.data());
     });
   };
 
-  useEffect(() => {
-    userLogin();
-  }, []);
-
   return (
-    <div className="container mx-auto py-6">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-          <div className="px-6 py-4">
-            <h3 className="text-lg font-bold mb-2">Account Information</h3>
-            <p className="text-gray-600 text-sm mb-2">
-              Name:{" "}
-              <span className="font-medium">
-                {user.user_first_name} {user.user_last_name}
-              </span>
-            </p>
-            <p className="text-gray-600 text-sm mb-2">
-              Email: <span className="font-medium">{user.user_email}</span>
-            </p>
-            <p className="text-gray-600 text-sm mb-2">
-              Address: <span className="font-medium">{user.user_address}</span>
-            </p>
-            <p className="text-gray-600 text-sm mb-2">
-              City: <span className="font-medium">{user.user_city}</span>
-            </p>
-            <p className="text-gray-600 text-sm mb-2">
-              County: <span className="font-medium">{user.user_county}</span>
-            </p>
-
-            <p className="text-gray-600 text-sm">
-              Phone: <span className="font-medium">{user.phoneNumber}</span>
-            </p>
+    <div className="container mx-auto py-10 px-4">
+      <h2 className="text-3xl font-bold text-center mb-6">My Account</h2>
+      {user ? (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h3 className="text-lg font-bold mb-4">Account Information</h3>
+            <p><strong>Name:</strong> {user.user_first_name} {user.user_last_name}</p>
+            <p><strong>Email:</strong> {user.user_email}</p>
+            <p><strong>Address:</strong> {user.user_address}, {user.user_city}, {user.user_county}</p>
+            <p><strong>Phone:</strong> {user.phoneNumber}</p>
+          </div>
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h3 className="text-lg font-bold mb-4">Order History</h3>
+            <p>You haven't placed any orders yet.</p>
+          </div>
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h3 className="text-lg font-bold mb-4">Account Settings</h3>
+            <p>Update your account information here.</p>
+            <button className="bg-purple-600 text-white font-bold py-2 px-4 mt-4 rounded hover:bg-purple-700">Update Account</button>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-          <div className="px-6 py-4">
-            <h3 className="text-lg font-bold mb-2">Order History</h3>
-            <p className="text-gray-600 text-sm">
-              You haven't placed any orders yet.
-            </p>
-          </div>
-        </div>
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-          <div className="px-6 py-4">
-            <h3 className="text-lg font-bold mb-2">Account Settings</h3>
-            <p className="text-gray-600 text-sm">
-              You can update your account information here.
-            </p>
-            <button className="bg-purple-600 text-white font-bold py-2 px-4 mt-4 rounded">
-              Update Account
-            </button>
-          </div>
-        </div>
-      </div>
+      ) : (
+        <p className="text-center text-gray-600">Loading user data...</p>
+      )}
     </div>
   );
 }
