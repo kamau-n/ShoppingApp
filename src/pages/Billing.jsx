@@ -39,16 +39,19 @@ export default function Billing() {
       if(response.status==200)
       {
         setMessages(response.data?.ResponseDescription)
+        toggleOverlay()
 
       }
       else {
         setMessages("Payment Process Failed ,Please Retry")
+            toggleOverlay()
       }
 
       
     } catch (error) {
       console.error(error);
       setMessages("Payment processing failed. Please try again.");
+          toggleOverlay()
     }
   };
 
