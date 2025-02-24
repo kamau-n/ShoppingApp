@@ -36,6 +36,16 @@ export default function Billing() {
         account_ref: "order"+ new Date().getTime(),
       });
       console.log(response);
+      if(response.status==200)
+      {
+        setMessages("Payment Processed Successfully")
+
+      }
+      else {
+        setMessages("Payment Processed Successfully")
+      }
+
+      
     } catch (error) {
       console.error(error);
       setMessages("Payment processing failed. Please try again.");
