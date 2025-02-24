@@ -29,7 +29,7 @@ export default function Billing() {
     }
 
     try {
-      const response = await axios.post("https://stkpush.kamauharrison.co.ke:8087/stkPush", {
+      const response = await axios.post("https://stkpush.kamauharrison.co.ke/stkPush", {
         amount: state.total,
         phone: inputs.contact,
         desc: "order"+ new Date().getTime(),
