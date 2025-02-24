@@ -38,11 +38,11 @@ export default function Billing() {
       console.log(response);
       if(response.status==200)
       {
-        setMessages("Payment Processed Successfully")
+        setMessages(response.data?.ResponseDescription)
 
       }
       else {
-        setMessages("Payment Processed Successfully")
+        setMessages("Payment Process Failed ,Please Retry")
       }
 
       
