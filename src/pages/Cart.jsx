@@ -17,7 +17,7 @@ const Cart = () => {
     const data = JSON.parse(cart);
     setItems(data);
     getTotal(data);
-    setTotal(data.length);
+    setTotal(data?.length);
   };
 
   const removeItem = (name, data) => {
@@ -30,7 +30,7 @@ const Cart = () => {
 
   const getTotal = (data) => {
     let total_for_all = 0;
-    if (data.length > 0) {
+    if (data?.length > 0) {
       data.forEach((y) => {
         let total_for_one = y.name.price * y.name.quantity;
         total_for_all = total_for_one + total_for_all;
@@ -83,7 +83,7 @@ const Cart = () => {
               </div>
 
               <div className="divide-y divide-gray-200">
-                {items.map((item, index) => {
+                {items?.map((item, index) => {
                   const total = item.name.price * item.name.quantity;
                   return (
                     <div key={index} className="p-6 flex items-center">
@@ -127,7 +127,7 @@ const Cart = () => {
                 <div className="space-y-4">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Items ({total})</span>
-                    <span className="font-medium text-gray-900">KSH {value.toLocaleString()}</span>
+                    <span className="font-medium text-gray-900">KSH {value?.toLocaleString()}</span>
                   </div>
 
                   <div className="space-y-2">

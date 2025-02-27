@@ -10,7 +10,7 @@ const Header = () => {
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="text-2xl font-bold tracking-tight hover:text-white/90 transition-colors">
-          La Doche
+          My Shop
         </Link>
 
         {/* Search Bar */}

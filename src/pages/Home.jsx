@@ -49,33 +49,6 @@ export default function Home() {
     }
   }, []);
 
-  // const categories = [
-  //   {
-  //     title: "Alcoholic Drinks",
-  //     image: "https://images.unsplash.com/photo-1470337458703-46ad1756a187?auto=format&fit=crop&q=80",
-  //     path: "/drinks"
-  //   },
-  //   {
-  //     title: "Soft Drinks",
-  //     image: "https://images.unsplash.com/photo-1581006852262-e4307cf6283a?auto=format&fit=crop&q=80",
-  //     path: "/drinks"
-  //   },
-  //   {
-  //     title: "Fast Foods",
-  //     image: "https://images.unsplash.com/photo-1561758033-d89a9ad46330?auto=format&fit=crop&q=80",
-  //     path: "/meals"
-  //   },
-  //   {
-  //     title: "Full Meals",
-  //     image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80",
-  //     path: "/meals"
-  //   },
-  //   {
-  //     title: "Desserts",
-  //     image: "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&q=80",
-  //     path: "/meals"
-  //   }
-  // ];
 
   return (
     <div className="min-h-screen bg-gray-50">

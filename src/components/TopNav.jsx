@@ -1,17 +1,11 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import bars from "../assets/bars.png";
-import icon from "../assets/icon.png";
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import { AppBar, IconButton, Toolbar } from "@mui/material";
+import { getAuth, signOut } from "firebase/auth";
 import {
-  ArrowBack,
-  CardTravelSharp,
-  Face,
-  FaceRounded,
-  KeyboardArrowLeftSharp,
-  Person,
-  ShoppingBasket,
+  PersonOutline,
+  SearchRounded,
+  ShoppingCart,
 } from "@material-ui/icons";
 import { useState } from "react";
 
@@ -30,6 +24,9 @@ export default function TopNav({ logged }) {
     setIsOpen(false);
   };
 
+
+  const navigate = useNavigate();
+
   const handleLogout = () => {
     console.log(typeof auth);
     signOut(auth)
@@ -44,10 +41,19 @@ export default function TopNav({ logged }) {
   };
   return (
     <div className="sm:flex justify-between  bg-slate-100 px-6  w-full shadow-md my-0  py-8  ">
+        <div className="sm:flex  hidden  " id="topbar">
+        <div className="sm:flex gap-3  sm:flex-row flex  align-middle sm:justify-start justify-start flex-col font-mono">
+          <Link to="/">Home</Link>
+          <Link to="/cart">Cart</Link>
+          {/* <Link to="/drinks">Drinks</Link>
+          <Link to="/meals">Meals</Link> */}
+          <Link to="/about">About</Link>
+        </div>
+      </div>
       <div className="flex justify-between ">
         <div className="font-bold text-xl  flex gap-2 italic uppercase font-mono">
-          <img src={icon} alt="" width={30} className="bg-cover" />
-          <h2 className="pt-2">LA DOCHE</h2>
+          {/* <img src={icon} alt="" width={30} className="bg-cover" /> */}
+          <p  className="font-mono text-2xl pt-2">SHOP</p>
         </div>
         <img
           src={bars}
@@ -61,16 +67,26 @@ export default function TopNav({ logged }) {
         />
       </div>
 
-      <div className="sm:flex  hidden  " id="topbar">
-        <div className="sm:flex gap-3  sm:flex-row flex  align-middle sm:justify-start justify-start flex-col font-mono">
-          <Link to="/">Home</Link>
-          <Link to="/cart">Cart</Link>
-          {/* <Link to="/drinks">Drinks</Link>
-          <Link to="/meals">Meals</Link> */}
-          <Link to="/about">About</Link>
-        </div>
-      </div>
-      <div id="topbar2" className="sm:flex hidden ">
+       <div className="p-2 space-x-3">
+       <span><SearchRounded className="" /></span>   
+        <span onClick={()=>{
+          if(logged){
+            navigate("/account")
+            
+          }
+          else{
+            navigate("/login")
+          }
+        }}><PersonOutline /></span>
+        
+        <span onClick={()=>{
+          navigate("/cart")
+        }}> <ShoppingCart  /> </span>
+
+
+       </div>
+    
+      {/* <div id="topbar2" className="sm:flex hidden ">
         {logged && (
           <div className="flex justify-center">
             <div className="relative">
@@ -123,7 +139,7 @@ export default function TopNav({ logged }) {
             </Link>
           </button>
         )}
-      </div>
+      </div> */}
     </div>
   );
 }

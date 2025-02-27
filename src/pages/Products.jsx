@@ -74,12 +74,13 @@ export default function ProductDetail() {
             
               onClick={
                 ()=>{
+                  console.log(details);
 
                 let cart = localStorage.getItem("ladoche_shopping_cart");
                 let cart2 = JSON.parse(cart);
                 const detail = {
                   name: details.Name,
-                  id: details.Id,
+                  id: details.id,
                   price: details.Price,
                   link: details.Link,
                   quantity: quantity,

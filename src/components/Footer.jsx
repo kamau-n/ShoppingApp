@@ -1,37 +1,153 @@
-import React from "react";
+
+import { Facebook, Instagram, Twitter } from "@material-ui/icons"
+import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
-    <div className="sm:flex-col flex-row justify-between sm:py-20 px-20  bg-slate-800">
-      <div className="sm:flex justify-between border-b-2 space-y-6 border-b-blue-200 py-5 ">
-        <div>
-          <h3 className="text-2xl font-bold py-8 text-white">Help </h3>
-          <ul>
-            <li className=" text-xl text-white">Help center</li>
-            <li className=" text-xl text-white">Help Forum</li>
-            <li className=" text-xl text-white">Help Video</li>
-          </ul>
-        </div>
-        <div>
-          <h3 className="text-2xl font-bold py-8 text-white">Community </h3>
+    <footer className="bg-slate-50 px-4 md:px-6 lg:px-8 py-12">
+      <div className="container mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 border-b border-slate-200 pb-8">
+          {/* Company Info */}
+          <div className="space-y-4">
+            <h3 className="text-xl font-semibold tracking-tight">SHOP</h3>
+            <div className="text-slate-600 space-y-2">
+              <p className="leading-relaxed">
+                This is an online shop that allows you to order for your favorite products and have them delivered to
+                your doorstep.
+              </p>
+              <p>You can order for food, clothes, electronics, and many more.</p>
+            </div>
+            <div className="flex items-center gap-4 pt-4">
+              <Link to ={{pathname:"/"}}
+                className="text-slate-600 hover:text-slate-900 transition-colors"
+                aria-label="Follow us on Facebook"
+              >
+                <Facebook className="h-5 w-5" />
+              </Link>
+              <Link to ={{pathname:"/"}}
+                className="text-slate-600 hover:text-slate-900 transition-colors"
+                aria-label="Follow us on Twitter"
+              >
+                <Twitter className="h-5 w-5" />
+              </Link>
+              <Link to ={{pathname:"/"}}
+                className="text-slate-600 hover:text-slate-900 transition-colors"
+                aria-label="Follow us on Instagram"
+              >
+                <Instagram className="h-5 w-5" />
+              </Link>
+            </div>
+          </div>
 
-          <ul>
-            <li className=" text-xl text-white">Blogger Buzz</li>
-          </ul>
+          {/* Navigation */}
+          <div>
+            <h3 className="text-xl font-semibold tracking-tight mb-4">SHOP BY CATEGORY</h3>
+            <nav>
+              <ul className="space-y-2">
+                <li>
+                  <Link to ={{pathname:"/"}}  className="text-slate-600 hover:text-slate-900 transition-colors">
+                    Electronics
+                  </Link>
+                </li>
+                <li>
+                  <Link to ={{pathname:"/"}}  className="text-slate-600 hover:text-slate-900 transition-colors">
+                    Fashion
+                  </Link>
+                </li>
+                <li>
+                  <Link to ={{pathname:"/"}}  className="text-slate-600 hover:text-slate-900 transition-colors">
+                    Home & Garden
+                  </Link>
+                </li>
+                <li>
+                  <Link  to ={{pathname:"/"}}  className="text-slate-600 hover:text-slate-900 transition-colors">
+                    Sports Equipment
+                  </Link>
+                </li>
+                <li>
+                  <Link  to ={{pathname:"/"}}  className="text-slate-600 hover:text-slate-900 transition-colors">
+                    Books & Media
+                  </Link>
+                </li>
+              </ul>
+            </nav>
+          </div>
+
+          {/* Customer Service */}
+          <div>
+            <h3 className="text-xl font-semibold tracking-tight mb-4">CUSTOMER SERVICE</h3>
+            <nav>
+              <ul className="space-y-2">
+                <li>
+                  <Link  to ={{pathname:"/"}}  className="text-slate-600 hover:text-slate-900 transition-colors">
+                    Contact Us
+                  </Link>
+                </li>
+                <li>
+                  <Link  to ={{pathname:"/"}}  className="text-slate-600 hover:text-slate-900 transition-colors">
+                    Shipping Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link  to ={{pathname:"/"}}  className="text-slate-600 hover:text-slate-900 transition-colors">
+                    Returns & Exchanges
+                  </Link>
+                </li>
+                <li>
+                  <Link  to ={{pathname:"/"}}  className="text-slate-600 hover:text-slate-900 transition-colors">
+                    FAQ 
+                  </Link>
+                </li>
+                <li>
+                  <Link to ={{pathname:"/"}}  className="text-slate-600 hover:text-slate-900 transition-colors">
+                    Track Your Order
+                  </Link>
+                </li>
+              </ul>
+            </nav>
+          </div>
+
+          {/* About */}
+          <div>
+            <h3 className="text-xl font-semibold tracking-tight mb-4">ABOUT US</h3>
+            <nav>
+              <ul className="space-y-2">
+                <li>
+                  <Link to ={{pathname:"/"}}  className="text-slate-600 hover:text-slate-900 transition-colors">
+                    Our Story
+                  </Link>
+                </li>
+                <li>
+                  <Link to ={{pathname:"/"}}  className="text-slate-600 hover:text-slate-900 transition-colors">
+                    Careers
+                  </Link>
+                </li>
+                <li>
+                  <Link to ={{pathname:"/"}}  className="text-slate-600 hover:text-slate-900 transition-colors">
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link to ={{pathname:"/"}}  className="text-slate-600 hover:text-slate-900 transition-colors">
+                    Terms of Service
+                  </Link>
+                </li>
+                <li>
+                  <Link to ={{pathname:"/"}}  className="text-slate-600 hover:text-slate-900 transition-colors">
+                    Blog
+                  </Link>
+                </li>
+              </ul>
+            </nav>
+          </div>
         </div>
-        <div>
-          <h3 className="text-2xl font-bold py-8 text-white">Developers </h3>
-          <ul>
-            <li className=" text-xl text-white">Blogger API </li>
-            <li className=" text-xl text-white">Developer Forum</li>
-          </ul>
+
+        {/* Copyright */}
+        <div className="pt-8 text-center text-slate-600">
+          <p>&copy; {new Date().getFullYear()} Awesome. All rights reserved.</p>
         </div>
       </div>
-      <div className="sm:flex  sm:justify-around py-16">
-        <h3 className="text-xl text-white">Term of Service</h3>
-        <h3 className="text-xl text-white">Privacy</h3>
-        <h3 className="text-xl text-white">Content Policy</h3>
-      </div>
-    </div>
-  );
+    </footer>
+  )
 }
+

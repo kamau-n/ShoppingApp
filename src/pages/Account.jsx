@@ -3,19 +3,24 @@ import React, { useEffect, useState } from "react";
 import { db } from "../config/config";
 import { onAuthStateChanged, getAuth } from "firebase/auth";
 import { Link } from "react-router-dom";
+import { Spinner } from "react-bootstrap";
+
 const auth = getAuth();
 
 function Account() {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (authUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
       if (authUser) {
-        fetchUser(authUser.uid);
+        await fetchUser(authUser.uid);
       } else {
         setUser(null);
       }
+      setLoading(false);
     });
+
     return () => unsubscribe();
   }, []);
 
@@ -31,7 +36,13 @@ function Account() {
   return (
     <div className="container mx-auto py-10 px-4">
       <h2 className="text-3xl font-bold text-center mb-6">My Account</h2>
-      {user ? (
+      {loading ? (
+        <div className="flex justify-center">
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </Spinner>
+        </div>
+      ) : user ? (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="bg-white rounded-lg shadow-lg p-6">
             <h3 className="text-lg font-bold mb-4">Account Information</h3>
@@ -53,21 +64,21 @@ function Account() {
           <div className="bg-white rounded-lg shadow-lg p-6">
             <h3 className="text-lg font-bold mb-4">Category Settings</h3>
             <p>Add or Delete a Category.</p>
-            <Link to="/categories" >
-            <button className="bg-purple-600 text-white font-bold py-2 px-4 mt-4 rounded hover:bg-purple-700">Add A Category</button>
-           </Link>
+            <Link to="/categories">
+              <button className="bg-purple-600 text-white font-bold py-2 px-4 mt-4 rounded hover:bg-purple-700">Add A Category</button>
+            </Link>
           </div>
 
           <div className="bg-white rounded-lg shadow-lg p-6">
             <h3 className="text-lg font-bold mb-4">Add Products</h3>
             <p>Add or Delete A Product.</p>
-            <Link to="/uploads" >
-            <button className="bg-purple-600 text-white font-bold py-2 px-4 mt-4 rounded hover:bg-purple-700">Add A Product</button>
-           </Link>
+            <Link to="/uploads">
+              <button className="bg-purple-600 text-white font-bold py-2 px-4 mt-4 rounded hover:bg-purple-700">Add A Product</button>
+            </Link>
           </div>
         </div>
       ) : (
-        <p className="text-center text-gray-600">Loading user data...</p>
+        <p className="text-center text-gray-600">No user data found.</p>
       )}
     </div>
   );

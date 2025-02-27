@@ -1,10 +1,5 @@
 import React from 'react';
 
-interface SuccessModalProps {
-  image: string;
-  url: string;
-  copy: () => void;
-}
 
 export function SuccessModal({ image, url, copy }: SuccessModalProps) {
   return (

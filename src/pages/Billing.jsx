@@ -1,17 +1,67 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { CreditCard, Wallet, ChevronLeft, X } from "lucide-react";
 import axios from "axios";
+
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe("your-publishable-key-here");
 
 export default function Billing() {
   const [inputs, setInputs] = useState({});
   const { state } = useLocation();
   const [message, setMessages] = useState("");
   const [showOverlay, setShowOverlay] = useState(false);
+  const [items, setItems] = useState([]);
+  const [value, setValue] = useState(0);
+  const [total, setTotal] = useState(0);
+
+  const handleStripePayment = async () => {
+    const stripe = await stripePromise;
+    try {
+      const response = await axios.post("/create-checkout-session", {
+        items: items,
+      });
+      const result = await stripe.redirectToCheckout({ sessionId: response.data.id });
+      if (result.error) {
+        setMessages(result.error.message);
+      }
+    } catch (error) {
+      console.error("Stripe checkout error:", error);
+      setMessages("Payment processing failed. Please try again.");
+    }
+  };
+
+  
+
+
+  const getTotal = (data) => {
+    let total_for_all = 0;
+    if (data.length > 0) {
+      data.forEach((y) => {
+        let total_for_one = y.name.price * y.name.quantity;
+        total_for_all = total_for_one + total_for_all;
+      });
+      setValue(total_for_all);
+    }
+  };
+
+
+
+  const allStorage = () => {
+    const cart = localStorage.getItem("ladoche_shopping_cart");
+    const data = JSON.parse(cart);
+    setItems(data);
+    console.log("This are all the items in the cart",data)
+    getTotal(data);
+    setTotal(data.length);
+  };
 
   const toggleOverlay = () => {
     setShowOverlay(!showOverlay);
   };
+
+
 
   const checkProperties = (obj) => {
     for (var key in obj) {
@@ -60,6 +110,10 @@ export default function Billing() {
     setMessages("");
     setInputs((values) => ({ ...values, [name]: value }));
   };
+
+  useEffect(() => {
+    allStorage();
+  }, [total]);
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
@@ -203,6 +257,7 @@ export default function Billing() {
                     <span>Pay with M-PESA</span>
                   </button>
                   <button
+                  onClick={handleStripePayment}
                     className="w-full flex items-center justify-center space-x-2 bg-blue-600 text-white py-4 px-6 rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
                   >
                     <CreditCard className="h-5 w-5" />
