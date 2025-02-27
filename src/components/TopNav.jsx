@@ -20,7 +20,7 @@ const Header = () => {
     const allStorage = () => {
     const cart = localStorage.getItem("ladoche_shopping_cart");
     const data = JSON.parse(cart);
-    setItems(data);
+    //setItems(data);
     console.log("This are all the items in the cart",data)
     getTotal(data);
     setTotal(data.length);
