@@ -8,6 +8,7 @@ const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [logged,setLogged] = useState();
+  const [allCart,setAllCart] = useState(0);
   const dropdownRef = useRef(null);
   const searchRef = useRef(null);
 
@@ -130,7 +131,7 @@ const Header = () => {
                       to="/account"
                       className="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-colors"
                     >
-                      <span>Accoount</span>
+                      <span>Account</span>
                     </Link>
 
                     <Link
@@ -216,7 +217,7 @@ const Header = () => {
               <ShoppingCart className="h-5 w-5" />
               <span>Cart</span>
               <span className="ml-auto bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-                0
+                {allCart}
               </span>
             </Link>
             <Link
