@@ -11,7 +11,8 @@ const Header = () => {
   const [allCart,setAllCart] = useState(0);
   const dropdownRef = useRef(null);
   const searchRef = useRef(null);
-
+  const [value, setValue] = useState(0);
+  const [total, setTotal] = useState(0);
   const auth = getAuth();
   // 
 
