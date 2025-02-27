@@ -13,11 +13,14 @@ function Account() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const  [photoURL,setPhotoURL] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
       if (authUser) {
+        console.log(authUser);
+        setPhotoURL(authUser.photoURL);
         await fetchUser(authUser.uid);
       } else {
         setUser(null);
@@ -38,6 +41,8 @@ function Account() {
       querySnapshot.forEach((doc) => {
         setUser(doc.data());
       });
+
+      console.log("This is the user data", user);
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
@@ -129,9 +134,9 @@ function Account() {
             <div className="flex-shrink-0 p-4 border-b">
               <div className="relative">
                 <div className="w-20 h-20 rounded-full bg-gray-200 mx-auto mb-4 relative">
-                  {user.profileImage ? (
+                  {user.user_image? (
                     <img
-                      src={user.profileImage || "/placeholder.svg"}
+                      src={user.user_image || "/placeholder.svg"}
                       alt="Profile"
                       className="w-full h-full rounded-full object-cover"
                     />

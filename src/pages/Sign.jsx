@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 //import {auth} from './config'
 import { useState, useEffect } from "react";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword ,sendS} from "firebase/auth";
 
 import { UserCircle2, AlertCircle } from "lucide-react";
 
