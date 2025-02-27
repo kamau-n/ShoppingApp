@@ -29,12 +29,15 @@ const Header = () => {
 
     const getTotal = (data) => {
     let total_for_all = 0;
+    let  totalSize = 0;
     if (data.length > 0) {
       data.forEach((y) => {
         let total_for_one = y.name.price * y.name.quantity;
         total_for_all = total_for_one + total_for_all;
+        totalSize++;
       });
-      setAllCart(total_for_all);
+      console.log("this is the total for all",totalSize)
+      setAllCart(totalSize);
     }
   };
 
@@ -122,7 +125,7 @@ const Header = () => {
               >
                 <ShoppingCart className="h-6 w-6" />
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center animate-pulse">
-                  0
+                  {allCart}
                 </span>
               </Link>
 

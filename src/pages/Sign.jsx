@@ -78,7 +78,7 @@ const Login = () => {
       <div className="max-w-md w-full mx-auto bg-white rounded-xl shadow-lg p-8">
         <div className="text-center mb-8">
           <UserCircle2 className="mx-auto h-12 w-12 text-indigo-600" />
-          <h2 className="mt-4 text-3xl font-extrabold text-gray-900">LA DOCHE</h2>
+          <h2 className="mt-4 text-3xl font-extrabold text-gray-900">MY SHOP</h2>
           <p className="mt-2 text-sm text-gray-600">Create your account</p>
         </div>
 
