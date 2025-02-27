@@ -55,7 +55,7 @@ export default function Home() {
     <div className="min-h-screen bg-gray-50">
       <TopNav logged={logged} />
       
-      <main className=" mx-32 px-4 sm:px-6 lg:px-8 py-8">
+      <main className="mx-8 sm:mx-16 md:mx32 px-4 sm:px-6 lg:px-8 py-8">
         {/* Hero Section */}
         <div className="mb-12">
           <div className="bg-white rounded-2xl shadow-lg overflow-hidden">

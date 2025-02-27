@@ -30,8 +30,8 @@ const Header = () => {
     const getTotal = (data) => {
     let total_for_all = 0;
     let  totalSize = 0;
-    if (data.length > 0) {
-      data.forEach((y) => {
+    if (data?.length > 0) {
+      data?.forEach((y) => {
         let total_for_one = y.name.price * y.name.quantity;
         total_for_all = total_for_one + total_for_all;
         totalSize++;
