@@ -19,6 +19,8 @@ const Login = () => {
 
     signInWithEmailAndPassword(auth, useremail, password)
       .then((res) => {
+        console.log("this is the response");
+        console.log(res);
         if (res.user) {
           navigate("/account");
         }
