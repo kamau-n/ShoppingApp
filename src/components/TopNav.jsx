@@ -15,6 +15,18 @@ const Header = () => {
   const auth = getAuth();
   // 
 
+
+    const getTotal = (data) => {
+    let total_for_all = 0;
+    if (data.length > 0) {
+      data.forEach((y) => {
+        let total_for_one = y.name.price * y.name.quantity;
+        total_for_all = total_for_one + total_for_all;
+      });
+      setAllCart(total_for_all);
+    }
+  };
+
   // Handle click outside of dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -29,6 +41,7 @@ const Header = () => {
 
   // Handle escape key
   useEffect(() => {
+    getTotal()
 
     onAuthStateChanged(auth, (user) => {
       setLogged(!!user);
