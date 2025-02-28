@@ -19,11 +19,15 @@ function Account() {
   const navigate = useNavigate();
 
   useEffect(() => {
+
+    
     const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
       if (authUser) {
         console.log(authUser);
         setPhotoURL(authUser.photoURL);
         await fetchUser(authUser.uid);
+        await fetchUserProducts(authUser.uid);
+        await fetchUserOrders(authUser.uid);
       } else {
         setUser(null);
         navigate('/login');
