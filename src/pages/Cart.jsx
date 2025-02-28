@@ -41,7 +41,7 @@ const Cart = () => {
 
   useEffect(() => {
     allStorage();
-  }, [total]);
+  }, [total,refreshData]);
 
   const handleCheckout = () => {
     if (shipping !== 0) {
@@ -139,6 +139,7 @@ const Cart = () => {
                       value={shipping}
                       onChange={(e) => setShipping(Number(e.target.value))}
                     >
+                      <option value={0}>Select Shipping Method</option>
                       <option value={300}>Normal Delivery - KSH 300</option>
                       <option value={500}>Standard Delivery - KSH 500</option>
                       <option value={800}>Fast Delivery - KSH 800</option>

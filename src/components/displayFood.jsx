@@ -93,6 +93,7 @@ export default function ProductGrid({ data, type }) {
                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                 onClick={(e) => {
                   e.stopPropagation();
+                  navigate(`/product/${product?.id}`, { state: { product } });
                   // Add to cart animation
                   const button = e.currentTarget;
                   button.classList.add('animate-press');

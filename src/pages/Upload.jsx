@@ -42,6 +42,8 @@ const Upload = () => {
 
       }).then((res) => {
         console.log("I have added the product");
+        
+        setResponse("Product successfully uploaded");
         console.log(res);
       }
       )

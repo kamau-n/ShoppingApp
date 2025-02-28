@@ -107,8 +107,8 @@ export default function ProductDetail() {
       <TopNav />
       
       {/* Alert */}
-      <div className={`fixed top-4 right-4 transition-transform duration-300 transform ${
-        showAlert ? 'translate-y-0' : '-translate-y-full'
+      <div className={`fixed top-0 right-4 transition-transform duration-300 transform ${
+        showAlert ? 'translate-y-0 top-12' : '-translate-y-full'
       }`}>
         <div className="bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center">
           <Star className="w-5 h-5 mr-2" />
@@ -121,7 +121,7 @@ export default function ProductDetail() {
           <div className="grid md:grid-cols-2 gap-8 p-6 md:p-8">
             {/* Image Section */}
             <div className="space-y-4">
-              <div className="aspect-square relative rounded-xl overflow-hidden bg-gray-100">
+              <div className="aspect-square relative h-96 rounded-xl overflow-hidden bg-gray-100">
                 {!imageLoaded && (
                   <div className="absolute inset-0 flex items-center justify-center">
                     <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
