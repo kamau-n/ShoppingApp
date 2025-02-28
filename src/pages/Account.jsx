@@ -465,6 +465,12 @@ function Account() {
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Status
                           </th>
+
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Paid
+                          </th>
+                      
+                      
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Total
                           </th>
@@ -480,7 +486,7 @@ function Account() {
                               {order.OrderID || order.id.substring(0, 8)}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {formatDate(order.OrderDate || order.CreatedAt)}
+                              {formatDate(order.time || order.time)}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
@@ -493,8 +499,11 @@ function Account() {
                                 {order.Status || 'Pending'}
                               </span>
                             </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {order.paid}
+                            </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {formatCurrency(order.TotalAmount)}
+                              {formatCurrency(order.total)}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                               <div className="flex items-center justify-end space-x-2">
