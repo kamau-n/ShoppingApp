@@ -10,6 +10,8 @@ const auth = getAuth();
 
 function Account() {
   const [user, setUser] = useState(null);
+  const  [products,setProducts]  = useState([]);
+  const  [orders,setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -31,6 +33,41 @@ function Account() {
 
     return () => unsubscribe();
   }, [navigate]);
+
+
+  const fetchUserProducts =  async (id) =>{
+       try {
+      const userRef = collection(db, "Product");
+      const q = query(userRef, where("Owner", "==", id));
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        setProducts(doc.data());
+      });
+
+      console.log("This is the user data", products);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+    
+
+    
+  }
+
+  const fetUserOrders =  async (id)=>{
+        try {
+      const userRef = collection(db, "Orders");
+      const q = query(userRef, where("CustomerID", "==", id));
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        setOrders(doc.data());
+      });
+
+      console.log("This is the user data", orders);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+    
+  }
 
   const fetchUser = async (id) => {
     console.log( "this is the user id" + id);
