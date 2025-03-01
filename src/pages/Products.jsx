@@ -29,6 +29,7 @@ export default function ProductDetail() {
         const docRef = doc(db, "Product", productId);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
+          console.log(docSnap.data());
           setDetails(docSnap.data());
         } else {
           setError("Product not found");
@@ -48,9 +49,10 @@ export default function ProductDetail() {
     try {
       let cart = localStorage.getItem("ladoche_shopping_cart");
       let cart2 = JSON.parse(cart);
+      console.log(details);
       const detail = {
         name: details.Name,
-        id: details.id,
+        id: productId,
         price: details.Price,
         link: details.Link,
         quantity: quantity,

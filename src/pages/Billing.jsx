@@ -4,6 +4,7 @@ import { CreditCard, Wallet, ChevronLeft, X } from "lucide-react";
 import axios from "axios";
 
 import { loadStripe } from "@stripe/stripe-js";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const stripePromise = loadStripe("your-publishable-key-here");
 
@@ -15,6 +16,19 @@ export default function Billing() {
   const [items, setItems] = useState([]);
   const [value, setValue] = useState(0);
   const [total, setTotal] = useState(0);
+  const [authUser, setAuthUser] = useState(null);
+
+
+const auth = getAuth();
+  
+
+  useEffect(() => {    
+    onAuthStateChanged(auth, (user) => {
+      console.log("User",user)
+      setAuthUser(user);
+    });
+
+  },[])
 
   const handleStripePayment = async () => {
     const stripe = await stripePromise;
@@ -83,7 +97,9 @@ export default function Billing() {
         amount: state.total,
         phone: inputs.contact,
         desc: "order"+ new Date().getTime(),
-        account_ref: "order"+ new Date().getTime(),
+        user: authUser.uid,
+        account_ref: "My shop",
+        products: items,
       });
       console.log(response);
       if(response.status==200)
