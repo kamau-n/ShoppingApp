@@ -1,170 +1,221 @@
-import { collection, getDocs, query, where, doc, deleteDoc } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
-import { db } from "../config/config";
-import { onAuthStateChanged, getAuth, signOut } from "firebase/auth";
-import { Link, useNavigate } from "react-router-dom";
-import { User, Settings, Package, TagsIcon as Categories, ShoppingBag, LogOut, Bell, CreditCard, Heart, Clock, Loader2, AlertCircle, ChevronRight, Edit, Camera, Trash2, Eye, Search, Filter, MoreHorizontal, User2 } from 'lucide-react';
-import { Money, Person } from "@material-ui/icons";
+"use client"
 
-const auth = getAuth();
+import { collection, getDocs, query, where, doc, deleteDoc, updateDoc } from "firebase/firestore"
+import { useEffect, useState } from "react"
+import { db } from "../config/config"
+import { onAuthStateChanged, getAuth, signOut } from "firebase/auth"
+import { Link, useNavigate } from "react-router-dom"
+import {
+  User,
+  Settings,
+  Package,
+  TagsIcon as Categories,
+  ShoppingBag,
+  LogOut,
+  CreditCard,
+  Clock,
+  Loader2,
+  AlertCircle,
+  ChevronRight,
+  Edit,
+  Camera,
+  Trash2,
+  Eye,
+  Search,
+  User2,
+} from "lucide-react"
+import { Money, Person } from "@material-ui/icons"
+
+const auth = getAuth()
 
 function Account() {
-  const [user, setUser] = useState(null);
-  const [products, setProducts] = useState([]);
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('overview');
-  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-  const [photoURL, setPhotoURL] = useState(null);
-  const [deleteConfirm, setDeleteConfirm] = useState({ show: false, type: '', id: '' });
-  const [searchTerm, setSearchTerm] = useState('');
-  const navigate = useNavigate();
-  const [userData, setUserData] = useState([]);
+  const [user, setUser] = useState(null)
+  const [products, setProducts] = useState([])
+  const [orders, setOrders] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [activeTab, setActiveTab] = useState("overview")
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
+  const [photoURL, setPhotoURL] = useState(null)
+  const [deleteConfirm, setDeleteConfirm] = useState({ show: false, type: "", id: "" })
+  const [searchTerm, setSearchTerm] = useState("")
+  const navigate = useNavigate()
+  const [userData, setUserData] = useState([])
+  const [editUserModal, setEditUserModal] = useState(false)
+  const [selectedUser, setSelectedUser] = useState(null)
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
       if (authUser) {
-        console.log(authUser);
-        setPhotoURL(authUser.photoURL);
-        await fetchUser(authUser.uid);
-        await fetchUserProducts(authUser.uid);
-        await fetchUserOrders(authUser.uid);
-        await fetchUsers();
+        console.log(authUser)
+        setPhotoURL(authUser.photoURL)
+        await fetchUser(authUser.uid)
+        await fetchUserProducts(authUser.uid)
+        await fetchUserOrders(authUser.uid)
+        await fetchUsers()
       } else {
-        setUser(null);
-        navigate('/login');
+        setUser(null)
+        navigate("/login")
       }
-      setLoading(false);
-    });
+      setLoading(false)
+    })
 
-    return () => unsubscribe();
-  }, [navigate]);
+    return () => unsubscribe()
+  }, [navigate])
 
   const fetchUserProducts = async (id) => {
-   
     try {
-      const userRef = collection(db, "Product");
-      const q = query(userRef, where("Owner", "==", id));
-      const querySnapshot = await getDocs(q);
-      
-      const productsData = [];
+      const userRef = collection(db, "Product")
+      const q = query(userRef, where("Owner", "==", id))
+      const querySnapshot = await getDocs(q)
+
+      const productsData = []
       querySnapshot.forEach((doc) => {
         productsData.push({
           id: doc.id,
-          ...doc.data()
-        });
-      });
-      
-      setProducts(productsData);
+          ...doc.data(),
+        })
+      })
 
+      setProducts(productsData)
     } catch (error) {
-      console.error("Error fetching products data:", error);
+      console.error("Error fetching products data:", error)
     }
-  };
+  }
 
   // fetchUsers
   const fetchUsers = async () => {
     try {
-      const userRef = collection(db, "Users");
-      const q = query(userRef);
-      const querySnapshot = await getDocs(q);
-      
-      const userData = [];
+      const userRef = collection(db, "Users")
+      const q = query(userRef)
+      const querySnapshot = await getDocs(q)
+
+      const userData = []
       querySnapshot.forEach((doc) => {
         userData.push({
           id: doc.id,
-          ...doc.data()
-        });
-      });
-      console.log(userData);
-      
-      setUserData(userData);
-    } catch (error) {
-      console.error("Error fetching products data:", error);
-    }
-  };
+          ...doc.data(),
+        })
+      })
+      console.log(userData)
 
+      setUserData(userData)
+    } catch (error) {
+      console.error("Error fetching products data:", error)
+    }
+  }
 
   const fetchUserOrders = async (id) => {
-    console.log("this is the user id" + id);
+    console.log("this is the user id" + id)
     try {
-      const userRef = collection(db, "Orders");
-      const q = query(userRef, where("CustomerID", "==", id));
-      const querySnapshot = await getDocs(q);
-      
-      const ordersData = [];
+      const userRef = collection(db, "Orders")
+      const q = query(userRef, where("CustomerID", "==", id))
+      const querySnapshot = await getDocs(q)
+
+      const ordersData = []
       querySnapshot.forEach((doc) => {
         ordersData.push({
           id: doc.id,
-          ...doc.data()
-        });
-      });
-      
-      setOrders(ordersData);
+          ...doc.data(),
+        })
+      })
 
+      setOrders(ordersData)
     } catch (error) {
-      console.error("Error fetching orders data:", error);
+      console.error("Error fetching orders data:", error)
     }
-  };
+  }
 
   const fetchUser = async (id) => {
-    console.log("this is the user id" + id);
+    console.log("this is the user id" + id)
     try {
-      const userRef = collection(db, "Users");
-      const q = query(userRef, where("user_id", "==", id));
-      const querySnapshot = await getDocs(q);
+      const userRef = collection(db, "Users")
+      const q = query(userRef, where("user_id", "==", id))
+      const querySnapshot = await getDocs(q)
       querySnapshot.forEach((doc) => {
-        setUser(doc.data());
-      });
+        // set the id 
+       let usersData  =  (doc.data())
+       usersData['id'] = doc.id
+       setUser(usersData)
 
+      })
     } catch (error) {
-      console.error("Error fetching user data:", error);
+      console.error("Error fetching user data:", error)
     }
-  };
+  }
 
   const handleLogout = async () => {
     try {
-      await signOut(auth);
-      navigate('/login');
+      await signOut(auth)
+      navigate("/login")
     } catch (error) {
-      console.error("Error signing out:", error);
+      console.error("Error signing out:", error)
     }
-  };
+  }
 
   const handleDeleteItem = async (type, id) => {
     try {
-      const collectionName = type === 'product' ? 'Product' : 'Orders';
-      await deleteDoc(doc(db, collectionName, id));
-      
-      if (type === 'product') {
-        setProducts(products.filter(product => product.id !== id));
+      const collectionName = type === "product" ? "Product" : "Orders"
+      await deleteDoc(doc(db, collectionName, id))
+
+      if (type === "product") {
+        setProducts(products.filter((product) => product.id !== id))
       } else {
-        setOrders(orders.filter(order => order.id !== id));
+        setOrders(orders.filter((order) => order.id !== id))
       }
-      
-      setDeleteConfirm({ show: false, type: '', id: '' });
+
+      setDeleteConfirm({ show: false, type: "", id: "" })
     } catch (error) {
-      console.error(`Error deleting ${type}:`, error);
+      console.error(`Error deleting ${type}:`, error)
     }
-  };
+  }
 
   const handleEditProduct = (id) => {
-    navigate(`/edit-product/${id}`);
-  };
+    navigate(`/edit-product/${id}`)
+  }
 
   const handleViewOrder = (id) => {
-    navigate(`/order-details/${id}`);
-  };
+    navigate(`/order-details/${id}`)
+  }
 
-  const filteredProducts = products.filter(product => 
-    product.ProductName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    product.ProductDescription?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleEditUser = (user) => {
+    console.log("I have been clicked")
+    console.log("this is the selected user: " , user)
+    setSelectedUser(user)
+    setEditUserModal(true)
+  }
 
-  const filteredOrders = orders.filter(order => 
-    order.OrderID?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    order.Status?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleUpdateUser = async (updatedUser) => {
+
+    console.log("user to update" ,updatedUser)
+    console.log("user to update id " ,selectedUser.id || user.id)
+
+    try {
+      // Update the user in Firestore
+      const userRef = doc(db, "Users", selectedUser.id || user.id)
+      await updateDoc(userRef, updatedUser)
+
+      // Update the local state
+      setUserData(userData.map((user) => (user.id === selectedUser.id ? { ...user, ...updatedUser } : user)))
+
+      // Close the modal
+      setEditUserModal(false)
+      setSelectedUser(null)
+    } catch (error) {
+      console.error("Error updating user:", error)
+    }
+  }
+
+  const filteredProducts = products.filter(
+    (product) =>
+      product.ProductName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.ProductDescription?.toLowerCase().includes(searchTerm.toLowerCase()),
+  )
+
+  const filteredOrders = orders.filter(
+    (order) =>
+      order.OrderID?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.Status?.toLowerCase().includes(searchTerm.toLowerCase()),
+  )
 
   if (loading) {
     return (
@@ -174,7 +225,7 @@ function Account() {
           <p className="text-gray-600">Loading your account...</p>
         </div>
       </div>
-    );
+    )
   }
 
   if (!user) {
@@ -192,52 +243,192 @@ function Account() {
           </Link>
         </div>
       </div>
-    );
+    )
   }
 
   const navigation = [
-    { name: 'Overview', icon: User, tab: 'overview' ,role :"all"},
-    { name: 'Users', icon: Person, tab: 'users' ,role :"admin"},
-    { name: 'Payments', icon:Money, tab: 'payments',role :"admin" },
-    { name: 'Orders', icon: ShoppingBag, tab: 'orders' ,role :"all"},
-    { name: 'Categories', icon: Categories, tab: 'categories',role :"admin" },
-    { name: 'Products', icon: Package, tab: 'products',role :"admin" },
-    { name: 'Settings', icon: Settings, tab: 'settings' ,role :"all"},
-
-  ];
+    { name: "Overview", icon: User, tab: "overview", role: "all" },
+    { name: "Users", icon: Person, tab: "users", role: "admin" },
+    { name: "Payments", icon: Money, tab: "payments", role: "admin" },
+    { name: "Orders", icon: ShoppingBag, tab: "orders", role: "all" },
+    { name: "Categories", icon: Categories, tab: "categories", role: "admin" },
+    { name: "Products", icon: Package, tab: "products", role: "admin" },
+    { name: "Settings", icon: Settings, tab: "settings", role: "all" },
+  ]
 
   const recentActivity = [
-    { action: 'Order Placed', date: '2 hours ago', amount: 'KSH 2,500' },
-    { action: 'Profile Updated', date: '1 day ago' },
-    { action: 'New Category Added', date: '3 days ago' },
-  ];
+    { action: "Order Placed", date: "2 hours ago", amount: "KSH 2,500" },
+    { action: "Profile Updated", date: "1 day ago" },
+    { action: "New Category Added", date: "3 days ago" },
+  ]
 
   // Format date for display
   const formatDate = (timestamp) => {
-    if (!timestamp) return 'N/A';
-    
+    if (!timestamp) return "N/A"
+
     try {
       // Handle Firestore timestamps or date strings
-      const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-      return new Intl.DateTimeFormat('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-      }).format(date);
+      const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp)
+      return new Intl.DateTimeFormat("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      }).format(date)
     } catch (error) {
-      console.error("Error formatting date:", error);
-      return 'Invalid date';
+      console.error("Error formatting date:", error)
+      return "Invalid date"
     }
-  };
+  }
 
   // Format currency
   const formatCurrency = (amount) => {
-    if (!amount && amount !== 0) return 'N/A';
-    return `KSH ${Number(amount).toLocaleString()}`;
-  };
+    if (!amount && amount !== 0) return "N/A"
+    return `KSH ${Number(amount).toLocaleString()}`
+  }
+  
+
 
   return (
     <div className="min-h-screen bg-gray-50">
+
+      {/* Edit use modal  */}
+      {editUserModal  && (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+      <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4">
+        <h3 className="text-lg font-semibold mb-4">Edit User</h3>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            const formData = new FormData(e.target)
+            const updatedUser = {
+              user_first_name: formData.get("firstName"),
+              user_last_name: formData.get("lastName"),
+              phoneNumber: formData.get("phone"),
+              user_city: formData.get("city"),
+              user_county: formData.get("county"),
+              user_address: formData.get("address"),
+              user_role:user.user_role,
+            
+            }
+
+            console.log(updatedUser)
+            handleUpdateUser(updatedUser)
+          }}
+        >
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
+                First Name
+              </label>
+              <input
+                type="text"
+                id="firstName"
+                name="firstName"
+                defaultValue={selectedUser.user_first_name}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
+                Last Name
+              </label>
+              <input
+                type="text"
+                id="lastName"
+                name="lastName"
+                defaultValue={selectedUser.user_last_name}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                required
+              />
+            </div>
+          </div>
+          <div className="mb-4">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              Email
+            </label>
+            <input
+              type="text"
+              id="email"
+              name="email"
+              defaultValue={selectedUser.user_email || ""}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+          <div className="mb-4">
+            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+              Phone
+            </label>
+            <input
+              type="text"
+              id="phone"
+              name="phone"
+              defaultValue={selectedUser.phoneNumber || ""}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">
+                City
+              </label>
+              <input
+                type="text"
+                id="city"
+                name="city"
+                defaultValue={selectedUser.user_city || ""}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            <div>
+              <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">
+                Country
+              </label>
+              <input
+                type="text"
+                id="country"
+                name="country"
+                defaultValue={selectedUser.user_county || ""}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+          </div>
+          <div className="mb-4">
+            <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
+              Address
+            </label>
+            <textarea
+              id="address"
+              name="address"
+              defaultValue={selectedUser.user_address || ""}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              rows={3}
+            />
+          </div>
+          <div className="flex space-x-4">
+            <button
+              type="button"
+              onClick={() => {
+                setEditUserModal(false)
+                setSelectedUser(null)
+              }}
+              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Save Changes
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}
+
       {/* Logout Confirmation Modal */}
       {showLogoutConfirm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
@@ -272,7 +463,7 @@ function Account() {
             </p>
             <div className="flex space-x-4">
               <button
-                onClick={() => setDeleteConfirm({ show: false, type: '', id: '' })}
+                onClick={() => setDeleteConfirm({ show: false, type: "", id: "" })}
                 className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
               >
                 Cancel
@@ -321,25 +512,19 @@ function Account() {
             {/* Navigation */}
             <nav className="flex-1 px-2 py-4 space-y-1">
               {navigation
-              ?.filter(
-                (item) =>
-                  item.role === "all" || (item.role === "admin" && user.user_role === "admin")
-              )              
-              .map((item) => (
-                <button
-                  key={item?.name}
-                  onClick={() => setActiveTab(item.tab)}
-                  className={`w-full flex items-center px-4 py-2 text-sm rounded-lg transition-colors ${
-                    activeTab === item.tab
-                      ? 'bg-blue-50 text-blue-600'
-                      : 'text-gray-600 hover:bg-gray-50'
-                  }`}
-                >
-                  <item.icon className="w-5 h-5 mr-3" />
-                  {item?.name}
-                </button>
-              ))}
-              
+                ?.filter((item) => item.role === "all" || (item.role === "admin" && user.user_role === "admin"))
+                .map((item) => (
+                  <button
+                    key={item?.name}
+                    onClick={() => setActiveTab(item.tab)}
+                    className={`w-full flex items-center px-4 py-2 text-sm rounded-lg transition-colors ${
+                      activeTab === item.tab ? "bg-blue-50 text-blue-600" : "text-gray-600 hover:bg-gray-50"
+                    }`}
+                  >
+                    <item.icon className="w-5 h-5 mr-3" />
+                    {item?.name}
+                  </button>
+                ))}
             </nav>
 
             {/* Logout Button */}
@@ -358,7 +543,7 @@ function Account() {
         {/* Main Content */}
         <div className="md:pl-64 flex-1">
           <div className="max-w-6xl mx-auto px-4 py-8">
-            {activeTab === 'overview' && (
+            {activeTab === "overview" && (
               <div className="space-y-6">
                 {/* Quick Stats */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -377,9 +562,7 @@ function Account() {
                       <div className="ml-4">
                         <h3 className="text-sm font-medium text-gray-500">Total Spent</h3>
                         <p className="text-2xl font-semibold text-gray-900">
-                          {formatCurrency(
-                            orders.reduce((total, order) => total + (Number(order.TotalAmount) || 0), 0)
-                          )}
+                          {formatCurrency(orders.reduce((total, order) => total + (Number(order.TotalAmount) || 0), 0))}
                         </p>
                       </div>
                     </div>
@@ -393,34 +576,27 @@ function Account() {
                       </div>
                     </div>
                   </div>
-                
-                { user.user_role ==="admin" && (
-               <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                    <div className="flex items-center">
-                      <User2 className="w-12 h-12 text-purple-600" />
-                      <div className="ml-4">
-                        <h3 className="text-sm font-medium text-gray-500">Users</h3>
-                        <p className="text-2xl font-semibold text-gray-900">{userData.length}</p>
+
+                  {user.user_role === "admin" && (
+                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                      <div className="flex items-center">
+                        <User2 className="w-12 h-12 text-purple-600" />
+                        <div className="ml-4">
+                          <h3 className="text-sm font-medium text-gray-500">Users</h3>
+                          <p className="text-2xl font-semibold text-gray-900">{userData.length}</p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )
-                
-                }
+                  )}
                 </div>
-                
 
-               
                 {/* Recent Activity */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200">
                   <div className="p-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
                     <div className="space-y-4">
                       {recentActivity.map((activity, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center justify-between py-3 border-b last:border-0"
-                        >
+                        <div key={index} className="flex items-center justify-between py-3 border-b last:border-0">
                           <div className="flex items-center">
                             <Clock className="w-5 h-5 text-gray-400 mr-3" />
                             <div>
@@ -442,7 +618,15 @@ function Account() {
                   <div className="p-6">
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="text-lg font-semibold text-gray-900">Personal Information</h3>
-                      <button className="text-blue-600 hover:text-blue-700 flex items-center">
+                      <button className="text-blue-600 hover:text-blue-700 flex items-center" 
+                      onClick={()=>{
+                        console.log("Am to handle user editing")
+                        user['id'] = user.id
+                        console.log("the is the logged in user to be editted", user)
+                        handleEditUser(user)
+                      }
+              
+                      } >
                         <Edit className="w-4 h-4 mr-1" />
                         Edit
                       </button>
@@ -460,12 +644,14 @@ function Account() {
                       </div>
                       <div>
                         <p className="text-sm text-gray-500 mb-1">Phone</p>
-                        <p className="text-sm font-medium text-gray-900">{user.phoneNumber || 'Not set'}</p>
+                        <p className="text-sm font-medium text-gray-900">{user.phoneNumber || "Not set"}</p>
                       </div>
                       <div>
                         <p className="text-sm text-gray-500 mb-1">Address</p>
                         <p className="text-sm font-medium text-gray-900">
-                          {user.user_address ? `${user.user_address}, ${user.user_city || ''}, ${user.user_county || ''}` : 'Not set'}
+                          {user.user_address
+                            ? `${user.user_address}, ${user.user_city || ""}, ${user.user_county || ""}`
+                            : "Not set"}
                         </p>
                       </div>
                     </div>
@@ -474,12 +660,12 @@ function Account() {
               </div>
             )}
 
-            {activeTab === 'users' && (
+            {activeTab === "users" && (
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 <div className="p-6 border-b border-gray-200">
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <h3 className="text-lg font-semibold text-gray-900">Users</h3>
-                    
+
                     <div className="relative">
                       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                       <input
@@ -492,12 +678,11 @@ function Account() {
                     </div>
                   </div>
                 </div>
-                
+
                 {userData.length === 0 ? (
                   <div className="p-8 text-center">
                     <ShoppingBag className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                     <p className="text-gray-600 mb-2">No User Available In the System.</p>
-                   
                   </div>
                 ) : (
                   <div className="overflow-x-auto">
@@ -508,7 +693,7 @@ function Account() {
                             User Image
                           </th>
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          First Name
+                            First Name
                           </th>
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Other Names
@@ -539,33 +724,38 @@ function Account() {
                         {userData.map((usr) => (
                           <tr key={usr.id} className="hover:bg-gray-50">
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                              <img src={usr.user_image} alt="User" className="w-8 h-8 rounded-full" />
+                              <img
+                                src={usr.user_image || "/placeholder.svg"}
+                                alt="User"
+                                className="w-8 h-8 rounded-full"
+                              />
                             </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{usr.user_first_name}</td>
+                            <td className="px-6 py-4 whitespace-nowrap">{usr.user_last_name}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          
-                          {usr.user_first_name}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                           {usr.user_last_name}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {usr.phoneNumber || 'Not set'}
+                              {usr.phoneNumber || "Not set"}
                             </td>
 
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {usr.user_city || 'Not set'}
+                              {usr.user_city || "Not set"}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {usr.user_county || 'Not set'}
+                              {usr.user_county || "Not set"}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {usr.user_email|| 'Not set'}
+                              {usr.user_email || "Not set"}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {usr.user_address || 'Not set'}
+                              {usr.user_address || "Not set"}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                               <div className="flex items-center justify-end space-x-2">
+                                <button
+                                  onClick={() => handleEditUser(usr)}
+                                  className="text-blue-600 hover:text-blue-900"
+                                >
+                                  <Edit className="w-4 h-4" />
+                                </button>
                                 <button
                                   onClick={() => handleViewOrder(user.id)}
                                   className="text-blue-600 hover:text-blue-900"
@@ -573,7 +763,7 @@ function Account() {
                                   <Eye className="w-4 h-4" />
                                 </button>
                                 <button
-                                  onClick={() => setDeleteConfirm({ show: true, type: 'order', id: usr.id })}
+                                  onClick={() => setDeleteConfirm({ show: true, type: "order", id: usr.id })}
                                   className="text-red-600 hover:text-red-900"
                                 >
                                   <Trash2 className="w-4 h-4" />
@@ -589,12 +779,12 @@ function Account() {
               </div>
             )}
 
-{activeTab === 'orders' && (
+            {activeTab === "orders" && (
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 <div className="p-6 border-b border-gray-200">
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <h3 className="text-lg font-semibold text-gray-900">Order History</h3>
-                    
+
                     <div className="relative">
                       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                       <input
@@ -607,7 +797,7 @@ function Account() {
                     </div>
                   </div>
                 </div>
-                
+
                 {orders.length === 0 ? (
                   <div className="p-8 text-center">
                     <ShoppingBag className="w-12 h-12 text-gray-400 mx-auto mb-4" />
@@ -631,11 +821,10 @@ function Account() {
                             Status
                           </th>
 
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Paid
                           </th>
-                      
-                      
+
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Total
                           </th>
@@ -654,19 +843,23 @@ function Account() {
                               {formatDate(order.time || order.time)}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                order.Status === 'Delivered' ? 'bg-green-100 text-green-800' :
-                                order.Status === 'Processing' ? 'bg-blue-100 text-blue-800' :
-                                order.Status === 'Shipped' ? 'bg-purple-100 text-purple-800' :
-                                order.Status === 'Cancelled' ? 'bg-red-100 text-red-800' :
-                                'bg-gray-100 text-gray-800'
-                              }`}>
-                                {order.Status || 'Pending'}
+                              <span
+                                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                  order.Status === "Delivered"
+                                    ? "bg-green-100 text-green-800"
+                                    : order.Status === "Processing"
+                                      ? "bg-blue-100 text-blue-800"
+                                      : order.Status === "Shipped"
+                                        ? "bg-purple-100 text-purple-800"
+                                        : order.Status === "Cancelled"
+                                          ? "bg-red-100 text-red-800"
+                                          : "bg-gray-100 text-gray-800"
+                                }`}
+                              >
+                                {order.Status || "Pending"}
                               </span>
                             </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {order.paid}
-                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{order.paid}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                               {formatCurrency(order.total)}
                             </td>
@@ -679,7 +872,7 @@ function Account() {
                                   <Eye className="w-4 h-4" />
                                 </button>
                                 <button
-                                  onClick={() => setDeleteConfirm({ show: true, type: 'order', id: order.id })}
+                                  onClick={() => setDeleteConfirm({ show: true, type: "order", id: order.id })}
                                   className="text-red-600 hover:text-red-900"
                                 >
                                   <Trash2 className="w-4 h-4" />
@@ -695,15 +888,12 @@ function Account() {
               </div>
             )}
 
-            {activeTab === 'categories'   && (
+            {activeTab === "categories" && (
               <div className="space-y-6">
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                   <div className="flex items-center justify-between mb-6">
                     <h3 className="text-lg font-semibold text-gray-900">Categories</h3>
-                    <Link
-                      to="/categories"
-                      className="flex items-center text-blue-600 hover:text-blue-700"
-                    >
+                    <Link to="/categories" className="flex items-center text-blue-600 hover:text-blue-700">
                       Add Category
                       <ChevronRight className="w-4 h-4 ml-1" />
                     </Link>
@@ -713,13 +903,13 @@ function Account() {
               </div>
             )}
 
-            {activeTab === 'products' && (
+            {activeTab === "products" && (
               <div className="space-y-6">
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                   <div className="p-6 border-b border-gray-200">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                       <h3 className="text-lg font-semibold text-gray-900">My Products</h3>
-                      
+
                       <div className="flex items-center gap-3">
                         <div className="relative">
                           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -731,7 +921,7 @@ function Account() {
                             className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full md:w-64"
                           />
                         </div>
-                        
+
                         <Link
                           to="/uploads"
                           className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -741,7 +931,7 @@ function Account() {
                       </div>
                     </div>
                   </div>
-                  
+
                   {products.length === 0 ? (
                     <div className="p-8 text-center">
                       <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
@@ -780,7 +970,7 @@ function Account() {
                                   <div className="h-10 w-10 flex-shrink-0 rounded-md bg-gray-200 overflow-hidden">
                                     {product.ProductImage ? (
                                       <img
-                                        src={product.Link}
+                                        src={product.Link || "/placeholder.svg"}
                                         alt={product.Name}
                                         className="h-10 w-10 object-cover"
                                       />
@@ -790,10 +980,10 @@ function Account() {
                                   </div>
                                   <div className="ml-4">
                                     <div className="text-sm font-medium text-gray-900">
-                                      {product.Name || 'Unnamed Product'}
+                                      {product.Name || "Unnamed Product"}
                                     </div>
                                     <div className="text-sm text-gray-500 max-w-xs truncate">
-                                      {product.Description || 'No description'}
+                                      {product.Description || "No description"}
                                     </div>
                                   </div>
                                 </div>
@@ -802,16 +992,20 @@ function Account() {
                                 {formatCurrency(product.Price)}
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
-                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                  (product.ProductQuantity > 10) ? 'bg-green-100 text-green-800' :
-                                  (product.ProductQuantity > 0) ? 'bg-yellow-100 text-yellow-800' :
-                                  'bg-red-100 text-red-800'
-                                }`}>
-                                  {product.ProductQuantity > 0 ? `${product.ProductQuantity} in stock` : 'Out of stock'}
+                                <span
+                                  className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                    product.ProductQuantity > 10
+                                      ? "bg-green-100 text-green-800"
+                                      : (product.ProductQuantity > 0)
+                                        ? "bg-yellow-100 text-yellow-800"
+                                        : "bg-red-100 text-red-800"
+                                  }`}
+                                >
+                                  {product.ProductQuantity > 0 ? `${product.ProductQuantity} in stock` : "Out of stock"}
                                 </span>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {product.Category || 'Uncategorized'}
+                                {product.Category || "Uncategorized"}
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <div className="flex items-center justify-end space-x-2">
@@ -822,7 +1016,7 @@ function Account() {
                                     <Edit className="w-4 h-4" />
                                   </button>
                                   <button
-                                    onClick={() => setDeleteConfirm({ show: true, type: 'product', id: product.id })}
+                                    onClick={() => setDeleteConfirm({ show: true, type: "product", id: product.id })}
                                     className="text-red-600 hover:text-red-900"
                                   >
                                     <Trash2 className="w-4 h-4" />
@@ -839,7 +1033,7 @@ function Account() {
               </div>
             )}
 
-            {activeTab === 'settings' && (
+            {activeTab === "settings" && (
               <div className="space-y-6">
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Account Settings</h3>
@@ -869,7 +1063,8 @@ function Account() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default Account;
+export default Account
+
