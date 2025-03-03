@@ -305,7 +305,7 @@ function Account() {
               user_last_name: formData.get("lastName"),
               phoneNumber: formData.get("phone"),
               user_city: formData.get("city"),
-              user_county: formData.get("county"),
+              user_county: formData.get("country"),
               user_address: formData.get("address"),
               user_role:user.user_role,
             
