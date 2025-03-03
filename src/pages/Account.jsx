@@ -394,7 +394,18 @@ function Account() {
                     </div>
                   </div>
                 </div>
-
+                { user.user_role ==="admin" (
+               <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <div className="flex items-center">
+                      <Person className="w-12 h-12 text-purple-600" />
+                      <div className="ml-4">
+                        <h3 className="text-sm font-medium text-gray-500">Users</h3>
+                        <p className="text-2xl font-semibold text-gray-900">{userData.length}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>)
+                }
                 {/* Recent Activity */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200">
                   <div className="p-6">
