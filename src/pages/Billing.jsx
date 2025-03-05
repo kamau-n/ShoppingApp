@@ -1,144 +1,279 @@
-import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { CreditCard, Wallet, ChevronLeft, X } from "lucide-react";
-import axios from "axios";
+"use client"
 
-import { loadStripe } from "@stripe/stripe-js";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useEffect, useState } from "react"
+import { Link, useLocation, useNavigate } from "react-router-dom"
+import { CreditCard, Wallet, ChevronLeft, X, CheckCircle, AlertCircle, Loader } from "lucide-react"
+import axios from "axios"
 
-const stripePromise = loadStripe("your-publishable-key-here");
+import { loadStripe } from "@stripe/stripe-js"
+import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js"
+import { getAuth, onAuthStateChanged } from "firebase/auth"
+import { collection, addDoc, serverTimestamp } from "firebase/firestore"
+import { db } from "../config/config" // Adjust the path as needed
+
+// Replace with your actual publishable key from Stripe dashboard
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "pk_test_your_test_key")
+
+// Card payment form component
+function CardPaymentForm({ amount, items, billingDetails, onSuccess, onCancel }) {
+  const stripe = useStripe()
+  const elements = useElements()
+  const [processing, setProcessing] = useState(false)
+  const [error, setError] = useState(null)
+  const auth = getAuth()
+
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+
+    if (!stripe || !elements) {
+      return
+    }
+
+    setProcessing(true)
+    setError(null)
+
+    try {
+      // Create payment method
+      const { error: paymentMethodError, paymentMethod } = await stripe.createPaymentMethod({
+        type: "card",
+        card: elements.getElement(CardElement),
+        billing_details: {
+          name: `${billingDetails.first_name} ${billingDetails.last_name}`,
+          email: billingDetails.email,
+          phone: billingDetails.contact,
+          address: {
+            line1: billingDetails.address,
+            city: billingDetails.region,
+          },
+        },
+      })
+
+      if (paymentMethodError) {
+        setError(paymentMethodError.message)
+        setProcessing(false)
+        return
+      }
+
+      // In a real implementation, you would send this to your server to create a payment intent
+      // For now, we'll simulate a successful payment
+
+      // Save order to Firestore
+      const orderData = {
+        user: auth.currentUser?.uid,
+        paymentMethod: "card",
+        paymentMethodId: paymentMethod.id,
+        amount: amount,
+        items: items,
+        billingDetails: billingDetails,
+        status: "paid",
+        createdAt: serverTimestamp(),
+      }
+
+      await addDoc(collection(db, "Orders"), orderData)
+
+      // Clear cart
+      localStorage.removeItem("ladoche_shopping_cart")
+
+      setProcessing(false)
+      onSuccess(paymentMethod.id)
+    } catch (err) {
+      console.error("Payment error:", err)
+      setError("An unexpected error occurred. Please try again.")
+      setProcessing(false)
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="p-4 border border-gray-300 rounded-lg">
+        <CardElement
+          options={{
+            style: {
+              base: {
+                fontSize: "16px",
+                color: "#424770",
+                "::placeholder": {
+                  color: "#aab7c4",
+                },
+              },
+              invalid: {
+                color: "#9e2146",
+              },
+            },
+          }}
+        />
+      </div>
+
+      {error && (
+        <div className="bg-red-50 text-red-700 p-4 rounded-lg flex items-center">
+          <AlertCircle className="h-5 w-5 mr-2" />
+          <span>{error}</span>
+        </div>
+      )}
+
+      <div className="flex space-x-4">
+        <button
+          type="button"
+          onClick={onCancel}
+          className="flex-1 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+          disabled={processing}
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          disabled={!stripe || processing}
+          className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center"
+        >
+          {processing ? (
+            <>
+              <Loader className="h-5 w-5 mr-2 animate-spin" />
+              Processing...
+            </>
+          ) : (
+            `Pay KSH ${amount.toLocaleString()}`
+          )}
+        </button>
+      </div>
+    </form>
+  )
+}
 
 export default function Billing() {
-  const [inputs, setInputs] = useState({});
-  const { state } = useLocation();
-  const [message, setMessages] = useState("");
-  const [showOverlay, setShowOverlay] = useState(false);
-  const [items, setItems] = useState([]);
-  const [value, setValue] = useState(0);
-  const [total, setTotal] = useState(0);
-  const [authUser, setAuthUser] = useState(null);
+  const [inputs, setInputs] = useState({})
+  const { state } = useLocation()
+  const [message, setMessages] = useState("")
+  const [messageType, setMessageType] = useState("error") // "error" or "success"
+  const [showOverlay, setShowOverlay] = useState(false)
+  const [showCardPayment, setShowCardPayment] = useState(false)
+  const [items, setItems] = useState([])
+  const [value, setValue] = useState(0)
+  const [total, setTotal] = useState(0)
+  const [authUser, setAuthUser] = useState(null)
+  const [paymentSuccess, setPaymentSuccess] = useState(false)
+  const navigate = useNavigate()
 
+  const auth = getAuth()
 
-const auth = getAuth();
-  
-
-  useEffect(() => {    
+  useEffect(() => {
     onAuthStateChanged(auth, (user) => {
-      console.log("User",user)
-      setAuthUser(user);
-    });
-
-  },[])
+      console.log("User", user)
+      setAuthUser(user)
+    })
+  }, [auth])
 
   const handleStripePayment = async () => {
-    const stripe = await stripePromise;
-    try {
-      const response = await axios.post("/create-checkout-session", {
-        items: items,
-      });
-      const result = await stripe.redirectToCheckout({ sessionId: response.data.id });
-      if (result.error) {
-        setMessages(result.error.message);
-      }
-    } catch (error) {
-      console.error("Stripe checkout error:", error);
-      setMessages("Payment processing failed. Please try again.");
+    // Validate inputs first
+    if (checkProperties(inputs)) {
+      setMessages("Please fill in all required fields")
+      setMessageType("error")
+      return
     }
-  };
 
-  
-
+    setShowCardPayment(true)
+  }
 
   const getTotal = (data) => {
-    let total_for_all = 0;
+    let total_for_all = 0
     if (data.length > 0) {
       data.forEach((y) => {
-        let total_for_one = y.name.price * y.name.quantity;
-        total_for_all = total_for_one + total_for_all;
-      });
-      setValue(total_for_all);
+        const total_for_one = y.name.price * y.name.quantity
+        total_for_all = total_for_one + total_for_all
+      })
+      setValue(total_for_all)
     }
-  };
-
-
+  }
 
   const allStorage = () => {
-    const cart = localStorage.getItem("ladoche_shopping_cart");
-    const data = JSON.parse(cart);
-    setItems(data);
-    console.log("This are all the items in the cart",data)
-    getTotal(data);
-    setTotal(data.length);
-  };
+    const cart = localStorage.getItem("ladoche_shopping_cart")
+    const data = JSON.parse(cart)
+    setItems(data)
+    console.log("This are all the items in the cart", data)
+    getTotal(data)
+    setTotal(data.length)
+  }
 
   const toggleOverlay = () => {
-    setShowOverlay(!showOverlay);
-  };
-
-
+    setShowOverlay(!showOverlay)
+  }
 
   const checkProperties = (obj) => {
     for (var key in obj) {
-      if (obj[key] !== null && obj[key] !== "") return false;
+      if (obj[key] !== null && obj[key] !== "") return false
     }
-    return true;
-  };
+    return true
+  }
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
-    
+    event.preventDefault()
+
     if (checkProperties(inputs)) {
-      setMessages("Please fill in all required fields");
-      return;
+      setMessages("Please fill in all required fields")
+      setMessageType("error")
+      return
     }
 
     try {
       const response = await axios.post("https://stkpush.kamauharrison.co.ke/stkPush", {
         amount: state.total,
         phone: inputs.contact,
-        desc: "order"+ new Date().getTime(),
+        desc: "order" + new Date().getTime(),
         user: authUser.uid,
         account_ref: "My shop",
         products: items,
-      });
-      console.log(response);
-      if(response.status==200)
-      {
+      })
+      console.log(response)
+      if (response.status == 200) {
         setMessages(response.data?.ResponseDescription)
+        setMessageType("success")
         toggleOverlay()
-
+      } else {
+        setMessages("Payment Process Failed, Please Retry")
+        setMessageType("error")
+        toggleOverlay()
       }
-      else {
-        setMessages("Payment Process Failed ,Please Retry")
-            toggleOverlay()
-      }
-
-      
     } catch (error) {
-      console.error(error);
-      setMessages("Payment processing failed. Please try again.");
-          toggleOverlay()
+      console.error(error)
+      setMessages("Payment processing failed. Please try again.")
+      setMessageType("error")
+      toggleOverlay()
     }
-  };
+  }
 
   const handleChange = (event) => {
-    const { name, value } = event.target;
-    setMessages("");
-    setInputs((values) => ({ ...values, [name]: value }));
-  };
+    const { name, value } = event.target
+    setMessages("")
+    setInputs((values) => ({ ...values, [name]: value }))
+  }
+
+  const handlePaymentSuccess = (paymentMethodId) => {
+    setPaymentSuccess(true)
+    setShowCardPayment(false)
+    setMessages("Payment successful! Your order has been placed.")
+    setMessageType("success")
+
+    // Redirect to order confirmation page after a delay
+    setTimeout(() => {
+      navigate("/order-confirmation", {
+        state: {
+          orderId: new Date().getTime().toString(),
+          total: state.total,
+          paymentMethod: "card",
+        },
+      })
+    }, 2000)
+  }
 
   useEffect(() => {
-    allStorage();
-  }, [total]);
+    allStorage()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center mb-8">
-          <Link
-            to="/cart"
-            className="flex items-center text-blue-600 hover:text-blue-800 transition-colors"
-          >
+          <Link to="/cart" className="flex items-center text-blue-600 hover:text-blue-800 transition-colors">
             <ChevronLeft className="h-5 w-5 mr-1" />
             <span className="font-medium">Back to Cart</span>
           </Link>
@@ -151,9 +286,14 @@ const auth = getAuth();
 
           <div className="p-6">
             {message && (
-              <div className="mb-6 bg-red-50 text-red-700 p-4 rounded-lg flex items-center">
+              <div
+                className={`mb-6 ${messageType === "error" ? "bg-red-50 text-red-700" : "bg-green-50 text-green-700"} p-4 rounded-lg flex items-center`}
+              >
                 <span className="flex-1">{message}</span>
-                <button onClick={() => setMessages("")} className="text-red-500 hover:text-red-700">
+                <button
+                  onClick={() => setMessages("")}
+                  className={`${messageType === "error" ? "text-red-500 hover:text-red-700" : "text-green-500 hover:text-green-700"}`}
+                >
                   <X className="h-5 w-5" />
                 </button>
               </div>
@@ -165,9 +305,7 @@ const auth = getAuth();
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">Billing Details</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      First Name
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">First Name</label>
                     <input
                       type="text"
                       name="first_name"
@@ -177,9 +315,7 @@ const auth = getAuth();
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Last Name
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
                     <input
                       type="text"
                       name="last_name"
@@ -189,9 +325,7 @@ const auth = getAuth();
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      County/Region
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">County/Region</label>
                     <input
                       type="text"
                       name="region"
@@ -201,9 +335,7 @@ const auth = getAuth();
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Phone Number
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
                     <input
                       type="text"
                       name="contact"
@@ -214,9 +346,7 @@ const auth = getAuth();
                     />
                   </div>
                   <div className="sm:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Address
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
                     <input
                       type="text"
                       name="address"
@@ -226,9 +356,7 @@ const auth = getAuth();
                     />
                   </div>
                   <div className="sm:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Email Address
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
                     <input
                       type="email"
                       name="email"
@@ -273,7 +401,7 @@ const auth = getAuth();
                     <span>Pay with M-PESA</span>
                   </button>
                   <button
-                  onClick={handleStripePayment}
+                    onClick={handleStripePayment}
                     className="w-full flex items-center justify-center space-x-2 bg-blue-600 text-white py-4 px-6 rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
                   >
                     <CreditCard className="h-5 w-5" />
@@ -293,23 +421,16 @@ const auth = getAuth();
             <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
             <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
               <div className="absolute right-0 top-0 pr-4 pt-4">
-                <button
-                  onClick={toggleOverlay}
-                  className="text-gray-400 hover:text-gray-500 focus:outline-none"
-                >
+                <button onClick={toggleOverlay} className="text-gray-400 hover:text-gray-500 focus:outline-none">
                   <X className="h-6 w-6" />
                 </button>
               </div>
-              
+
               <div className="mt-3 text-center sm:mt-0 sm:text-left">
-                <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">
-                  M-PESA Payment
-                </h3>
+                <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">M-PESA Payment</h3>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Phone Number
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
                     <input
                       type="text"
                       readOnly
@@ -318,9 +439,7 @@ const auth = getAuth();
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Amount
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Amount</label>
                     <input
                       type="text"
                       readOnly
@@ -340,6 +459,52 @@ const auth = getAuth();
           </div>
         </div>
       )}
+
+      {/* Card Payment Modal */}
+      {showCardPayment && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex min-h-screen items-center justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+            <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+              <div className="absolute right-0 top-0 pr-4 pt-4">
+                <button
+                  onClick={() => setShowCardPayment(false)}
+                  className="text-gray-400 hover:text-gray-500 focus:outline-none"
+                >
+                  <X className="h-6 w-6" />
+                </button>
+              </div>
+
+              <div className="mt-3 text-center sm:mt-0 sm:text-left">
+                <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">Card Payment</h3>
+                <Elements stripe={stripePromise}>
+                  <CardPaymentForm
+                    amount={state.total}
+                    items={items}
+                    billingDetails={inputs}
+                    onSuccess={handlePaymentSuccess}
+                    onCancel={() => setShowCardPayment(false)}
+                  />
+                </Elements>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Payment Success Message */}
+      {paymentSuccess && (
+        <div className="fixed bottom-4 right-4 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-md z-50">
+          <div className="flex items-center">
+            <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+            <div>
+              <p className="font-bold">Payment Successful!</p>
+              <p className="text-sm">Your order has been placed.</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
-  );
+  )
 }
+

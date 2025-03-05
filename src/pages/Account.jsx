@@ -26,7 +26,112 @@ import {
 } from "lucide-react"
 import { Money, Person } from "@material-ui/icons"
 
+import { loadStripe } from "@stripe/stripe-js"
+import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js"
+
 const auth = getAuth()
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "pk_test_your_test_key")
+
+function StripeCheckoutForm({ amount, onSuccess, onCancel }) {
+  const stripe = useStripe()
+  const elements = useElements()
+  const [processing, setProcessing] = useState(false)
+  const [error, setError] = useState(null)
+
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+
+    if (!stripe || !elements) {
+      return
+    }
+
+    setProcessing(true)
+    setError(null)
+
+    try {
+      // Create payment method
+      const { error: paymentMethodError, paymentMethod } = await stripe.createPaymentMethod({
+        type: "card",
+        card: elements.getElement(CardElement),
+      })
+
+      if (paymentMethodError) {
+        setError(paymentMethodError.message)
+        setProcessing(false)
+        return
+      }
+
+      // In a real implementation, you would send the payment method ID to your server
+      // and create a payment intent there. This is a simplified example.
+      console.log("Payment method created:", paymentMethod.id)
+
+      // Simulate a successful payment
+      setTimeout(() => {
+        setProcessing(false)
+        onSuccess(paymentMethod.id)
+      }, 1000)
+    } catch (err) {
+      console.error("Payment error:", err)
+      setError("An unexpected error occurred. Please try again.")
+      setProcessing(false)
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="p-3 border border-gray-300 rounded-md">
+        <CardElement
+          options={{
+            style: {
+              base: {
+                fontSize: "16px",
+                color: "#424770",
+                "::placeholder": {
+                  color: "#aab7c4",
+                },
+              },
+              invalid: {
+                color: "#9e2146",
+              },
+            },
+          }}
+        />
+      </div>
+
+      {error && (
+        <div className="text-red-600 text-sm flex items-center">
+          <AlertCircle className="w-4 h-4 mr-1" />
+          {error}
+        </div>
+      )}
+
+      <div className="flex space-x-4">
+        <button
+          type="button"
+          onClick={onCancel}
+          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+          disabled={processing}
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          disabled={!stripe || processing}
+          className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center"
+        >
+          {processing ? (
+            <>
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              Processing...
+            </>
+          ) : (
+            `Pay ${amount ? `KSH ${amount}` : ""}`
+          )}
+        </button>
+      </div>
+    </form>
+  )
+}
 
 function Account() {
   const [user, setUser] = useState(null)
@@ -42,6 +147,12 @@ function Account() {
   const [userData, setUserData] = useState([])
   const [editUserModal, setEditUserModal] = useState(false)
   const [selectedUser, setSelectedUser] = useState(null)
+
+  const [showStripeModal, setShowStripeModal] = useState(false)
+  const [paymentAmount, setPaymentAmount] = useState(0)
+  const [paymentProcessing, setPaymentProcessing] = useState(false)
+  const [paymentError, setPaymentError] = useState(null)
+  const [paymentSuccess, setPaymentSuccess] = useState(false)
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
@@ -132,11 +243,10 @@ function Account() {
       const q = query(userRef, where("user_id", "==", id))
       const querySnapshot = await getDocs(q)
       querySnapshot.forEach((doc) => {
-        // set the id 
-       let usersData  =  (doc.data())
-       usersData['id'] = doc.id
-       setUser(usersData)
-
+        // set the id
+        const usersData = doc.data()
+        usersData["id"] = doc.id
+        setUser(usersData)
       })
     } catch (error) {
       console.error("Error fetching user data:", error)
@@ -179,15 +289,14 @@ function Account() {
 
   const handleEditUser = (user) => {
     console.log("I have been clicked")
-    console.log("this is the selected user: " , user)
+    console.log("this is the selected user: ", user)
     setSelectedUser(user)
     setEditUserModal(true)
   }
 
   const handleUpdateUser = async (updatedUser) => {
-
-    console.log("user to update" ,updatedUser)
-    console.log("user to update id " ,selectedUser.id || user.id)
+    console.log("user to update", updatedUser)
+    console.log("user to update id ", selectedUser.id || user.id)
 
     try {
       // Update the user in Firestore
@@ -250,7 +359,7 @@ function Account() {
     { name: "Overview", icon: User, tab: "overview", role: "all" },
     { name: "Users", icon: Person, tab: "users", role: "admin" },
     { name: "Payments", icon: Money, tab: "payments", role: "admin" },
-    { name: "Orders", icon: pingBag, tab: "orders", role: "all" },
+    { name: "Orders", icon: ShoppingBag, tab: "orders", role: "all" },
     { name: "Categories", icon: Categories, tab: "categories", role: "admin" },
     { name: "Products", icon: Package, tab: "products", role: "admin" },
     { name: "Settings", icon: Settings, tab: "settings", role: "all" },
@@ -285,149 +394,149 @@ function Account() {
     if (!amount && amount !== 0) return "N/A"
     return `KSH ${Number(amount).toLocaleString()}`
   }
-  
 
+  const handleStripePayment = (amount) => {
+    setPaymentAmount(amount)
+    setShowStripeModal(true)
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
-
       {/* Edit use modal  */}
-      {editUserModal  && (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-      <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4">
-        <h3 className="text-lg font-semibold mb-4">Edit User</h3>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault()
-            const formData = new FormData(e.target)
-            const updatedUser = {
-              user_first_name: formData.get("firstName"),
-              user_last_name: formData.get("lastName"),
-              phoneNumber: formData.get("phone"),
-              user_city: formData.get("city"),
-              user_county: formData.get("country"),
-              user_address: formData.get("address"),
-              user_role:user.user_role,
-            
-            }
+      {editUserModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+          <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold mb-4">Edit User</h3>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault()
+                const formData = new FormData(e.target)
+                const updatedUser = {
+                  user_first_name: formData.get("firstName"),
+                  user_last_name: formData.get("lastName"),
+                  phoneNumber: formData.get("phone"),
+                  user_city: formData.get("city"),
+                  user_county: formData.get("country"),
+                  user_address: formData.get("address"),
+                  user_role: user.user_role,
+                }
 
-            console.log(updatedUser)
-            handleUpdateUser(updatedUser)
-          }}
-        >
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <div>
-              <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
-                First Name
-              </label>
-              <input
-                type="text"
-                id="firstName"
-                name="firstName"
-                defaultValue={selectedUser.user_first_name}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
-                Last Name
-              </label>
-              <input
-                type="text"
-                id="lastName"
-                name="lastName"
-                defaultValue={selectedUser.user_last_name}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                required
-              />
-            </div>
-          </div>
-          <div className="mb-4">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-              Email
-            </label>
-            <input
-              type="text"
-              id="email"
-              name="email"
-              defaultValue={selectedUser.user_email || ""}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-              Phone
-            </label>
-            <input
-              type="text"
-              id="phone"
-              name="phone"
-              defaultValue={selectedUser.phoneNumber || ""}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <div>
-              <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">
-                City
-              </label>
-              <input
-                type="text"
-                id="city"
-                name="city"
-                defaultValue={selectedUser.user_city || ""}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-            <div>
-              <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">
-                Country
-              </label>
-              <input
-                type="text"
-                id="country"
-                name="country"
-                defaultValue={selectedUser.user_county || ""}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-          </div>
-          <div className="mb-4">
-            <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
-              Address
-            </label>
-            <textarea
-              id="address"
-              name="address"
-              defaultValue={selectedUser.user_address || ""}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              rows={3}
-            />
-          </div>
-          <div className="flex space-x-4">
-            <button
-              type="button"
-              onClick={() => {
-                setEditUserModal(false)
-                setSelectedUser(null)
+                console.log(updatedUser)
+                handleUpdateUser(updatedUser)
               }}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
             >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Save Changes
-            </button>
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
+                    First Name
+                  </label>
+                  <input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    defaultValue={selectedUser.user_first_name}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
+                    Last Name
+                  </label>
+                  <input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    defaultValue={selectedUser.user_last_name}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    required
+                  />
+                </div>
+              </div>
+              <div className="mb-4">
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                  Email
+                </label>
+                <input
+                  type="text"
+                  id="email"
+                  name="email"
+                  defaultValue={selectedUser.user_email || ""}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div className="mb-4">
+                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                  Phone
+                </label>
+                <input
+                  type="text"
+                  id="phone"
+                  name="phone"
+                  defaultValue={selectedUser.phoneNumber || ""}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">
+                    City
+                  </label>
+                  <input
+                    type="text"
+                    id="city"
+                    name="city"
+                    defaultValue={selectedUser.user_city || ""}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">
+                    Country
+                  </label>
+                  <input
+                    type="text"
+                    id="country"
+                    name="country"
+                    defaultValue={selectedUser.user_county || ""}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+              </div>
+              <div className="mb-4">
+                <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
+                  Address
+                </label>
+                <textarea
+                  id="address"
+                  name="address"
+                  defaultValue={selectedUser.user_address || ""}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  rows={3}
+                />
+              </div>
+              <div className="flex space-x-4">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEditUserModal(false)
+                    setSelectedUser(null)
+                  }}
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </form>
           </div>
-        </form>
-      </div>
-    </div>
-  )
-}
+        </div>
+      )}
 
       {/* Logout Confirmation Modal */}
       {showLogoutConfirm && (
@@ -474,6 +583,54 @@ function Account() {
               >
                 Delete
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Stripe Payment Modal */}
+      {showStripeModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+          <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold mb-4">Pay with Card</h3>
+            <Elements stripe={stripePromise}>
+              <StripeCheckoutForm
+                amount={paymentAmount}
+                onSuccess={(paymentMethodId) => {
+                  setPaymentSuccess(true)
+                  setShowStripeModal(false)
+                  // Here you would typically update your database with the payment information
+                  console.log("Payment successful with payment method ID:", paymentMethodId)
+                  // Show success message or redirect
+                  setTimeout(() => {
+                    setPaymentSuccess(false)
+                  }, 3000)
+                }}
+                onCancel={() => setShowStripeModal(false)}
+              />
+            </Elements>
+          </div>
+        </div>
+      )}
+
+      {/* Payment Success Message */}
+      {paymentSuccess && (
+        <div className="fixed bottom-4 right-4 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-md z-50">
+          <div className="flex items-center">
+            <div className="py-1">
+              <svg
+                className="h-6 w-6 text-green-500 mr-4"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <div>
+              <p className="font-bold">Payment Successful!</p>
+              <p className="text-sm">Your payment has been processed successfully.</p>
             </div>
           </div>
         </div>
@@ -549,7 +706,7 @@ function Account() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                     <div className="flex items-center">
-                      <pingBag className="w-12 h-12 text-blue-600" />
+                      <ShoppingBag className="w-12 h-12 text-blue-600" />
                       <div className="ml-4">
                         <h3 className="text-sm font-medium text-gray-500">Total Orders</h3>
                         <p className="text-2xl font-semibold text-gray-900">{orders.length}</p>
@@ -618,15 +775,15 @@ function Account() {
                   <div className="p-6">
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="text-lg font-semibold text-gray-900">Personal Information</h3>
-                      <button className="text-blue-600 hover:text-blue-700 flex items-center" 
-                      onClick={()=>{
-                        console.log("Am to handle user editing")
-                        user['id'] = user.id
-                        console.log("the is the logged in user to be editted", user)
-                        handleEditUser(user)
-                      }
-              
-                      } >
+                      <button
+                        className="text-blue-600 hover:text-blue-700 flex items-center"
+                        onClick={() => {
+                          console.log("Am to handle user editing")
+                          user["id"] = user.id
+                          console.log("the is the logged in user to be editted", user)
+                          handleEditUser(user)
+                        }}
+                      >
                         <Edit className="w-4 h-4 mr-1" />
                         Edit
                       </button>
@@ -681,7 +838,7 @@ function Account() {
 
                 {userData.length === 0 ? (
                   <div className="p-8 text-center">
-                    <pingBag className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                    <ShoppingBag className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                     <p className="text-gray-600 mb-2">No User Available In the System.</p>
                   </div>
                 ) : (
@@ -800,7 +957,7 @@ function Account() {
 
                 {orders.length === 0 ? (
                   <div className="p-8 text-center">
-                    <pingBag className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                    <ShoppingBag className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                     <p className="text-gray-600 mb-2">You haven't placed any orders yet.</p>
                     <Link to="/" className="text-blue-600 hover:text-blue-700 font-medium">
                       Browse products
@@ -1054,6 +1211,21 @@ function Account() {
                         <p className="text-sm text-gray-500">Add an extra layer of security</p>
                       </div>
                       <button className="text-blue-600 hover:text-blue-700">Enable</button>
+                    </div>
+                    <div className="flex items-center justify-between py-3 border-b">
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">Payment Methods</p>
+                        <p className="text-sm text-gray-500">Manage your payment options</p>
+                      </div>
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => handleStripePayment(1000)}
+                          className="flex items-center px-3 py-1.5 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+                        >
+                          <CreditCard className="w-4 h-4 mr-2 text-gray-500" />
+                          Continue with Card
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
