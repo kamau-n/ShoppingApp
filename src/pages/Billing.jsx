@@ -59,7 +59,7 @@ function CardPaymentForm({ amount, items, billingDetails, onSuccess, onCancel })
 
       // Save order to Firestore
       const orderData = {
-        CustomerID: auth.currentUser?.uid,
+        CustomerID: user?.uid,
         paymentMethod: "card",
         paymentMethodId: paymentMethod.id,
         amount: amount,
