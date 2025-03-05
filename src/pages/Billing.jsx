@@ -59,14 +59,15 @@ function CardPaymentForm({ amount, items, billingDetails, onSuccess, onCancel })
 
       // Save order to Firestore
       const orderData = {
-        user: auth.currentUser?.uid,
+        CustomerID: auth.currentUser?.uid,
         paymentMethod: "card",
         paymentMethodId: paymentMethod.id,
         amount: amount,
         items: items,
+        delivered:false,
         billingDetails: billingDetails,
-        status: "paid",
-        createdAt: serverTimestamp(),
+        paid: true,
+        time: serverTimestamp(),
       }
 
       await addDoc(collection(db, "Orders"), orderData)
