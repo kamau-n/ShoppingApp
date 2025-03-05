@@ -12,7 +12,7 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore"
 import { db } from "../config/config" // Adjust the path as needed
 
 // Replace with your actual publishable key from Stripe dashboard
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "pk_test_your_test_key")
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "pk_test_51QwP4hDCmUMKTgbXqjY44MqogUdggkakGTU3ZDTTCImGsa53XZW63x7YHjGzIFAakslW14kNEWxrWdtk4bjzbSQP00RZmOxwrX")
 
 // Card payment form component
 function CardPaymentForm({ amount, items, billingDetails, onSuccess, onCancel }) {
