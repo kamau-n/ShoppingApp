@@ -264,7 +264,7 @@ export default function Billing() {
 
     // Redirect to order confirmation page after a delay
     setTimeout(() => {
-      navigate("/order-confirmation", {
+      navigate("/account", {
         state: {
           orderId: new Date().getTime().toString(),
           total: state.total,
