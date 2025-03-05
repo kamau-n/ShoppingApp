@@ -15,7 +15,7 @@ import { db } from "../config/config" // Adjust the path as needed
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "pk_test_51QwP4hDCmUMKTgbXqjY44MqogUdggkakGTU3ZDTTCImGsa53XZW63x7YHjGzIFAakslW14kNEWxrWdtk4bjzbSQP00RZmOxwrX")
 
 // Card payment form component
-function CardPaymentForm({ amount, items, billingDetails, onSuccess, onCancel }) {
+function CardPaymentForm({ amount, items, billingDetails, onSuccess, onCancel,authUser }) {
   const stripe = useStripe()
   const elements = useElements()
   const [processing, setProcessing] = useState(false)
@@ -485,6 +485,7 @@ export default function Billing() {
                     billingDetails={inputs}
                     onSuccess={handlePaymentSuccess}
                     onCancel={() => setShowCardPayment(false)}
+                    authUser={authUser}
                   />
                 </Elements>
               </div>
