@@ -250,7 +250,7 @@ function Account() {
     { name: "Overview", icon: User, tab: "overview", role: "all" },
     { name: "Users", icon: Person, tab: "users", role: "admin" },
     { name: "Payments", icon: Money, tab: "payments", role: "admin" },
-    { name: "Orders", icon: ShoppingBag, tab: "orders", role: "all" },
+    { name: "Orders", icon: pingBag, tab: "orders", role: "all" },
     { name: "Categories", icon: Categories, tab: "categories", role: "admin" },
     { name: "Products", icon: Package, tab: "products", role: "admin" },
     { name: "Settings", icon: Settings, tab: "settings", role: "all" },
@@ -549,7 +549,7 @@ function Account() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                     <div className="flex items-center">
-                      <ShoppingBag className="w-12 h-12 text-blue-600" />
+                      <pingBag className="w-12 h-12 text-blue-600" />
                       <div className="ml-4">
                         <h3 className="text-sm font-medium text-gray-500">Total Orders</h3>
                         <p className="text-2xl font-semibold text-gray-900">{orders.length}</p>
@@ -681,7 +681,7 @@ function Account() {
 
                 {userData.length === 0 ? (
                   <div className="p-8 text-center">
-                    <ShoppingBag className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                    <pingBag className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                     <p className="text-gray-600 mb-2">No User Available In the System.</p>
                   </div>
                 ) : (
@@ -800,9 +800,9 @@ function Account() {
 
                 {orders.length === 0 ? (
                   <div className="p-8 text-center">
-                    <ShoppingBag className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                    <pingBag className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                     <p className="text-gray-600 mb-2">You haven't placed any orders yet.</p>
-                    <Link to="/shop" className="text-blue-600 hover:text-blue-700 font-medium">
+                    <Link to="/" className="text-blue-600 hover:text-blue-700 font-medium">
                       Browse products
                     </Link>
                   </div>
