@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import SimpleSlider from "../components/SimpleSlider";
-import { ShoppingCart, Star, ChevronRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { ChevronRight } from "lucide-react";
 import TopNav from "../components/TopNav";
 import Footer from "../components/Footer";
 import { db } from "../config/config";
@@ -15,35 +14,30 @@ import Advertiser from "../components/advertiser";
 const auth = getAuth();
 
 export default function Home() {
-  const drinkCollection = collection(db, "Fmeals");
-  const mealCollection = collection(db, "Fdrinks");
-  const productsCollection = collection(db, "ProductsCategory");
-  const [fMeals, setFmeals] = useState([]);
-  const [fDrinks, setDrinks] = useState([]);
   const [logged, setLogged] = useState(false);
   const [proCategory, setProCategory] = useState([]);
-  const type = "Fmeals";
   const navigate = useNavigate();
 
-  const fetchFeatured = async () => {
-    const data = await getDocs(drinkCollection);
-    setFmeals(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-  };
 
-  const fetchProducts = async () => {
-    const data = await getDocs(productsCollection);
-    setProCategory(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-    console.log(proCategory);
+  function fetchCategories() {
+    const categories = [];
+    const categoriesRef = collection(db, "ProductsCategory");
 
-  };
-
-  useEffect(() => {
-    fetchFeatured();
-    fetchProducts();
-    
+    getDocs(categoriesRef).then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        categories.push(doc.data());
+      });
+      console.log(categories);
+      setProCategory(categories);
+    }
+    );
+  }
+  useEffect(() => {    
     onAuthStateChanged(auth, (user) => {
       setLogged(!!user);
     });
+
+    fetchCategories();
 
     if (!localStorage.getItem("ladoche_shopping_cart")) {
       localStorage.setItem("ladoche_shopping_cart", "[]");
@@ -58,13 +52,13 @@ export default function Home() {
       <main className="mx-8 sm:mx-16 md:mx32 px-4 sm:px-6 lg:px-8 py-8">
         {/* Hero Section */}
         <div className="mb-12">
-          <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+          <div className="bg-white rounded-2xl w-5/6 m-auto shadow-lg overflow-hidden">
             <Advertiser />
           </div>
         </div>
 
         {/* Categories Section */}
-        <section className="mb-16">
+        <section className="w-5/6 m-auto">
           <h2 className="text-3xl font-bold text-gray-900 mb-8">Our Categories</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-6">
             {proCategory.map((category, index) => (
@@ -135,7 +129,7 @@ export default function Home() {
         </section> */}
 
         {/* Reviews Section */}
-        <section className="bg-white rounded-2xl shadow-lg p-8 mb-16">
+        <section className="bg-white rounded-2xl shadow-lg p-8  w-5/6 my-16 mx-auto">
           <h2 className="text-3xl font-bold text-gray-900 mb-8">Customer Reviews</h2>
           {/* <Review /> */}
         </section>

@@ -81,7 +81,7 @@ const Header = () => {
             {/* Logo */}
             <Link
               to="/"
-              className="flex items-center space-x-2 text-2xl font-bold tracking-tight hover:text-white/90 transition-all duration-200 transform hover:scale-105"
+              className="flex items-center space-x-2 text-2xl font-bold tracking-tight hover:text-blue-800/90 transition-all duration-200 transform hover:scale-105"
             >
               <span className="bg-white/10 rounded-lg p-2">My Shop</span>
             </Link>

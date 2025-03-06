@@ -14,6 +14,10 @@ import Billing from "./pages/Billing";
 import Account from "./pages/Account";
 import About from "./pages/About";
 import AddCategory from "./pages/AddCategory.jsx";
+import BlogPage from "./pages/blog.jsx";
+import FAQsPage from "./pages/faqs.jsx";
+import PrivacyPolicyPage from "./pages/policy.jsx";
+import ContactPage from "./pages/contact.jsx";
 
 function App() {
   return (
@@ -31,14 +35,11 @@ function App() {
           <Route path="/billing" element={<Billing />} />
           <Route path="/account" element={<Account />} />
           <Route path="/about" element={<About />} />
-          <Route path="/categories" element={<AddCategory />} />
-          
-
-          
-
-          
-
-          
+          <Route path="/blog" element={<BlogPage />} />
+          <Route path="/faqs" element={<FAQsPage />} />
+          <Route path="/policy" element={<PrivacyPolicyPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/categories" element={<AddCategory />} />  
         </Routes>
       </BrowserRouter>
     </div>

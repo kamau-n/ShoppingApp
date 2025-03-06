@@ -23,6 +23,9 @@ import {
   Eye,
   Search,
   User2,
+  Menu,
+  X,
+  Home,
 } from "lucide-react"
 import { Money, Person } from "@material-ui/icons"
 
@@ -147,6 +150,7 @@ function Account() {
   const [userData, setUserData] = useState([])
   const [editUserModal, setEditUserModal] = useState(false)
   const [selectedUser, setSelectedUser] = useState(null)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const [showStripeModal, setShowStripeModal] = useState(false)
   const [paymentAmount, setPaymentAmount] = useState(0)
@@ -400,6 +404,10 @@ function Account() {
     setShowStripeModal(true)
   }
 
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen)
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Edit use modal  */}
@@ -636,10 +644,52 @@ function Account() {
         </div>
       )}
 
+      {/* Mobile Header - Only visible on small screens */}
+      <header className="md:hidden flex items-center justify-between bg-white border-b border-gray-200 px-4 py-3 sticky top-0 z-30">
+        <div className="flex items-center">
+          <button
+            onClick={toggleMobileMenu}
+            className="p-2 rounded-md text-gray-500 hover:bg-gray-100"
+            aria-label="Toggle menu"
+          >
+            <Menu className="h-6 w-6" />
+          </button>
+          <h1 className="ml-3 text-lg font-semibold text-gray-900">{user.user_first_name}'s Account</h1>
+        </div>
+        <Link to="/" className="p-2 rounded-md text-blue-600 hover:bg-blue-50">
+          <Home className="h-6 w-6" />
+        </Link>
+      </header>
+
+      {/* Mobile Menu Overlay */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden" onClick={toggleMobileMenu}></div>
+      )}
+
       <div className="flex">
-        {/* Sidebar */}
-        <div className="hidden md:flex md:flex-col md:w-64 md:fixed md:inset-y-0 bg-white border-r border-gray-200">
-          <div className="flex flex-col flex-1 min-h-0">
+        {/* Sidebar - Desktop always visible, Mobile conditionally visible */}
+        <div
+          className={`${
+            mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+          } md:translate-x-0 fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-200 transition-transform duration-300 ease-in-out md:flex md:flex-col md:w-64 md:fixed md:inset-y-0`}
+        >
+          {/* Close button - Only visible on mobile */}
+          <button
+            onClick={toggleMobileMenu}
+            className="md:hidden absolute top-4 right-4 p-2 rounded-md text-gray-500 hover:bg-gray-100"
+          >
+            <X className="h-5 w-5" />
+          </button>
+
+          <div className="flex flex-col flex-1 min-h-0 pt-5 md:pt-0">
+            {/* Home link */}
+            <div className="px-4 mb-4">
+              <Link to="/" className="flex items-center text-blue-600 hover:text-blue-700 font-medium">
+                <Home className="h-5 w-5 mr-2" />
+                Back to Home
+              </Link>
+            </div>
+
             {/* Profile Section */}
             <div className="flex-shrink-0 p-4 border-b">
               <div className="relative">
@@ -667,13 +717,19 @@ function Account() {
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 px-2 py-4 space-y-1">
+            <nav className="flex-1 px-2 py-4 space-y-1 overflow-y-auto">
               {navigation
                 ?.filter((item) => item.role === "all" || (item.role === "admin" && user.user_role === "admin"))
                 .map((item) => (
                   <button
                     key={item?.name}
-                    onClick={() => setActiveTab(item.tab)}
+                    onClick={() => {
+                      setActiveTab(item.tab)
+                      // Close mobile menu when a tab is selected
+                      if (mobileMenuOpen) {
+                        setMobileMenuOpen(false)
+                      }
+                    }}
                     className={`w-full flex items-center px-4 py-2 text-sm rounded-lg transition-colors ${
                       activeTab === item.tab ? "bg-blue-50 text-blue-600" : "text-gray-600 hover:bg-gray-50"
                     }`}
@@ -698,7 +754,7 @@ function Account() {
         </div>
 
         {/* Main Content */}
-        <div className="md:pl-64 flex-1">
+        <div className="w-full md:pl-64 flex-1">
           <div className="max-w-6xl mx-auto px-4 py-8">
             {activeTab === "overview" && (
               <div className="space-y-6">

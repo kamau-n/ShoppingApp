@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
-    <footer className="bg-slate-50 px-4 md:px-6 lg:px-8 py-12">
+    <footer className="bg-slate-50 px-4  mx-8 md:px-6 lg:px-8 py-12">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 border-b border-slate-200 pb-8">
           {/* Company Info */}
@@ -79,7 +79,7 @@ export default function Footer() {
             <nav>
               <ul className="space-y-2">
                 <li>
-                  <Link  to ={{pathname:"/"}}  className="text-slate-600 hover:text-slate-900 transition-colors">
+                  <Link  to ={{pathname:"/contact"}}  className="text-slate-600 hover:text-slate-900 transition-colors">
                     Contact Us
                   </Link>
                 </li>
@@ -94,12 +94,12 @@ export default function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <Link  to ={{pathname:"/"}}  className="text-slate-600 hover:text-slate-900 transition-colors">
+                  <Link  to ={{pathname:"/faqs"}}  className="text-slate-600 hover:text-slate-900 transition-colors">
                     FAQ 
                   </Link>
                 </li>
                 <li>
-                  <Link to ={{pathname:"/"}}  className="text-slate-600 hover:text-slate-900 transition-colors">
+                  <Link to ={{pathname:"/account"}}  className="text-slate-600 hover:text-slate-900 transition-colors">
                     Track Your Order
                   </Link>
                 </li>
@@ -113,7 +113,7 @@ export default function Footer() {
             <nav>
               <ul className="space-y-2">
                 <li>
-                  <Link to ={{pathname:"/"}}  className="text-slate-600 hover:text-slate-900 transition-colors">
+                  <Link to ={{pathname:"/about"}}  className="text-slate-600 hover:text-slate-900 transition-colors">
                     Our Story
                   </Link>
                 </li>
@@ -123,7 +123,7 @@ export default function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <Link to ={{pathname:"/"}}  className="text-slate-600 hover:text-slate-900 transition-colors">
+                  <Link to ={{pathname:"/policy"}}  className="text-slate-600 hover:text-slate-900 transition-colors">
                     Privacy Policy
                   </Link>
                 </li>
@@ -133,7 +133,7 @@ export default function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <Link to ={{pathname:"/"}}  className="text-slate-600 hover:text-slate-900 transition-colors">
+                  <Link to ={{pathname:"/blog"}}  className="text-slate-600 hover:text-slate-900 transition-colors">
                     Blog
                   </Link>
                 </li>
@@ -144,7 +144,7 @@ export default function Footer() {
 
         {/* Copyright */}
         <div className="pt-8 text-center text-slate-600">
-          <p>&copy; {new Date().getFullYear()} Awesome. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} <a href="https://awesome.co.ke"> Awesome </a>  . All rights reserved.</p>
         </div>
       </div>
     </footer>
