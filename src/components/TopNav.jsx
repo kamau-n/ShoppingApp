@@ -23,7 +23,7 @@ const Header = () => {
     //setItems(data);
     console.log("This are all the items in the cart",data)
     getTotal(data);
-    setTotal(data.length);
+    setTotal(data?.length);
   };
 
 
