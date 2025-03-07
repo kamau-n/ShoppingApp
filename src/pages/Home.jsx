@@ -24,8 +24,12 @@ export default function Home() {
     const categoriesRef = collection(db, "ProductsCategory");
 
     getDocs(categoriesRef).then((querySnapshot) => {
+      let cat = {}
       querySnapshot.forEach((doc) => {
-        categories.push(doc.data());
+        cat = doc.data();
+        console.log(doc.id);
+        cat.id = doc.id;
+        categories.push(cat);
       });
       console.log(categories);
       setProCategory(categories);
@@ -62,11 +66,13 @@ export default function Home() {
           <h2 className="text-3xl font-bold text-gray-900 mb-8">Our Categories</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-6">
             {proCategory.map((category, index) => (
+              
               <div
                 key={index}
                 onClick={() => navigate("/product", { state: { type: category.id } })}
                 className="group relative h-64 overflow-hidden rounded-2xl cursor-pointer transform transition-all duration-300 hover:-translate-y-1"
               >
+            
                 <div
                   className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
                   style={{

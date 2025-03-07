@@ -14,6 +14,7 @@ const Product = () => {
   const [error, setError] = useState(null);
   const { state } = useLocation();
   const selectedCategory = state?.type;
+  console.log(state)
 
   const fetchProducts = async () => {
     try {
