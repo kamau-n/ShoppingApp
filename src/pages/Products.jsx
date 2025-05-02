@@ -4,7 +4,14 @@ import { collection, doc, getDoc } from "firebase/firestore";
 import { db } from "../config/config";
 import TopNav from "../components/TopNav";
 import Footer from "../components/Footer";
-import { Star, Minus, Plus, ShoppingCart, ImageOff, Loader2 } from 'lucide-react';
+import {
+  Star,
+  Minus,
+  Plus,
+  ShoppingCart,
+  ImageOff,
+  Loader2,
+} from "lucide-react";
 
 const mealsRef = collection(db, "Meals");
 
@@ -61,7 +68,7 @@ export default function ProductDetail() {
       cart2.push({ name: detail });
       localStorage.removeItem("ladoche_shopping_cart");
       localStorage.setItem("ladoche_shopping_cart", JSON.stringify(cart2));
-      
+
       setShowAlert(true);
       setTimeout(() => setShowAlert(false), 3000);
     } catch (err) {
@@ -94,8 +101,7 @@ export default function ProductDetail() {
           <div className="text-red-500 text-xl font-semibold mb-4">{error}</div>
           <button
             onClick={() => window.history.back()}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
+            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
             Go Back
           </button>
         </div>
@@ -107,11 +113,12 @@ export default function ProductDetail() {
   return (
     <div className="min-h-screen bg-gray-50">
       <TopNav />
-      
+
       {/* Alert */}
-      <div className={`fixed top-0 right-4 transition-transform duration-300 transform ${
-        showAlert ? 'translate-y-0 top-12' : '-translate-y-full'
-      }`}>
+      <div
+        className={`fixed top-0 right-4 transition-transform duration-300 transform ${
+          showAlert ? "translate-y-0 top-12" : "-translate-y-full"
+        }`}>
         <div className="bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center">
           <Star className="w-5 h-5 mr-2" />
           <span>Added to cart successfully!</span>
@@ -131,10 +138,10 @@ export default function ProductDetail() {
                 )}
                 {details?.Link ? (
                   <img
-                    src={details.Link || "/placeholder.svg"}
+                    src={details.Link}
                     alt={details.Name}
                     className={`w-full h-full object-cover transition-opacity duration-300 ${
-                      imageLoaded ? 'opacity-100' : 'opacity-0'
+                      imageLoaded ? "opacity-100" : "opacity-0"
                     }`}
                     onLoad={() => setImageLoaded(true)}
                     onError={(e) => {
@@ -154,26 +161,33 @@ export default function ProductDetail() {
             {/* Product Details Section */}
             <div className="flex flex-col space-y-6">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">{details?.Name}</h1>
-                <p className="text-gray-600 leading-relaxed">{details?.Description}</p>
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                  {details?.Name}
+                </h1>
+                <p className="text-gray-600 leading-relaxed">
+                  {details?.Description}
+                </p>
               </div>
 
               <div className="space-y-6">
                 <div className="flex flex-col space-y-2">
-                  <span className="text-sm font-medium text-gray-500">Price</span>
+                  <span className="text-sm font-medium text-gray-500">
+                    Price
+                  </span>
                   <span className="text-3xl font-bold text-gray-900">
                     KSH {details?.Price?.toLocaleString()}
                   </span>
                 </div>
 
                 <div className="space-y-3">
-                  <label className="text-sm font-medium text-gray-500">Quantity</label>
+                  <label className="text-sm font-medium text-gray-500">
+                    Quantity
+                  </label>
                   <div className="flex items-center space-x-4">
                     <button
                       onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                       className="p-2 rounded-lg border border-gray-300 hover:border-gray-400 transition-colors"
-                      aria-label="Decrease quantity"
-                    >
+                      aria-label="Decrease quantity">
                       <Minus className="w-5 h-5" />
                     </button>
                     <span className="text-xl font-semibold min-w-[2.5rem] text-center">
@@ -182,8 +196,7 @@ export default function ProductDetail() {
                     <button
                       onClick={() => setQuantity((q) => q + 1)}
                       className="p-2 rounded-lg border border-gray-300 hover:border-gray-400 transition-colors"
-                      aria-label="Increase quantity"
-                    >
+                      aria-label="Increase quantity">
                       <Plus className="w-5 h-5" />
                     </button>
                   </div>
@@ -191,8 +204,7 @@ export default function ProductDetail() {
 
                 <button
                   onClick={handleAddToCart}
-                  className="w-full flex items-center justify-center space-x-2 bg-blue-600 text-white py-3 px-6 rounded-xl text-lg font-semibold hover:bg-blue-700 transform transition-all duration-200 active:scale-95"
-                >
+                  className="w-full flex items-center justify-center space-x-2 bg-blue-600 text-white py-3 px-6 rounded-xl text-lg font-semibold hover:bg-blue-700 transform transition-all duration-200 active:scale-95">
                   <ShoppingCart className="w-5 h-5" />
                   <span>Add to Cart</span>
                 </button>
@@ -204,7 +216,9 @@ export default function ProductDetail() {
         {/* Rating Section */}
         <div className="mt-8 bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-8">
           <div className="max-w-2xl mx-auto text-center">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Rate This Product</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              Rate This Product
+            </h2>
             <div className="space-y-6">
               <div className="flex justify-center gap-2">
                 {[1, 2, 3, 4, 5].map((star) => (
@@ -214,13 +228,12 @@ export default function ProductDetail() {
                     onMouseEnter={() => setHover(star)}
                     onMouseLeave={() => setHover(0)}
                     onClick={() => setRating(star)}
-                    aria-label={`Rate ${star} stars`}
-                  >
+                    aria-label={`Rate ${star} stars`}>
                     <Star
                       className={`w-8 h-8 ${
                         star <= (hover || rating)
-                          ? 'fill-yellow-400 text-yellow-400'
-                          : 'text-gray-300'
+                          ? "fill-yellow-400 text-yellow-400"
+                          : "text-gray-300"
                       }`}
                     />
                   </button>
@@ -229,15 +242,14 @@ export default function ProductDetail() {
               <button
                 className="bg-blue-600 text-white px-8 py-3 rounded-xl text-lg font-semibold hover:bg-blue-700 transition-colors"
                 onClick={handleRating}
-                disabled={!rating}
-              >
+                disabled={!rating}>
                 Submit Rating
               </button>
             </div>
           </div>
         </div>
       </main>
-      
+
       <Footer />
     </div>
   );

@@ -1,9 +1,16 @@
-"use client"
+"use client";
 
-import { Link } from "react-router-dom"
-import { Search, Package, Edit, Trash2 } from "lucide-react"
+import { Link } from "react-router-dom";
+import { Search, Package, Edit, Trash2 } from "lucide-react";
 
-const ProductsTab = ({ products, searchTerm, setSearchTerm, handleEditProduct, setDeleteConfirm, formatCurrency }) => {
+const ProductsTab = ({
+  products,
+  searchTerm,
+  setSearchTerm,
+  handleEditProduct,
+  setDeleteConfirm,
+  formatCurrency,
+}) => {
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -25,8 +32,7 @@ const ProductsTab = ({ products, searchTerm, setSearchTerm, handleEditProduct, s
 
               <Link
                 to="/uploads"
-                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
+                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                 Add Product
               </Link>
             </div>
@@ -36,8 +42,12 @@ const ProductsTab = ({ products, searchTerm, setSearchTerm, handleEditProduct, s
         {products.length === 0 ? (
           <div className="p-8 text-center">
             <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-600 mb-2">You haven't added any products yet.</p>
-            <Link to="/uploads" className="text-blue-600 hover:text-blue-700 font-medium">
+            <p className="text-gray-600 mb-2">
+              You haven't added any products yet.
+            </p>
+            <Link
+              to="/uploads"
+              className="text-blue-600 hover:text-blue-700 font-medium">
               Add your first product
             </Link>
           </div>
@@ -71,7 +81,7 @@ const ProductsTab = ({ products, searchTerm, setSearchTerm, handleEditProduct, s
                         <div className="h-10 w-10 flex-shrink-0 rounded-md bg-gray-200 overflow-hidden">
                           {product.ProductImage ? (
                             <img
-                              src={product.Link || "/placeholder.svg"}
+                              src={product.Link}
                               alt={product.Name}
                               className="h-10 w-10 object-cover"
                             />
@@ -80,7 +90,9 @@ const ProductsTab = ({ products, searchTerm, setSearchTerm, handleEditProduct, s
                           )}
                         </div>
                         <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">{product.Name || "Unnamed Product"}</div>
+                          <div className="text-sm font-medium text-gray-900">
+                            {product.Name || "Unnamed Product"}
+                          </div>
                           <div className="text-sm text-gray-500 max-w-xs truncate">
                             {product.Description || "No description"}
                           </div>
@@ -95,12 +107,13 @@ const ProductsTab = ({ products, searchTerm, setSearchTerm, handleEditProduct, s
                         className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                           product.ProductQuantity > 10
                             ? "bg-green-100 text-green-800"
-                            : (product.ProductQuantity > 0)
-                              ? "bg-yellow-100 text-yellow-800"
-                              : "bg-red-100 text-red-800"
-                        }`}
-                      >
-                        {product.ProductQuantity > 0 ? `${product.ProductQuantity} in stock` : "Out of stock"}
+                            : product.ProductQuantity > 0
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-red-100 text-red-800"
+                        }`}>
+                        {product.ProductQuantity > 0
+                          ? `${product.ProductQuantity} in stock`
+                          : "Out of stock"}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -110,14 +123,18 @@ const ProductsTab = ({ products, searchTerm, setSearchTerm, handleEditProduct, s
                       <div className="flex items-center justify-end space-x-2">
                         <button
                           onClick={() => handleEditProduct(product.id)}
-                          className="text-blue-600 hover:text-blue-900"
-                        >
+                          className="text-blue-600 hover:text-blue-900">
                           <Edit className="w-4 h-4" />
                         </button>
                         <button
-                          onClick={() => setDeleteConfirm({ show: true, type: "product", id: product.id })}
-                          className="text-red-600 hover:text-red-900"
-                        >
+                          onClick={() =>
+                            setDeleteConfirm({
+                              show: true,
+                              type: "product",
+                              id: product.id,
+                            })
+                          }
+                          className="text-red-600 hover:text-red-900">
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
@@ -130,8 +147,7 @@ const ProductsTab = ({ products, searchTerm, setSearchTerm, handleEditProduct, s
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ProductsTab
-
+export default ProductsTab;

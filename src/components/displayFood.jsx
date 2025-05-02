@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ShoppingCart, ImageOff, PackageSearch } from 'lucide-react';
+import { ShoppingCart, ImageOff, PackageSearch } from "lucide-react";
 
 export default function ProductGrid({ data, type }) {
   const navigate = useNavigate();
@@ -8,20 +8,24 @@ export default function ProductGrid({ data, type }) {
   const [failedImages, setFailedImages] = useState({});
 
   const handleImageLoad = (productId) => {
-    setLoadingImages(prev => ({ ...prev, [productId]: false }));
+    setLoadingImages((prev) => ({ ...prev, [productId]: false }));
   };
 
   const handleImageError = (productId) => {
-    setFailedImages(prev => ({ ...prev, [productId]: true }));
-    setLoadingImages(prev => ({ ...prev, [productId]: false }));
+    setFailedImages((prev) => ({ ...prev, [productId]: true }));
+    setLoadingImages((prev) => ({ ...prev, [productId]: false }));
   };
 
   if (!data || data.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center p-12 text-center">
         <PackageSearch className="w-16 h-16 text-gray-400 mb-4" />
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">No Products Found</h3>
-        <p className="text-gray-600">We couldn't find any products in this category.</p>
+        <h3 className="text-xl font-semibold text-gray-900 mb-2">
+          No Products Found
+        </h3>
+        <p className="text-gray-600">
+          We couldn't find any products in this category.
+        </p>
       </div>
     );
   }
@@ -32,8 +36,9 @@ export default function ProductGrid({ data, type }) {
         <div
           key={product.id}
           className="group relative bg-white rounded-2xl shadow-sm border border-gray-200 hover:shadow-lg hover:border-gray-300 transition-all duration-300 overflow-hidden"
-          onClick={() => navigate(`/product/${product?.id}`, { state: { product } })}
-        >
+          onClick={() =>
+            navigate(`/product/${product?.id}`, { state: { product } })
+          }>
           {/* Image Container */}
           <div className="aspect-square overflow-hidden bg-gray-100 relative">
             {!failedImages[product.id] ? (
@@ -44,10 +49,12 @@ export default function ProductGrid({ data, type }) {
                   </div>
                 )}
                 <img
-                  src={product?.Link || "/placeholder.svg"}
+                  src={product?.Link}
                   alt={product?.Name}
                   className={`w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out ${
-                    loadingImages[product.id] !== false ? 'opacity-0' : 'opacity-100'
+                    loadingImages[product.id] !== false
+                      ? "opacity-0"
+                      : "opacity-100"
                   }`}
                   onLoad={() => handleImageLoad(product.id)}
                   onError={() => handleImageError(product.id)}
@@ -59,7 +66,7 @@ export default function ProductGrid({ data, type }) {
                 <span className="text-sm">Image not available</span>
               </div>
             )}
-            
+
             {/* Quick View Overlay */}
             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
               <span className="text-white font-medium px-4 py-2 bg-black/50 rounded-lg backdrop-blur-sm transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
@@ -78,7 +85,7 @@ export default function ProductGrid({ data, type }) {
                 {product?.Description || `${type} Category`}
               </p>
             </div>
-            
+
             <div className="flex items-end justify-between gap-4">
               <div className="flex flex-col">
                 <span className="text-sm font-medium text-gray-500">Price</span>
@@ -86,8 +93,8 @@ export default function ProductGrid({ data, type }) {
                   KSH {product?.Price?.toLocaleString()}
                 </span>
               </div>
-              
-              <button 
+
+              <button
                 className="relative inline-flex items-center justify-center bg-blue-600 text-white px-4 py-2.5 rounded-xl font-medium
                   transform transition-all duration-200 hover:bg-blue-700 active:scale-95 select-none
                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
@@ -96,10 +103,12 @@ export default function ProductGrid({ data, type }) {
                   navigate(`/product/${product?.id}`, { state: { product } });
                   // Add to cart animation
                   const button = e.currentTarget;
-                  button.classList.add('animate-press');
-                  setTimeout(() => button.classList.remove('animate-press'), 200);
-                }}
-              >
+                  button.classList.add("animate-press");
+                  setTimeout(
+                    () => button.classList.remove("animate-press"),
+                    200
+                  );
+                }}>
                 <ShoppingCart className="w-4 h-4 mr-2" />
                 <span>Add</span>
               </button>

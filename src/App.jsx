@@ -1,6 +1,4 @@
 import { useState, useEffect } from "react";
-
-//import Products from './assets/Assests'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Meals from "./pages/Meals";
 import Upload from "./pages/Upload";
@@ -18,6 +16,7 @@ import BlogPage from "./pages/blog.jsx";
 import FAQsPage from "./pages/faqs.jsx";
 import PrivacyPolicyPage from "./pages/policy.jsx";
 import ContactPage from "./pages/contact.jsx";
+import BusinessProducts from "./pages/business-products.jsx";
 
 function App() {
   return (
@@ -39,7 +38,8 @@ function App() {
           <Route path="/faqs" element={<FAQsPage />} />
           <Route path="/policy" element={<PrivacyPolicyPage />} />
           <Route path="/contact" element={<ContactPage />} />
-          <Route path="/categories" element={<AddCategory />} />  
+          <Route path="/categories" element={<AddCategory />} />
+          <Route path="/business/:businessUrl" element={<BusinessProducts />} />
         </Routes>
       </BrowserRouter>
     </div>

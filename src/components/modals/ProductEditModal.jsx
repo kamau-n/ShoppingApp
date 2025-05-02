@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Camera, Package } from 'lucide-react';
+import { Camera, Package } from "lucide-react";
 
 const ProductEditModal = ({ product, onClose, onUpdate }) => {
   const [previewImage, setPreviewImage] = useState(product.Link || null);
@@ -14,7 +14,7 @@ const ProductEditModal = ({ product, onClose, onUpdate }) => {
       Category: formData.get("category"),
       Description: formData.get("description"),
     };
-    
+
     const imageFile = formData.get("imageUrl");
     onUpdate(updatedProduct, imageFile);
   };
@@ -28,7 +28,7 @@ const ProductEditModal = ({ product, onClose, onUpdate }) => {
             <div className="w-32 h-32 rounded-md bg-gray-200 mb-2 overflow-hidden">
               {previewImage ? (
                 <img
-                  src={previewImage || "/placeholder.svg"}
+                  src={previewImage}
                   alt={product.Name}
                   className="w-full h-full object-cover"
                 />
@@ -36,7 +36,9 @@ const ProductEditModal = ({ product, onClose, onUpdate }) => {
                 <Package className="w-12 h-12 m-10 text-gray-400" />
               )}
             </div>
-            <label htmlFor="imageUrl" className="flex items-center text-blue-600 hover:text-blue-700 cursor-pointer">
+            <label
+              htmlFor="imageUrl"
+              className="flex items-center text-blue-600 hover:text-blue-700 cursor-pointer">
               <Camera className="w-4 h-4 mr-1" />
               Change Image
             </label>
@@ -58,7 +60,9 @@ const ProductEditModal = ({ product, onClose, onUpdate }) => {
             />
           </div>
           <div className="mb-4">
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-gray-700 mb-1">
               Product Name
             </label>
             <input
@@ -72,7 +76,9 @@ const ProductEditModal = ({ product, onClose, onUpdate }) => {
           </div>
           <div className="grid grid-cols-2 gap-4 mb-4">
             <div>
-              <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="price"
+                className="block text-sm font-medium text-gray-700 mb-1">
                 Price
               </label>
               <input
@@ -86,7 +92,9 @@ const ProductEditModal = ({ product, onClose, onUpdate }) => {
               />
             </div>
             <div>
-              <label htmlFor="quantity" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="quantity"
+                className="block text-sm font-medium text-gray-700 mb-1">
                 Quantity
               </label>
               <input
@@ -100,7 +108,9 @@ const ProductEditModal = ({ product, onClose, onUpdate }) => {
             </div>
           </div>
           <div className="mb-4">
-            <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="category"
+              className="block text-sm font-medium text-gray-700 mb-1">
               Category
             </label>
             <input
@@ -112,7 +122,9 @@ const ProductEditModal = ({ product, onClose, onUpdate }) => {
             />
           </div>
           <div className="mb-4">
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium text-gray-700 mb-1">
               Description
             </label>
             <textarea
@@ -127,14 +139,12 @@ const ProductEditModal = ({ product, onClose, onUpdate }) => {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-            >
+              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
+              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
               Save Changes
             </button>
           </div>

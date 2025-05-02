@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { db, storage } from "../config/config";
 import { collection, addDoc } from "firebase/firestore";
 import TopNav from "../components/TopNav";
 import Footer from "../components/Footer";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const AddCategory = () => {
   const [file, setFile] = useState(null);
@@ -11,6 +12,22 @@ const AddCategory = () => {
   const [inputs, setInputs] = useState({ name: "", type: "" });
   const [response, setResponse] = useState({ message: "", type: "" });
   const [isUploading, setIsUploading] = useState(false);
+  const [user, setUser] = useState();
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        setUser({
+          uid: currentUser.uid,
+          email: currentUser.email,
+          displayName: currentUser.displayName,
+        });
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const productsCollection = collection(db, "ProductsCategory");
 
@@ -25,6 +42,7 @@ const AddCategory = () => {
         name: inputs.name,
         type: inputs.type,
         image: url,
+        owner: user?.uid,
       });
 
       setResponse({
@@ -77,11 +95,16 @@ const AddCategory = () => {
         setProgress(prog);
       },
       (error) => {
-        setResponse({ message: "Upload error: " + error.message, type: "error" });
+        setResponse({
+          message: "Upload error: " + error.message,
+          type: "error",
+        });
         setIsUploading(false);
       },
       () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((url) => handleSubmit(url));
+        getDownloadURL(uploadTask.snapshot.ref).then((url) =>
+          handleSubmit(url)
+        );
       }
     );
   };
@@ -94,7 +117,9 @@ const AddCategory = () => {
         <div className="bg-white rounded-xl shadow-lg p-6">
           {/* Header */}
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-800">Add Product Category</h2>
+            <h2 className="text-2xl font-bold text-gray-800">
+              Add Product Category
+            </h2>
             <p className="text-gray-600 mt-1">
               Create a new category for your products or information
             </p>
@@ -107,8 +132,7 @@ const AddCategory = () => {
                 response.type === "error"
                   ? "bg-red-50 text-red-700 border border-red-200"
                   : "bg-green-50 text-green-700 border border-green-200"
-              }`}
-            >
+              }`}>
               <span className="text-sm">{response.message}</span>
             </div>
           )}
@@ -119,8 +143,7 @@ const AddCategory = () => {
             <div>
               <label
                 htmlFor="type"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
+                className="block text-sm font-medium text-gray-700 mb-2">
                 Category Type
               </label>
               <select
@@ -128,8 +151,7 @@ const AddCategory = () => {
                 name="type"
                 value={inputs.type}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-              >
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
                 <option value="">Select Type</option>
                 <option value="product">Product</option>
                 <option value="information">Information</option>
@@ -140,8 +162,7 @@ const AddCategory = () => {
             <div>
               <label
                 htmlFor="name"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
+                className="block text-sm font-medium text-gray-700 mb-2">
                 Category Name
               </label>
               <input
@@ -159,8 +180,7 @@ const AddCategory = () => {
             <div>
               <label
                 htmlFor="image"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
+                className="block text-sm font-medium text-gray-700 mb-2">
                 Category Image
               </label>
               <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-gray-400 transition-colors">
@@ -170,8 +190,7 @@ const AddCategory = () => {
                     stroke="currentColor"
                     fill="none"
                     viewBox="0 0 48 48"
-                    aria-hidden="true"
-                  >
+                    aria-hidden="true">
                     <path
                       d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
                       strokeWidth={2}
@@ -182,8 +201,7 @@ const AddCategory = () => {
                   <div className="flex text-sm text-gray-600">
                     <label
                       htmlFor="file-upload"
-                      className="relative cursor-pointer rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500"
-                    >
+                      className="relative cursor-pointer rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
                       <span>Upload a file</span>
                       <input
                         id="file-upload"
@@ -196,7 +214,9 @@ const AddCategory = () => {
                     </label>
                     <p className="pl-1">or drag and drop</p>
                   </div>
-                  <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                  <p className="text-xs text-gray-500">
+                    PNG, JPG, GIF up to 10MB
+                  </p>
                 </div>
               </div>
               {file && (
@@ -216,8 +236,7 @@ const AddCategory = () => {
                 <div className="w-full bg-gray-200 rounded-full h-2">
                   <div
                     className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${progress}%` }}
-                  ></div>
+                    style={{ width: `${progress}%` }}></div>
                 </div>
               </div>
             )}
@@ -232,29 +251,25 @@ const AddCategory = () => {
                     ? "bg-blue-400 cursor-not-allowed"
                     : "bg-blue-600 hover:bg-blue-700"
                 }
-              `}
-            >
+              `}>
               {isUploading ? (
                 <div className="flex items-center justify-center">
                   <svg
                     className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
-                    viewBox="0 0 24 24"
-                  >
+                    viewBox="0 0 24 24">
                     <circle
                       className="opacity-25"
                       cx="12"
                       cy="12"
                       r="10"
                       stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
+                      strokeWidth="4"></circle>
                     <path
                       className="opacity-75"
                       fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
                   Uploading...
                 </div>

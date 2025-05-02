@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { db, storage } from "../config/config";
-import { collection, addDoc, getDocs } from "firebase/firestore";
-import { onAuthStateChanged } from "firebase/auth";
+import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { Description } from "@material-ui/icons";
 import TopNav from "../components/TopNav";
 import Footer from "../components/Footer";
@@ -10,26 +10,72 @@ import Footer from "../components/Footer";
 const Upload = () => {
   const [file, setFile] = useState(null);
   const [progress, setProgress] = useState(0);
-  const [inputs, setInputs] = useState({ name: "", price: "", desc: "", meal_type: "" ,category:""});
+  const [inputs, setInputs] = useState({
+    name: "",
+    price: "",
+    desc: "",
+    meal_type: "",
+    category: "",
+  });
   const [response, setResponse] = useState("");
   const [proCategory, setProCategory] = useState([]);
   const productsCollection = collection(db, "ProductsCategory");
   const uploadCollection = collection(db, "Product");
   const [isUploading, setIsUploading] = useState(false);
+  const [userId, setUserID] = useState(null);
+
+  const auth = getAuth();
+
+  const fetchProducts = async () => {
+    if (!userId) return; // Don't run if userId is not available yet
+
+    const catRef = collection(db, "ProductsCategory");
+    const q = query(catRef, where("owner", "==", userId));
+
+    try {
+      const querySnapshot = await getDocs(q);
+      const catD = [];
+      querySnapshot.forEach((doc) => {
+        catD.push({
+          id: doc.id,
+          ...doc.data(),
+        });
+      });
+      setProCategory(catD);
+      console.log("Fetched categories:", catD);
+    } catch (error) {
+      console.error("Error fetching product categories:", error);
+    }
+  };
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log("User authenticated:", user.uid);
+        setUserID(user.uid);
+      } else {
+        console.log("User not authenticated");
+        setUserID(null);
+        setProCategory([]);
+      }
+    });
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, [auth]);
+
+  // Run fetchProducts whenever userId changes
+  useEffect(() => {
+    if (userId) {
+      fetchProducts();
+    }
+  }, [userId]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setInputs((prev) => ({ ...prev, [name]: value }));
   };
 
-
-
-  const fetchProducts = async () => {
-    const data = await getDocs(productsCollection);
-    setProCategory(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-    console.log(proCategory);
-
-  };
   const handleSubmit = async (url) => {
     console.log(inputs);
     try {
@@ -39,20 +85,18 @@ const Upload = () => {
         Link: url,
         Category: inputs.meal_type,
         Description: inputs.desc,
+        owner: userId, // Add owner field to track who created this product
+      })
+        .then((res) => {
+          console.log("I have added the product");
 
-      }).then((res) => {
-        console.log("I have added the product");
-        
-        setResponse("Product successfully uploaded");
-        console.log(res);
-      }
-      )
-      .catch((error) => console.error(error));  
-
-
+          setResponse("Product successfully uploaded");
+          console.log(res);
+        })
+        .catch((error) => console.error(error));
 
       setResponse("Image successfully uploaded");
-      setInputs({ name: "", price: "", rest: "", meal_type: "" }); // Clear inputs
+      setInputs({ name: "", price: "", desc: "", meal_type: "" }); // Clear inputs
       setFile(null);
       setProgress(0);
     } catch (error) {
@@ -62,37 +106,45 @@ const Upload = () => {
   };
 
   const fileUpload = () => {
-    console.log(inputs);
+    if (!userId) {
+      setResponse("You must be logged in to upload products");
+      return;
+    }
+
     if (!file) {
       setResponse("No file selected");
       return;
     }
-    
+
+    if (!inputs.meal_type) {
+      setResponse("Please select a category");
+      return;
+    }
+
+    setIsUploading(true);
     const storageRef = ref(storage, `images/${file.name + Date.now()}`);
     const uploadTask = uploadBytesResumable(storageRef, file);
 
     uploadTask.on(
       "state_changed",
       (snapshot) => {
-        const prog = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+        const prog = Math.round(
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        );
         setProgress(prog);
       },
       (error) => {
+        setIsUploading(false);
         setResponse("Upload error: " + error.message);
       },
       () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((url) => handleSubmit(url));
+        getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+          handleSubmit(url);
+          setIsUploading(false);
+        });
       }
     );
   };
-
-
-  useEffect(() => {
-
-    fetchProducts();
-    
-   
-  }, []);
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -103,21 +155,13 @@ const Upload = () => {
           {/* Header */}
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-gray-800">Add Product </h2>
-            <p className="text-gray-600 mt-1">
-              Create a new  product
-            </p>
+            <p className="text-gray-600 mt-1">Create a new product</p>
           </div>
 
           {/* Alert Messages */}
-          {response.message && (
-            <div
-              className={`mb-6 p-4 rounded-lg flex items-center ${
-                response.type === "error"
-                  ? "bg-red-50 text-red-700 border border-red-200"
-                  : "bg-green-50 text-green-700 border border-green-200"
-              }`}
-            >
-              <span className="text-sm">{response.message}</span>
+          {response && (
+            <div className="mb-6 p-4 rounded-lg flex items-center bg-green-50 text-green-700 border border-green-200">
+              <span className="text-sm">{response}</span>
             </div>
           )}
 
@@ -127,8 +171,7 @@ const Upload = () => {
             <div>
               <label
                 htmlFor="type"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
+                className="block text-sm font-medium text-gray-700 mb-2">
                 Category Type
               </label>
               <select
@@ -136,14 +179,13 @@ const Upload = () => {
                 name="meal_type"
                 value={inputs.meal_type}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-              >
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
                 <option value="">Select A Product Category</option>
-                  {proCategory.map((category, index) => (
-          <option key={index} value={category.id}>
-            {category.name}
-          </option>
-        ))}
+                {proCategory.map((category, index) => (
+                  <option key={index} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -151,8 +193,7 @@ const Upload = () => {
             <div>
               <label
                 htmlFor="name"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
+                className="block text-sm font-medium text-gray-700 mb-2">
                 Product Name
               </label>
               <input
@@ -169,8 +210,7 @@ const Upload = () => {
             <div>
               <label
                 htmlFor="name"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
+                className="block text-sm font-medium text-gray-700 mb-2">
                 Product Price
               </label>
               <input
@@ -187,8 +227,7 @@ const Upload = () => {
             <div>
               <label
                 htmlFor="name"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
+                className="block text-sm font-medium text-gray-700 mb-2">
                 Product Description
               </label>
               <input
@@ -197,7 +236,7 @@ const Upload = () => {
                 name="desc"
                 value={inputs.desc}
                 onChange={handleChange}
-                placeholder="priduct description"
+                placeholder="Product description"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
               />
             </div>
@@ -206,8 +245,7 @@ const Upload = () => {
             <div>
               <label
                 htmlFor="image"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
+                className="block text-sm font-medium text-gray-700 mb-2">
                 Product Image
               </label>
               <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-gray-400 transition-colors">
@@ -217,8 +255,7 @@ const Upload = () => {
                     stroke="currentColor"
                     fill="none"
                     viewBox="0 0 48 48"
-                    aria-hidden="true"
-                  >
+                    aria-hidden="true">
                     <path
                       d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
                       strokeWidth={2}
@@ -229,8 +266,7 @@ const Upload = () => {
                   <div className="flex text-sm text-gray-600">
                     <label
                       htmlFor="file-upload"
-                      className="relative cursor-pointer rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500"
-                    >
+                      className="relative cursor-pointer rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
                       <span>Upload a file</span>
                       <input
                         id="file-upload"
@@ -243,7 +279,9 @@ const Upload = () => {
                     </label>
                     <p className="pl-1">or drag and drop</p>
                   </div>
-                  <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                  <p className="text-xs text-gray-500">
+                    PNG, JPG, GIF up to 10MB
+                  </p>
                 </div>
               </div>
               {file && (
@@ -263,8 +301,7 @@ const Upload = () => {
                 <div className="w-full bg-gray-200 rounded-full h-2">
                   <div
                     className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${progress}%` }}
-                  ></div>
+                    style={{ width: `${progress}%` }}></div>
                 </div>
               </div>
             )}
@@ -279,29 +316,25 @@ const Upload = () => {
                     ? "bg-blue-400 cursor-not-allowed"
                     : "bg-blue-600 hover:bg-blue-700"
                 }
-              `}
-            >
+              `}>
               {isUploading ? (
                 <div className="flex items-center justify-center">
                   <svg
                     className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
-                    viewBox="0 0 24 24"
-                  >
+                    viewBox="0 0 24 24">
                     <circle
                       className="opacity-25"
                       cx="12"
                       cy="12"
                       r="10"
                       stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
+                      strokeWidth="4"></circle>
                     <path
                       className="opacity-75"
                       fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
                   Uploading...
                 </div>
@@ -315,75 +348,6 @@ const Upload = () => {
       <Footer />
     </div>
   );
-
-  // return (
-  //   <div className="bg-gray-100 w-3/4 mx-auto p-6 rounded-lg shadow-lg">
-  //     <TopNav/>
-  //     <h2 className="text-green-600 text-xl font-bold mb-3">{response}</h2>
-  //     <h3 className="text-lg font-semibold mb-4">Upload a Product</h3>
-      
-  //     <select
-  //       className="w-full p-2 border rounded mb-3"
-  //       name="meal_type"
-  //       value={inputs.meal_type}
-  //       onChange={handleChange}
-  //     >
-  //       <option value="">Select Category</option>
-  //       {proCategory.map((category, index) => (
-  //         <option key={index} value={category.id}>
-  //           {category.name}
-  //         </option>
-  //       ))}
-   
-  //     </select>
-      
-  //     <input
-  //       type="text"
-  //       name="name"
-  //       placeholder="Prduct  Name"
-  //       className="w-full p-2 border rounded mb-3"
-  //       value={inputs.name}
-  //       onChange={handleChange}
-  //     />
-      
-  //     <input
-  //       type="text"
-  //       name="price"
-  //       placeholder="Product Price"
-  //       className="w-full p-2 border rounded mb-3"
-  //       value={inputs.price}
-  //       onChange={handleChange}
-  //     />
-      
-  //     <input
-  //       type="text"
-  //       name="desc"
-  //       placeholder="Prodcut Description"
-  //       className="w-full p-2 border rounded mb-3"
-  //       value={inputs.desc}
-  //       onChange={handleChange}
-  //     />
-      
-  //     <input
-  //       type="file"
-  //       className="w-full p-2 border rounded mb-3"
-  //       onChange={(e) => setFile(e.target.files[0])}
-  //     />
-      
-  //     {progress > 0 && (
-  //       <div className="w-full bg-gray-200 rounded-full h-4 mb-3">
-  //         <div className="bg-blue-500 h-4 rounded-full" style={{ width: `${progress}%` }}></div>
-  //       </div>
-  //     )}
-      
-  //     <button
-  //       onClick={fileUpload}
-  //       className="w-full bg-blue-600 text-white p-3 rounded font-bold hover:bg-blue-700"
-  //     >
-  //       Upload
-  //     </button>
-  //   </div>
-  // );
 };
 
 export default Upload;
