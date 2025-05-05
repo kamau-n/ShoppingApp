@@ -21,7 +21,6 @@ import BusinessProductList from "./pages/business-product-list.jsx";
 import BusinessCart from "./pages/business-cart.jsx";
 import BusinessCheckout from "./pages/business-checkout.jsx";
 import SubscriptionForm from "./components/modals/SubscriptionModal";
-import BusinessPayment from "./pages/business-payment.tjsx";
 
 function App() {
   return (
