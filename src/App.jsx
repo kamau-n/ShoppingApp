@@ -17,6 +17,11 @@ import FAQsPage from "./pages/faqs.jsx";
 import PrivacyPolicyPage from "./pages/policy.jsx";
 import ContactPage from "./pages/contact.jsx";
 import BusinessProducts from "./pages/business-products.jsx";
+import BusinessProductList from "./pages/business-product-list.jsx";
+import BusinessCart from "./pages/business-cart.jsx";
+import BusinessCheckout from "./pages/business-checkout.jsx";
+import SubscriptionForm from "./components/modals/SubscriptionModal";
+import BusinessPayment from "./pages/business-payment.tjsx";
 
 function App() {
   return (
@@ -40,6 +45,20 @@ function App() {
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/categories" element={<AddCategory />} />
           <Route path="/business/:businessUrl" element={<BusinessProducts />} />
+          <Route path="/subscriptions" element={<SubscriptionForm />} />
+          <Route path="/business-payment" element={<BusinessPayment />} />
+          <Route
+            path="/business/:businessUrl/products"
+            element={<BusinessProductList />}
+          />
+          <Route
+            path="/business/:businessUrl/cart"
+            element={<BusinessCart />}
+          />
+          <Route
+            path="/business/:businessUrl/checkout"
+            element={<BusinessCheckout />}
+          />
         </Routes>
       </BrowserRouter>
     </div>

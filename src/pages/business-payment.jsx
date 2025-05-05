@@ -1,11 +1,15 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+"use strict";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Assuming you have Firebase config set
+import { collection, getDocs } from "firebase/firestore";
 import { CreditCard, Check } from "lucide-react";
 import TopNav from "../components/TopNav";
 import Footer from "../components/Footer";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import StripeCheckoutForm from "../components/payment/StripeCheckoutForm";
+import { db } from "../config/config";
+import React from "react";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ||
@@ -13,47 +17,27 @@ const stripePromise = loadStripe(
 );
 
 const BusinessPayment = () => {
-  const [selectedPlan, setSelectedPlan] = useState(null);
+  const [plans, setPlans] = useState([]);
+  const [selectedPlan, setSelectedPlan] = useState();
   const [showPaymentForm, setShowPaymentForm] = useState(false);
   const navigate = useNavigate();
 
-  const plans = [
-    {
-      id: "basic",
-      name: "Basic Plan",
-      price: 1000,
-      features: [
-        "List up to 50 products",
-        "Basic analytics",
-        "Email support",
-        "Standard processing time",
-      ],
-    },
-    {
-      id: "pro",
-      name: "Pro Plan",
-      price: 2500,
-      features: [
-        "Unlimited products",
-        "Advanced analytics",
-        "Priority support",
-        "Faster processing time",
-        "Custom domain",
-      ],
-    },
-    {
-      id: "enterprise",
-      name: "Enterprise Plan",
-      price: 5000,
-      features: [
-        "All Pro features",
-        "Dedicated account manager",
-        "API access",
-        "Custom integrations",
-        "Advanced security features",
-      ],
-    },
-  ];
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "subscriptions"));
+        const fetchedPlans = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setPlans(fetchedPlans);
+      } catch (error) {
+        console.error("Error fetching plans:", error);
+      }
+    };
+
+    fetchPlans();
+  }, []);
 
   const handlePlanSelect = (plan) => {
     setSelectedPlan(plan);
@@ -86,38 +70,42 @@ const BusinessPayment = () => {
 
         {!showPaymentForm ? (
           <div className="grid md:grid-cols-3 gap-8">
-            {plans.map((plan) => (
-              <div
-                key={plan.id}
-                className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
-                <div className="p-8">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                    {plan.name}
-                  </h3>
-                  <p className="text-4xl font-bold text-gray-900 mb-6">
-                    KSH {plan.price.toLocaleString()}
-                    <span className="text-base font-normal text-gray-500">
-                      /month
-                    </span>
-                  </p>
-                  <ul className="space-y-4 mb-8">
-                    {plan.features.map((feature, index) => (
-                      <li
-                        key={index}
-                        className="flex items-center text-gray-600">
-                        <Check className="h-5 w-5 text-green-500 mr-3 flex-shrink-0" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <button
-                    onClick={() => handlePlanSelect(plan)}
-                    className="w-full bg-blue-600 text-white py-3 px-6 rounded-xl font-medium hover:bg-blue-700 transition-colors">
-                    Select Plan
-                  </button>
+            {plans.length > 0 ? (
+              plans.map((plan, index) => (
+                <div
+                  key={index}
+                  className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+                  <div className="p-8">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                      {plan.name}
+                    </h3>
+                    <p className="text-4xl font-bold text-gray-900 mb-6">
+                      KSH {plan.price.toLocaleString()}
+                      <span className="text-base font-normal text-gray-500">
+                        /month
+                      </span>
+                    </p>
+                    <ul className="space-y-4 mb-8">
+                      {plan.features.map((feature, index) => (
+                        <li
+                          key={index}
+                          className="flex items-center text-gray-600">
+                          <Check className="h-5 w-5 text-green-500 mr-3 flex-shrink-0" />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <button
+                      onClick={() => handlePlanSelect(plan)}
+                      className="w-full bg-blue-600 text-white py-3 px-6 rounded-xl font-medium hover:bg-blue-700 transition-colors">
+                      Select Plan
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p className="text-lg text-gray-600">Loading plans...</p>
+            )}
           </div>
         ) : (
           <div className="max-w-md mx-auto">
@@ -151,7 +139,6 @@ const BusinessPayment = () => {
                 />
               </Elements>
             </div>
-            z
           </div>
         )}
       </main>

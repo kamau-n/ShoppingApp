@@ -12,7 +12,7 @@ const ProductsTab = ({
   formatCurrency,
 }) => {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6  m-auto w-2/3">
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div className="p-6 border-b border-gray-200">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">

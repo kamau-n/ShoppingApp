@@ -7,6 +7,7 @@ import {
   Loader2,
   AlertCircle,
   ShoppingBag,
+  SubscriptIcon,
 } from "lucide-react";
 import {
   collection,
@@ -25,6 +26,8 @@ import OverviewTab from "../components/tabs/OverViewTable";
 import Sidesbar from "../components/layout/sidebar";
 import CategoriesTab from "../components/tabs/CategoriesTab";
 import ProductsTab from "../components/tabs/ProductsTab";
+import OrdersTab from "../components/tabs/OrdersTab";
+import SubscriptionsTab from "../components/tabs/SubscriptionTab";
 
 const AccountPage = () => {
   const [photoURL, setPhotoURL] = useState(null);
@@ -80,6 +83,7 @@ const AccountPage = () => {
   const [showStripeModal, setShowStripeModal] = useState(false);
   const [paymentAmount, setPaymentAmount] = useState(0);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [subScriptions, setSubscriptions] = useState([]);
 
   // Add a new state for the product edit modal and selected product
   const [editProductModal, setEditProductModal] = useState(false);
@@ -95,6 +99,7 @@ const AccountPage = () => {
         await fetchUserOrders(authUser.uid);
         await fetchUsers();
         await fetchCategories();
+        await fetchSubscriptions();
       } else {
         setUserData(null);
         navigate("/login");
@@ -201,6 +206,28 @@ const AccountPage = () => {
 
       setCategories(categoriesData);
       console.log("Categories", categoriesData);
+    } catch (error) {
+      console.error("Error fetching categories data:", error);
+    }
+  };
+
+  const fetchSubscriptions = async () => {
+    try {
+      const userRef = collection(db, "subscriptions");
+      const q = query(userRef);
+      const querySnapshot = await getDocs(q);
+
+      const subscriptionData = [];
+      console.log(querySnapshot);
+      querySnapshot.forEach((doc) => {
+        subscriptionData.push({
+          id: doc.id,
+          ...doc.data(),
+        });
+      });
+
+      setSubscriptions(subscriptionData);
+      console.log("Subs", subscriptionData);
     } catch (error) {
       console.error("Error fetching categories data:", error);
     }
@@ -367,6 +394,10 @@ const AccountPage = () => {
     if (!amount && amount !== 0) return "N/A";
     return `KSH ${Number(amount).toLocaleString()}`;
   };
+
+  const formatDate = (date) => {
+    return date;
+  };
   const navigation = [
     {
       name: "Overview",
@@ -388,10 +419,10 @@ const AccountPage = () => {
       role: ["admin", "customer"],
     },
     {
-      name: "Business Orders",
-      tab: "business-orders",
-      icon: Package,
-      role: ["admin", "business"],
+      name: "Subscriptions",
+      tab: "subscriptions",
+      icon: SubscriptIcon,
+      role: ["admin"],
     },
     {
       name: "Categories",
@@ -399,37 +430,55 @@ const AccountPage = () => {
       icon: Grid,
       role: ["admin", "business"],
     },
-    {
-      name: "Profile",
-      tab: "profile",
-      icon: User,
-      role: ["admin", "business", "customer"],
-    },
   ];
 
   const renderTabContent = () => {
     switch (activeTab) {
       case "overview":
         return (
-          <CategoriesTab
-            user={userData}
-            orders={orders}
+          <OverviewTab
             formatCurrency={formatCurrency}
             handleEditUser={handleEditUser}
+            userData={userData}
+            user={userData}
+            orders={orders}
             products={products}
-            categories={filteredCategories}
           />
         );
       case "orders":
-        return <div>Orders Content</div>;
-      case "business-orders":
-        return <div>Business Orders Content</div>;
+        return (
+          <OrdersTab
+            formatDate={formatDate}
+            formatCurrency={formatCurrency}
+            handleViewOrder={handleViewOrder}
+            orders={userData?.user_role == "admin" ? orders : filteredOrders}
+            searchTerm={searchTerm}
+            setDeleteConfirm={setDeleteConfirm}
+          />
+        );
+
       case "categories":
-        return <div>Categories Content</div>;
-      case "business-categories":
-        return <div>Business Category</div>;
-      case "profile":
-        return <div>Profile Content</div>;
+        return (
+          <CategoriesTab
+            categories={
+              userData.user_id == "business" ? filteredCategories : categories
+            }
+            handleViewOrder={handleViewOrder}
+            searchTerm={searchTerm}
+            setDeleteConfirm={setDeleteConfirm}
+          />
+        );
+
+      case "subscriptions":
+        return (
+          <SubscriptionsTab
+            handleViewSubscription={() => {}}
+            searchTerm={searchTerm}
+            setDeleteConfirm={setDeleteConfirm}
+            subscriptions={subScriptions}
+            setSearchTerm={searchTerm}
+          />
+        );
       case "products":
         return (
           <ProductsTab
@@ -437,7 +486,9 @@ const AccountPage = () => {
             searchTerm={searchTerm}
             handleEditProduct={handleEditProduct}
             handleDeleteItem={handleDeleteItem}
-            products={filteredProducts}
+            products={
+              userData.user_role == "admin" ? products : filteredProducts
+            }
           />
         );
       default:

@@ -1,35 +1,49 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { db, storage } from "../config/config";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import TopNav from "../components/TopNav";
 import Footer from "../components/Footer";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const AddCategory = () => {
+  const navigate = useNavigate();
   const [file, setFile] = useState(null);
   const [progress, setProgress] = useState(0);
   const [inputs, setInputs] = useState({ name: "", type: "" });
   const [response, setResponse] = useState({ message: "", type: "" });
   const [isUploading, setIsUploading] = useState(false);
   const [user, setUser] = useState();
+  const [businessUrl, setBusinessUrl] = useState(null);
 
   useEffect(() => {
     const auth = getAuth();
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
         setUser({
           uid: currentUser.uid,
           email: currentUser.email,
           displayName: currentUser.displayName,
         });
+
+        // Fetch business URL
+        const businessRef = collection(db, "business_profiles");
+        const businessQuery = query(
+          businessRef,
+          where("user_id", "==", currentUser.uid)
+        );
+        const businessSnapshot = await getDocs(businessQuery);
+
+        if (!businessSnapshot.empty) {
+          const businessData = businessSnapshot.docs[0].data();
+          setBusinessUrl(businessData.business_url);
+        }
       }
     });
 
     return () => unsubscribe();
   }, []);
-
-  const productsCollection = collection(db, "ProductsCategory");
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -38,7 +52,7 @@ const AddCategory = () => {
 
   const handleSubmit = async (url) => {
     try {
-      await addDoc(productsCollection, {
+      await addDoc(collection(db, "ProductsCategory"), {
         name: inputs.name,
         type: inputs.type,
         image: url,
@@ -53,6 +67,11 @@ const AddCategory = () => {
       setFile(null);
       setProgress(0);
       setIsUploading(false);
+
+      // Redirect to business page
+      if (businessUrl) {
+        navigate(`/business/${businessUrl}`);
+      }
     } catch (error) {
       setResponse({
         message: "Failed to add category. Please try again.",

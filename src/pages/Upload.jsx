@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { db, storage } from "../config/config";
 import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { Description } from "@material-ui/icons";
 import TopNav from "../components/TopNav";
 import Footer from "../components/Footer";
 
 const Upload = () => {
+  const navigate = useNavigate();
   const [file, setFile] = useState(null);
   const [progress, setProgress] = useState(0);
   const [inputs, setInputs] = useState({
@@ -19,15 +20,14 @@ const Upload = () => {
   });
   const [response, setResponse] = useState("");
   const [proCategory, setProCategory] = useState([]);
-  const productsCollection = collection(db, "ProductsCategory");
-  const uploadCollection = collection(db, "Product");
   const [isUploading, setIsUploading] = useState(false);
   const [userId, setUserID] = useState(null);
+  const [businessUrl, setBusinessUrl] = useState(null);
 
   const auth = getAuth();
 
   const fetchProducts = async () => {
-    if (!userId) return; // Don't run if userId is not available yet
+    if (!userId) return;
 
     const catRef = collection(db, "ProductsCategory");
     const q = query(catRef, where("owner", "==", userId));
@@ -49,22 +49,31 @@ const Upload = () => {
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        console.log("User authenticated:", user.uid);
         setUserID(user.uid);
+        // Fetch business URL
+        const businessRef = collection(db, "business_profiles");
+        const businessQuery = query(
+          businessRef,
+          where("user_id", "==", user.uid)
+        );
+        const businessSnapshot = await getDocs(businessQuery);
+
+        if (!businessSnapshot.empty) {
+          const businessData = businessSnapshot.docs[0].data();
+          setBusinessUrl(businessData.business_url);
+        }
       } else {
-        console.log("User not authenticated");
         setUserID(null);
+        setBusinessUrl(null);
         setProCategory([]);
       }
     });
 
-    // Cleanup subscription on unmount
     return () => unsubscribe();
   }, [auth]);
 
-  // Run fetchProducts whenever userId changes
   useEffect(() => {
     if (userId) {
       fetchProducts();
@@ -77,28 +86,26 @@ const Upload = () => {
   };
 
   const handleSubmit = async (url) => {
-    console.log(inputs);
     try {
-      await addDoc(uploadCollection, {
+      await addDoc(collection(db, "Product"), {
         Name: inputs.name,
-        Price: inputs.price,
+        Price: Number(inputs.price),
         Link: url,
         Category: inputs.meal_type,
         Description: inputs.desc,
-        owner: userId, // Add owner field to track who created this product
-      })
-        .then((res) => {
-          console.log("I have added the product");
+        owner: userId,
+      });
 
-          setResponse("Product successfully uploaded");
-          console.log(res);
-        })
-        .catch((error) => console.error(error));
-
-      setResponse("Image successfully uploaded");
-      setInputs({ name: "", price: "", desc: "", meal_type: "" }); // Clear inputs
+      setResponse("Product successfully uploaded");
+      setInputs({ name: "", price: "", desc: "", meal_type: "" });
       setFile(null);
       setProgress(0);
+      setIsUploading(false);
+
+      // Redirect to business page
+      if (businessUrl) {
+        navigate(`/business/${businessUrl}`);
+      }
     } catch (error) {
       setResponse("Upload failed. Please try again.");
       console.error(error);

@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { Link } from "react-router-dom"
-import { Search, ShoppingBag, Eye, Trash2 } from "lucide-react"
+import { Link } from "react-router-dom";
+import { Search, ShoppingBag, Eye, Trash2 } from "lucide-react";
 
 const OrdersTab = ({
   orders,
@@ -13,7 +13,7 @@ const OrdersTab = ({
   formatDate,
 }) => {
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden w-2/3  m-auto">
       <div className="p-6 border-b border-gray-200">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <h3 className="text-lg font-semibold text-gray-900">Order History</h3>
@@ -34,8 +34,12 @@ const OrdersTab = ({
       {orders.length === 0 ? (
         <div className="p-8 text-center">
           <ShoppingBag className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <p className="text-gray-600 mb-2">You haven't placed any orders yet.</p>
-          <Link to="/" className="text-blue-600 hover:text-blue-700 font-medium">
+          <p className="text-gray-600 mb-2">
+            You haven't placed any orders yet.
+          </p>
+          <Link
+            to="/"
+            className="text-blue-600 hover:text-blue-700 font-medium">
             Browse products
           </Link>
         </div>
@@ -47,11 +51,15 @@ const OrdersTab = ({
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Order ID
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Date
+                </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Paid</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Paid
+                </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Total
                 </th>
@@ -67,7 +75,7 @@ const OrdersTab = ({
                     {order.OrderID || order.id.substring(0, 8)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {formatDate(order.time || order.time)}
+                    {/* {order.time || order.time} */}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
@@ -75,28 +83,38 @@ const OrdersTab = ({
                         order.Status === "Delivered"
                           ? "bg-green-100 text-green-800"
                           : order.Status === "Processing"
-                            ? "bg-blue-100 text-blue-800"
-                            : order.Status === "Shipped"
-                              ? "bg-purple-100 text-purple-800"
-                              : order.Status === "Cancelled"
-                                ? "bg-red-100 text-red-800"
-                                : "bg-gray-100 text-gray-800"
-                      }`}
-                    >
+                          ? "bg-blue-100 text-blue-800"
+                          : order.Status === "Shipped"
+                          ? "bg-purple-100 text-purple-800"
+                          : order.Status === "Cancelled"
+                          ? "bg-red-100 text-red-800"
+                          : "bg-gray-100 text-gray-800"
+                      }`}>
                       {order.Status || "Pending"}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{order.paid}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatCurrency(order.total)}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {order.paid}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {formatCurrency(order.total)}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex items-center justify-end space-x-2">
-                      <button onClick={() => handleViewOrder(order.id)} className="text-blue-600 hover:text-blue-900">
+                      <button
+                        onClick={() => handleViewOrder(order.id)}
+                        className="text-blue-600 hover:text-blue-900">
                         <Eye className="w-4 h-4" />
                       </button>
                       <button
-                        onClick={() => setDeleteConfirm({ show: true, type: "order", id: order.id })}
-                        className="text-red-600 hover:text-red-900"
-                      >
+                        onClick={() =>
+                          setDeleteConfirm({
+                            show: true,
+                            type: "order",
+                            id: order.id,
+                          })
+                        }
+                        className="text-red-600 hover:text-red-900">
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
@@ -108,8 +126,7 @@ const OrdersTab = ({
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default OrdersTab
-
+export default OrdersTab;
