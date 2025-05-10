@@ -10,7 +10,6 @@ const Sidesbar = ({
   mobileMenuOpen,
   toggleMobileMenu,
 }) => {
-  console.log("this  is a user", user);
   return (
     <div
       className={`${

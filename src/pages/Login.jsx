@@ -1,25 +1,49 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { getAuth, signInWithEmailAndPassword ,GoogleAuthProvider,signInWithPopup} from "firebase/auth";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+  FacebookAuthProvider,
+} from "firebase/auth";
 import { UserCircle2, AlertCircle, Lock } from "lucide-react";
 import { Face, Facebook, GitHub, Twitter, Web } from "@material-ui/icons";
 import { FaGoogle } from "react-icons/fa";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../config/config";
 
-
 const auth = getAuth();
 const provider = new GoogleAuthProvider();
 
 const Login = () => {
+  const signInFacebook = () => {
+    const facebookProvider = new FacebookAuthProvider();
 
-  const signInFacebook =()=>{}
-  const signInGithub =()=>{}
+    signInWithPopup(auth, facebookProvider)
+      .then((result) => {
+        const user = result.user;
+        console.log("Facebook user:", user);
 
+        checkUser(
+          user.uid,
+          user.email,
+          user.phoneNumber,
+          user.displayName,
+          "customer",
+          user.photoURL
+        );
+      })
+      .catch((error) => {
+        console.error("Facebook sign-in error:", error.message);
+        setMesseges("Unable to sign in with Facebook");
+      });
+  };
+  const signInGithub = () => {};
 
   // create a method to check if the user is already registered
-  const checkUser = (userId,email,phoneNumber,name,role,image) => {
-    console.log("am checking a user" +  name);
+  const checkUser = (userId, email, phoneNumber, name, role, image) => {
+    console.log("am checking a user" + name);
     const users = collection(db, "Users");
     const q = query(users, where("user_email", "==", email));
     getDocs(q)
@@ -28,17 +52,15 @@ const Login = () => {
           console.log("user already registered");
           navigate("/account");
         } else {
-         
-          registerUser(userId,email,phoneNumber,name,role,image);
+          registerUser(userId, email, phoneNumber, name, role, image);
         }
       })
       .catch((err) => {
         setMesseges(err.message);
       });
-  }
+  };
 
-  const registerUser = (userId,email,phoneNumber,name,role,image) => {
-
+  const registerUser = (userId, email, phoneNumber, name, role, image) => {
     console.log("am registering a user");
     addDoc(collection(db, "Users"), {
       user_id: userId,
@@ -62,43 +84,47 @@ const Login = () => {
         setMesseges(err.message);
       });
   };
-  const signInWithGoogle =()=>{
+  const signInWithGoogle = () => {
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        // The signed-in user info.
+        const user = result.user;
+        console.log(user);
 
-  signInWithPopup(auth, provider)
-  .then((result) => {
-    // This gives you a Google Access Token. You can use it to access the Google API.
-    const credential = GoogleAuthProvider.credentialFromResult(result);
-    const token = credential.accessToken;
-    // The signed-in user info.
-    const user = result.user;
-     console.log(user);
+        checkUser(
+          user.uid,
+          user.email,
+          user.phoneNumber,
+          user.displayName,
+          "customer",
+          user.photoURL
+        );
 
-     checkUser(user.uid,user.email,user.phoneNumber,user.displayName,"customer",user.photoURL);
-
-   // navigate("/login");
-    // IdP data available using getAdditionalUserInfo(result)
-    // ...
-  }).catch((error) => {
-    // Handle Errors here.
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    console.log(errorMessage);
-    // The email of the user's account used.
-   // const email = error.customData.email;
-    // The AuthCredential type that was used.
-    // credential = GoogleAuthProvider.credentialFromError(error);
-    // ...
-    setMesseges("Unable to sign in with google");
-    
-
-  })
-  }
+        // navigate("/login");
+        // IdP data available using getAdditionalUserInfo(result)
+        // ...
+      })
+      .catch((error) => {
+        // Handle Errors here.
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorMessage);
+        // The email of the user's account used.
+        // const email = error.customData.email;
+        // The AuthCredential type that was used.
+        // credential = GoogleAuthProvider.credentialFromError(error);
+        // ...
+        setMesseges("Unable to sign in with google");
+      });
+  };
 
   const [useremail, setUseremail] = useState();
   const [password, setPassword] = useState();
   const [mess, setMesseges] = useState("");
   const navigate = useNavigate();
-  
 
   const signin = () => {
     if (!useremail || !password) {
@@ -127,7 +153,9 @@ const Login = () => {
             <UserCircle2 className="h-12 w-12 text-indigo-600" />
             <Lock className="h-5 w-5 text-indigo-600 absolute -right-1 bottom-0" />
           </div>
-          <h2 className="mt-4 text-3xl font-extrabold text-gray-900">MY SHOP</h2>
+          <h2 className="mt-4 text-3xl font-extrabold text-gray-900">
+            MY SHOP
+          </h2>
           <p className="mt-2 text-sm text-gray-600">Sign in to your account</p>
         </div>
 
@@ -159,8 +187,7 @@ const Login = () => {
 
           <button
             onClick={signin}
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
-          >
+            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200">
             Sign in
           </button>
         </div>
@@ -171,55 +198,49 @@ const Login = () => {
               <div className="w-full border-t border-gray-300"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">Or Sign in With</span>
+              <span className="px-2 bg-white text-gray-500">
+                Or Sign in With
+              </span>
             </div>
           </div>
 
           <div className="mt-6 flex justify-center space-x-4 text-sm">
-        
-            <button 
-            onClick={signInWithGoogle}>
+            <button onClick={signInWithGoogle}>
               <FaGoogle />
-             
             </button>
-            <button 
-            onClick={signInFacebook}>
+            <button onClick={signInFacebook}>
               <Facebook className="h-5 w-5" />
-             
             </button>
-            <button 
-            onClick={signInGithub}>
+            <button onClick={signInGithub}>
               <GitHub className="h-5 w-5" />
-             
             </button>
           </div>
         </div>
 
-           <div className="mt-6">
+        <div className="mt-6">
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-300"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">Don't have an account?</span>
+              <span className="px-2 bg-white text-gray-500">
+                Don't have an account?
+              </span>
             </div>
           </div>
 
           <div className="mt-6 flex justify-center space-x-4 text-sm">
             <Link
               to="/signup"
-              className="font-medium text-indigo-600 hover:text-indigo-500 transition-colors duration-200"
-            >
+              className="font-medium text-indigo-600 hover:text-indigo-500 transition-colors duration-200">
               Sign up
             </Link>
             <span className="text-gray-500">•</span>
             <Link
               to="/"
-              className="font-medium text-indigo-600 hover:text-indigo-500 transition-colors duration-200"
-            >
+              className="font-medium text-indigo-600 hover:text-indigo-500 transition-colors duration-200">
               Back to Home
             </Link>
-        
           </div>
         </div>
       </div>

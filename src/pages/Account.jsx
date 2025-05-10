@@ -1,14 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  User,
-  Package,
-  Grid,
-  LayoutDashboard,
-  Loader2,
-  AlertCircle,
-  ShoppingBag,
-  SubscriptIcon,
-} from "lucide-react";
+import { Loader2, AlertCircle } from "lucide-react";
 import {
   collection,
   getDocs,
@@ -28,6 +19,23 @@ import CategoriesTab from "../components/tabs/CategoriesTab";
 import ProductsTab from "../components/tabs/ProductsTab";
 import OrdersTab from "../components/tabs/OrdersTab";
 import SubscriptionsTab from "../components/tabs/SubscriptionTab";
+import UsersTab from "../components/tabs/UsersTab";
+import ProductEditModal from "../components/modals/ProductEditModal";
+import UserEditModal from "../components/modals/UserEditModal";
+import ConfirmationModal from "../components/modals/ConfirmationModal";
+import SettingsTab from "../components/tabs/SettingsTab";
+import BusinessProfileTab from "../components/tabs/BusinessProfilesPage";
+import BsProfileEditModal from "../components/modals/BsProfileEditModal";
+import MyBusinessProfileTab from "../components/tabs/MyBusinessProfileTab";
+import {
+  fetchBusinessProfiles,
+  fetchCategories,
+  fetchSubscriptions,
+  fetchUserOrders,
+  fetchUserProducts,
+  fetchUsers,
+} from "../helpers/firebaseFetchHelpers";
+import navigation from "../utils/data/navigations";
 
 const AccountPage = () => {
   const [photoURL, setPhotoURL] = useState(null);
@@ -36,40 +44,12 @@ const AccountPage = () => {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [usersData, setUsersData] = useState([]);
   const [userData, setUserData] = useState();
-
-  const [categories, setCategories] = useState([]);
-  const auth = getAuth();
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      if (currentUser) {
-        const usersRef = collection(db, "users");
-        const q = query(usersRef, where("user_id", "==", currentUser.uid));
-        const querySnapshot = await getDocs(q);
-
-        if (!querySnapshot.empty) {
-          const userData = querySnapshot.docs[0].data();
-          setUserData(userData);
-        }
-
-        // Fetch categories for business users
-        if (currentUser) {
-          const catRef = collection(db, "categories");
-          const cats = await getDocs(catRef);
-          const catData = cats.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
-          setCategories(catData);
-        }
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
+  const [businessProfiles, setBusinessProfile] = useState([]);
 
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [editBsProfile, setEditBsProfile] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState({
     show: false,
     type: "",
@@ -79,27 +59,88 @@ const AccountPage = () => {
   const navigate = useNavigate();
   const [editUserModal, setEditUserModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-
-  const [showStripeModal, setShowStripeModal] = useState(false);
-  const [paymentAmount, setPaymentAmount] = useState(0);
-  const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [subScriptions, setSubscriptions] = useState([]);
+  const [myProfile, setMyProfile] = useState();
 
   // Add a new state for the product edit modal and selected product
   const [editProductModal, setEditProductModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedProfile, setSelectedProfile] = useState(null);
+
+  const [categories, setCategories] = useState([]);
+  const auth = getAuth();
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        console.log("this is the current user", currentUser.uid);
+        const usersRef = collection(db, "Users");
+        const q = query(usersRef, where("user_id", "==", currentUser.uid));
+        const querySnapshot = await getDocs(q);
+        console.log(querySnapshot);
+
+        if (!querySnapshot.empty) {
+          console.log("am not empty");
+          const userData = querySnapshot.docs[0].data();
+          setUserData(userData);
+        }
+
+        console.log("this is the set user data", userData);
+
+        // Fetch categories for business users
+        // if (currentUser) {
+        //   const catRef = collection(db, "categories");
+        //   const cats = await getDocs(catRef);
+        //   const catData = cats.docs.map((doc) => ({
+        //     id: doc.id,
+        //     ...doc.data(),
+        //   }));
+        //   setCategories(catData);
+        // }
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!userData) return;
+      const users = await fetchUsers();
+      setUsersData(users);
+
+      const cats = await fetchCategories();
+      setCategories(cats);
+
+      // const orders = await fetchUserOrders(userData.id);
+      // setOrders(orders);
+
+      const products = await fetchUserProducts();
+      setProducts(products);
+
+      const subs = await fetchSubscriptions();
+      setSubscriptions(subs);
+
+      const businesses = await fetchBusinessProfiles();
+      setBusinessProfile(businesses);
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (userData && businessProfiles.length > 0) {
+      const myProf = businessProfiles.filter(
+        (prof) => prof.user_id === userData.id
+      );
+      setMyProfile(myProf);
+    }
+  }, [userData, businessProfiles]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
       if (authUser) {
         console.log(authUser);
         setPhotoURL(authUser.photoURL);
-        await fetchUser(authUser.uid);
-        await fetchUserProducts(authUser.uid);
-        await fetchUserOrders(authUser.uid);
-        await fetchUsers();
-        await fetchCategories();
-        await fetchSubscriptions();
       } else {
         setUserData(null);
         navigate("/login");
@@ -109,129 +150,6 @@ const AccountPage = () => {
 
     return () => unsubscribe();
   }, [navigate]);
-
-  const fetchUserProducts = async (id) => {
-    try {
-      const userRef = collection(db, "Product");
-      const q = query(userRef);
-      const querySnapshot = await getDocs(q);
-
-      const productsData = [];
-      querySnapshot.forEach((doc) => {
-        productsData.push({
-          id: doc.id,
-          ...doc.data(),
-        });
-      });
-
-      setProducts(productsData);
-    } catch (error) {
-      console.error("Error fetching products data:", error);
-    }
-  };
-
-  const fetchUsers = async () => {
-    try {
-      const userRef = collection(db, "Users");
-      const q = query(userRef);
-      const querySnapshot = await getDocs(q);
-
-      const userData = [];
-      querySnapshot.forEach((doc) => {
-        userData.push({
-          id: doc.id,
-          ...doc.data(),
-        });
-      });
-      console.log(userData);
-
-      setUsersData(userData);
-    } catch (error) {
-      console.error("Error fetching products data:", error);
-    }
-  };
-
-  const fetchUserOrders = async (id) => {
-    console.log("this is the user id" + id);
-    try {
-      const userRef = collection(db, "Orders");
-      const q = query(userRef, where("CustomerID", "==", id));
-      const querySnapshot = await getDocs(q);
-
-      const ordersData = [];
-      querySnapshot.forEach((doc) => {
-        ordersData.push({
-          id: doc.id,
-          ...doc.data(),
-        });
-      });
-
-      setOrders(ordersData);
-    } catch (error) {
-      console.error("Error fetching orders data:", error);
-    }
-  };
-
-  const fetchUser = async (id) => {
-    console.log("this is the user id" + id);
-    try {
-      const userRef = collection(db, "Users");
-      const q = query(userRef, where("user_id", "==", id));
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
-        // set the id
-        const usersData = doc.data();
-        usersData["id"] = doc.id;
-        setUserData(usersData);
-      });
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    }
-  };
-
-  const fetchCategories = async () => {
-    try {
-      const userRef = collection(db, "ProductsCategory");
-      const q = query(userRef);
-      const querySnapshot = await getDocs(q);
-
-      const categoriesData = [];
-      console.log(querySnapshot);
-      querySnapshot.forEach((doc) => {
-        categoriesData.push({
-          id: doc.id,
-          ...doc.data(),
-        });
-      });
-
-      setCategories(categoriesData);
-      console.log("Categories", categoriesData);
-    } catch (error) {
-      console.error("Error fetching categories data:", error);
-    }
-  };
-
-  const fetchSubscriptions = async () => {
-    try {
-      const userRef = collection(db, "subscriptions");
-      const q = query(userRef);
-      const querySnapshot = await getDocs(q);
-
-      const subscriptionData = [];
-      console.log(querySnapshot);
-      querySnapshot.forEach((doc) => {
-        subscriptionData.push({
-          id: doc.id,
-          ...doc.data(),
-        });
-      });
-
-      setSubscriptions(subscriptionData);
-      console.log("Subs", subscriptionData);
-    } catch (error) {
-      console.error("Error fetching categories data:", error);
-    }
-  };
 
   const handleLogout = async () => {
     try {
@@ -277,27 +195,42 @@ const AccountPage = () => {
     setEditUserModal(true);
   };
 
+  const handleEditBusinessProfile = (prof) => {
+    setSelectedProfile(prof);
+    setEditBsProfile(true);
+  };
   const handleUpdateUser = async (updatedUser) => {
-    console.log("user to update", updatedUser);
-    console.log("user to update id ", selectedUser.id || userData.id);
-
     try {
       // Update the user in Firestore
       const userRef = doc(db, "Users", selectedUser.id || userData.id);
       await updateDoc(userRef, updatedUser);
 
       // Update the local state
-      setUserData(
-        userData.map((user) =>
-          user.id === selectedUser.id ? { ...user, ...updatedUser } : user
-        )
-      );
+      // setUserData(
+      //   userData.map((user) =>
+      //     user.id === selectedUser.id ? { ...user, ...updatedUser } : user
+      //   )
+      // );
 
       // Close the modal
       setEditUserModal(false);
       setSelectedUser(null);
+      navigate("/account");
     } catch (error) {
       console.error("Error updating user:", error);
+    }
+  };
+
+  const handleUpdateBSProfile = async (updatedProfile) => {
+    try {
+      console.log("this is the profile to update", selectedProfile);
+      const profRef = doc(db, "business_profiles", selectedProfile.id);
+      await updateDoc(profRef, updatedProfile);
+      setEditBsProfile(false);
+      setSelectedProfile(null);
+      navigate("/account");
+    } catch (error) {
+      console.error("Error updating product:", error);
     }
   };
 
@@ -329,25 +262,26 @@ const AccountPage = () => {
       // Close the modal
       setEditProductModal(false);
       setSelectedProduct(null);
+      navigate("/account");
     } catch (error) {
       console.error("Error updating product:", error);
     }
   };
 
-  const filteredProducts = products.filter(
-    (product) =>
-      product.ProductName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.ProductDescription?.toLowerCase().includes(
-        searchTerm.toLowerCase()
-      )
-  );
+  let filteredCategories = [];
 
-  const filteredCategories = categories.filter(
-    (category) => category?.owner === userData.user_id
-  );
+  console.log("This is the user data", categories);
+  if (Boolean(userData)) {
+    filteredCategories = categories.filter(
+      (category) => category?.owner === userData.user_id
+    );
+  }
 
-  //console.log("userid ", userData.user_id);
-  console.log("filtered", filteredCategories);
+  console.log("this are filtered categories", filteredCategories);
+
+  const businessProducts = products.filter((product) =>
+    filteredCategories.some((category) => category.id === product.Category)
+  );
 
   const filteredOrders = orders.filter(
     (order) =>
@@ -366,22 +300,22 @@ const AccountPage = () => {
     );
   }
 
-  if (!userData) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center space-y-4">
-          <AlertCircle className="w-12 h-12 text-red-500 mx-auto" />
-          <h2 className="text-xl font-semibold text-gray-900">No User Found</h2>
-          <p className="text-gray-600">Please log in to access your account.</p>
-          <Link
-            to="/login"
-            className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-            Go to Login
-          </Link>
-        </div>
-      </div>
-    );
-  }
+  // if (!userData) {
+  //   return (
+  //     <div className="min-h-screen flex items-center justify-center bg-gray-50">
+  //       <div className="text-center space-y-4">
+  //         <AlertCircle className="w-12 h-12 text-red-500 mx-auto" />
+  //         <h2 className="text-xl font-semibold text-gray-900">No User Found</h2>
+  //         <p className="text-gray-600">Please log in to access your account.</p>
+  //         <Link
+  //           to="/login"
+  //           className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+  //           Go to Login
+  //         </Link>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   const handleViewOrder = (id) => {
     console.log("View category with ID:", id);
@@ -398,40 +332,6 @@ const AccountPage = () => {
   const formatDate = (date) => {
     return date;
   };
-  const navigation = [
-    {
-      name: "Overview",
-      tab: "overview",
-      icon: LayoutDashboard,
-      role: ["admin", "business", "customer"],
-    },
-
-    {
-      name: "Products",
-      tab: "products",
-      icon: ShoppingBag,
-      role: ["admin", "business"],
-    },
-    {
-      name: "Orders",
-      tab: "orders",
-      icon: Package,
-      role: ["admin", "customer"],
-    },
-    {
-      name: "Subscriptions",
-      tab: "subscriptions",
-      icon: SubscriptIcon,
-      role: ["admin"],
-    },
-    {
-      name: "Categories",
-      tab: "categories",
-      icon: Grid,
-      role: ["admin", "business"],
-    },
-  ];
-
   const renderTabContent = () => {
     switch (activeTab) {
       case "overview":
@@ -439,10 +339,22 @@ const AccountPage = () => {
           <OverviewTab
             formatCurrency={formatCurrency}
             handleEditUser={handleEditUser}
-            userData={userData}
+            userData={usersData}
             user={userData}
             orders={orders}
             products={products}
+            subscriptions={subScriptions}
+            businessProfiles={businessProfiles}
+          />
+        );
+
+      case "users":
+        return (
+          <UsersTab
+            handleEditUser={handleEditUser}
+            userData={usersData}
+            setDeleteConfirm={setDeleteConfirm}
+            searchTerm={searchTerm}
           />
         );
       case "orders":
@@ -461,7 +373,7 @@ const AccountPage = () => {
         return (
           <CategoriesTab
             categories={
-              userData.user_id == "business" ? filteredCategories : categories
+              userData.user_role === "admin" ? categories : filteredCategories
             }
             handleViewOrder={handleViewOrder}
             searchTerm={searchTerm}
@@ -487,10 +399,31 @@ const AccountPage = () => {
             handleEditProduct={handleEditProduct}
             handleDeleteItem={handleDeleteItem}
             products={
-              userData.user_role == "admin" ? products : filteredProducts
+              userData.user_role == "admin" ? products : businessProducts
             }
           />
         );
+
+      case "businessprofiles":
+        return (
+          <BusinessProfileTab
+            businessProfiles={businessProfiles}
+            searchTerm={searchTerm}
+            setDeleteConfirm={setDeleteConfirm}
+            handleEdit={handleEditBusinessProfile}
+          />
+        );
+
+      case "mybusinessprofile":
+        return (
+          <MyBusinessProfileTab
+            myProfile={myProfile}
+            handleEdit={handleEditBusinessProfile}
+          />
+        );
+
+      case "settings":
+        return <SettingsTab userData={userData} />;
       default:
         return <div>Unknown Tab</div>;
     }
@@ -498,6 +431,53 @@ const AccountPage = () => {
 
   return (
     <div className="flex h-screen overflow-hidden">
+      {deleteConfirm.show && (
+        <ConfirmationModal
+          onCancel={setDeleteConfirm({
+            show: false,
+          })}
+        />
+      )}
+      {editUserModal && (
+        <UserEditModal
+          onClose={() => {
+            setEditUserModal(false);
+          }}
+          onUpdate={handleUpdateUser}
+          user={selectedUser}
+          userRole={userData.user_role}
+        />
+      )}
+
+      {editBsProfile && (
+        <BsProfileEditModal
+          onClose={() => {
+            setEditBsProfile(false);
+          }}
+          onUpdate={handleUpdateBSProfile}
+          profile={selectedProfile}
+        />
+      )}
+
+      {editProductModal && (
+        <ProductEditModal
+          onClose={() => {
+            setEditProductModal(false);
+          }}
+          onUpdate={handleUpdateProduct}
+          user={selectedProduct}
+        />
+      )}
+
+      {showLogoutConfirm && (
+        <ConfirmationModal
+          message={"Are you sure you want to log out"}
+          onConfirm={handleLogout}
+          title={"Logout"}
+          onCancel={() => setShowLogoutConfirm(false)}
+        />
+      )}
+
       <Sidesbar
         user={userData}
         navigation={navigation}

@@ -1,5 +1,3 @@
-"use client";
-
 import { Search, ShoppingBag, Edit, Eye, Trash2 } from "lucide-react";
 
 const UsersTab = ({
@@ -10,8 +8,11 @@ const UsersTab = ({
   handleViewOrder,
   setDeleteConfirm,
 }) => {
+  console.log(handleEditUser);
+  console.log(setDeleteConfirm);
+
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden w-2/3 m-auto">
       <div className="p-6 border-b border-gray-200">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <h3 className="text-lg font-semibold text-gray-900">Users</h3>
@@ -115,7 +116,7 @@ const UsersTab = ({
                         onClick={() =>
                           setDeleteConfirm({
                             show: true,
-                            type: "order",
+                            type: "user",
                             id: usr.id,
                           })
                         }

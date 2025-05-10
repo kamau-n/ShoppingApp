@@ -7,6 +7,8 @@ import {
   User2,
   Clock,
   Edit,
+  ServerIcon,
+  ScanFace,
 } from "lucide-react";
 
 const OverviewTab = ({
@@ -16,6 +18,8 @@ const OverviewTab = ({
   userData,
   formatCurrency,
   handleEditUser,
+  subscriptions,
+  businessProfiles,
 }) => {
   const recentActivity = [
     { action: "Order Placed", date: "2 hours ago", amount: "KSH 2,500" },
@@ -77,6 +81,36 @@ const OverviewTab = ({
                 <h3 className="text-sm font-medium text-gray-500">Users</h3>
                 <p className="text-2xl font-semibold text-gray-900">
                   {userData.length}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {user.user_role === "admin" && (
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <div className="flex items-center">
+              <ServerIcon className="w-12 h-12 text-purple-600" />
+              <div className="ml-4">
+                <h3 className="text-sm font-medium text-gray-500">Services</h3>
+                <p className="text-2xl font-semibold text-gray-900">
+                  {subscriptions.length}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {user.user_role === "admin" && (
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <div className="flex items-center">
+              <ScanFace className="w-12 h-12 text-purple-600" />
+              <div className="ml-4">
+                <h3 className="text-sm font-medium text-gray-500">
+                  Business Profiles
+                </h3>
+                <p className="text-2xl font-semibold text-gray-900">
+                  {businessProfiles.length || 0}
                 </p>
               </div>
             </div>

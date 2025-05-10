@@ -9,7 +9,10 @@ import {
   TrendingUp,
   Award,
   Heart,
-  Search,
+  Store,
+  ShieldCheck,
+  Users,
+  BarChart,
 } from "lucide-react";
 import TopNav from "../components/TopNav";
 import Footer from "../components/Footer";
@@ -17,6 +20,7 @@ import { db } from "../config/config";
 import { collection, getDocs, query, limit, orderBy } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import Advertiser from "../components/advertiser";
+import BsTopNav from "../components/layout/BsTopNav";
 
 const auth = getAuth();
 
@@ -24,8 +28,10 @@ export default function Home() {
   const [logged, setLogged] = useState(false);
   const [proCategory, setProCategory] = useState([]);
   const [featuredProducts, setFeaturedProducts] = useState([]);
+  const [topBusinesses, setTopBusinesses] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const [bsProfiles, setBsProfiles] = useState([]);
 
   function fetchCategories() {
     const categories = [];
@@ -62,6 +68,23 @@ export default function Home() {
     });
   }
 
+  function fetchTopBusinesses() {
+    const businessesRef = collection(db, "business_profiles");
+    const topBusinessesQuery = query(businessesRef, limit(9));
+
+    getDocs(topBusinessesQuery).then((querySnapshot) => {
+      const businesses = [];
+      querySnapshot.forEach((doc) => {
+        const business = doc.data();
+        business.id = doc.id;
+        businesses.push(business);
+      });
+
+      console.log("this are the fetched businesses", businesses);
+      setTopBusinesses(businesses);
+    });
+  }
+
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       setLogged(!!user);
@@ -69,6 +92,7 @@ export default function Home() {
 
     fetchCategories();
     fetchFeaturedProducts();
+    fetchTopBusinesses();
 
     if (!localStorage.getItem("ladoche_shopping_cart")) {
       localStorage.setItem("ladoche_shopping_cart", "[]");
@@ -106,47 +130,43 @@ export default function Home() {
     },
   ];
 
-  // Sample featured products if none from Firebase
-  const sampleProducts = [
+  // Sample business testimonials
+  const businessTestimonials = [
     {
-      id: "sample1",
-      Name: "Premium Product 1",
-      Price: 2500,
-      Link: "",
-      Description: "High-quality premium product with amazing features",
+      id: 1,
+      name: "John Smith",
+      businessName: "Smith's Electronics",
+      avatar: "",
+      rating: 5,
+      comment:
+        "Since joining this platform, my sales have increased by 200%. The tools and visibility provided are exceptional!",
+      date: "1 month ago",
     },
     {
-      id: "sample2",
-      Name: "Exclusive Item 2",
-      Price: 1800,
-      Link: "",
-      Description: "Exclusive item with limited availability",
+      id: 2,
+      name: "Maria Rodriguez",
+      businessName: "Maria's Boutique",
+      avatar: "",
+      rating: 5,
+      comment:
+        "The platform is incredibly easy to use and has connected me with customers I never would have reached otherwise.",
+      date: "3 weeks ago",
     },
     {
-      id: "sample3",
-      Name: "Featured Product 3",
-      Price: 3200,
-      Link: "",
-      Description: "Our most popular featured product",
-    },
-    {
-      id: "sample4",
-      Name: "Special Collection 4",
-      Price: 4500,
-      Link: "",
-      Description: "Special collection item with premium quality",
-    },
-    {
-      id: "sample5",
-      Name: "Trending Item 5",
-      Price: 2900,
-      Link: "",
-      Description: "Currently trending item in our shop",
+      id: 3,
+      name: "David Ochieng",
+      businessName: "Nairobi Crafts",
+      avatar: "",
+      rating: 4,
+      comment:
+        "The support team is amazing and the commission rates are very fair. Highly recommend for any business owner!",
+      date: "2 weeks ago",
     },
   ];
 
-  const displayProducts =
-    featuredProducts.length > 0 ? featuredProducts : sampleProducts;
+  // Sample top businesses if none from Firebase
+
+  const displayBusinesses = topBusinesses;
 
   const addToCart = (e, product) => {
     e.stopPropagation();
@@ -173,32 +193,71 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <TopNav logged={logged} />
+      <BsTopNav title={"My Shop"} />
 
-      {/* Hero Banner */}
-      <div className="relative bg-gradient-to-r from-blue-600 to-indigo-700 overflow-hidden">
-        <div className="absolute inset-0  bg-cover bg-center opacity-20 mix-blend-overlay"></div>
+      {/* New Hero Banner for Business Owners */}
+      <div className="relative bg-gradient-to-r from-purple-700 to-indigo-800 overflow-hidden">
+        <div className="absolute inset-0 bg-cover bg-center opacity-20 mix-blend-overlay"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-          <div className="md:w-2/3">
-            <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-4">
-              Discover Amazing Products
-            </h1>
-            <p className="text-xl text-blue-100 mb-8">
-              Shop the latest trends with unbeatable prices and quality
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <button
-                onClick={() => navigate("/product")}
-                className="bg-white text-blue-700 hover:bg-blue-50 font-medium px-6 py-3 rounded-lg transition-colors duration-300 flex items-center justify-center">
-                Shop Now <ChevronRight className="ml-2 h-5 w-5" />
-              </button>
-              <div className="relative flex-1 max-w-md">
-                <input
-                  type="text"
-                  placeholder="Search products..."
-                  className="w-full pl-10 pr-4 py-3 rounded-lg border-0 focus:ring-2 focus:ring-blue-400"
-                />
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+          <div className="md:flex md:items-center md:justify-between">
+            <div className="md:w-1/2 mb-8 md:mb-0">
+              <div className="inline-block px-3 py-1 bg-purple-200 text-purple-800 rounded-full text-sm font-semibold mb-4">
+                BUSINESS OPPORTUNITY
+              </div>
+              <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-4">
+                Grow Your Business With Our Marketplace
+              </h1>
+              <p className="text-xl text-purple-100 mb-8">
+                Join thousands of successful sellers and reach millions of
+                customers. No setup fees, just seamless selling.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <button
+                  onClick={() => navigate("/register")}
+                  className="bg-white text-purple-700 hover:bg-purple-50 font-medium px-6 py-3 rounded-lg transition-colors duration-300 flex items-center justify-center">
+                  Register Your Business{" "}
+                  <ChevronRight className="ml-2 h-5 w-5" />
+                </button>
+                <button
+                  onClick={() => navigate("/business/learn-more")}
+                  className="bg-transparent text-white border border-white hover:bg-white/10 font-medium px-6 py-3 rounded-lg transition-colors duration-300 flex items-center justify-center">
+                  Learn More
+                </button>
+              </div>
+            </div>
+            <div className="md:w-2/5">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <h3 className="text-white text-xl font-bold mb-4">
+                  Why Sell With Us?
+                </h3>
+                <ul className="space-y-3">
+                  <li className="flex items-start">
+                    <div className="flex-shrink-0 h-6 w-6 rounded-full bg-green-400 flex items-center justify-center mr-3 mt-0.5">
+                      <ShieldCheck className="h-3 w-3 text-white" />
+                    </div>
+                    <p className="text-white">
+                      Access to millions of customers
+                    </p>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="flex-shrink-0 h-6 w-6 rounded-full bg-green-400 flex items-center justify-center mr-3 mt-0.5">
+                      <ShieldCheck className="h-3 w-3 text-white" />
+                    </div>
+                    <p className="text-white">Easy-to-use seller dashboard</p>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="flex-shrink-0 h-6 w-6 rounded-full bg-green-400 flex items-center justify-center mr-3 mt-0.5">
+                      <ShieldCheck className="h-3 w-3 text-white" />
+                    </div>
+                    <p className="text-white">Secure payment processing</p>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="flex-shrink-0 h-6 w-6 rounded-full bg-green-400 flex items-center justify-center mr-3 mt-0.5">
+                      <ShieldCheck className="h-3 w-3 text-white" />
+                    </div>
+                    <p className="text-white">Dedicated seller support</p>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
@@ -206,109 +265,205 @@ export default function Home() {
       </div>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Featured Advertiser Banner */}
-        <div className="mb-16">
-          <Advertiser />
-        </div>
-
-        {/* Categories Section */}
-
-        {/* Featured Products Section */}
+        {/* Top Businesses Section */}
         <section className="mb-16">
           <div className="flex items-center justify-between mb-8">
             <div>
               <div className="flex items-center mb-2">
-                <TrendingUp className="h-5 w-5 text-blue-600 mr-2" />
-                <span className="text-blue-600 font-semibold">
-                  TRENDING NOW
+                <Store className="h-5 w-5 text-purple-600 mr-2" />
+                <span className="text-purple-600 font-semibold">
+                  TOP SELLERS
                 </span>
               </div>
               <h2 className="text-3xl font-bold text-gray-900">
-                Featured Products
+                Meet Our Top Businesses
               </h2>
             </div>
             <button
-              onClick={() => navigate("/product")}
-              className="text-blue-600 hover:text-blue-800 font-medium flex items-center">
+              onClick={() => navigate("/businesses")}
+              className="text-purple-600 hover:text-purple-800 font-medium flex items-center">
               View All <ChevronRight className="ml-1 h-4 w-4" />
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-            {displayProducts.map(
-              (
-                product,
-                index // index added here
-              ) => (
-                <div
-                  key={product.id}
-                  className="group bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden border border-gray-100"
-                  onClick={() =>
-                    navigate(`/product/${product.id}`, {
-                      state: { type: product.category },
-                    })
-                  }>
-                  <div className="relative aspect-square overflow-hidden bg-gray-100">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {displayBusinesses.map((business) => (
+              <div
+                key={business.id}
+                className="group bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden border border-gray-100"
+                onClick={() => navigate(`/business/${business.business_url}`)}>
+                <div className="relative aspect-video overflow-hidden bg-gray-100 flex items-center justify-center p-4">
+                  {business.business_logo ? (
                     <img
-                      src={product.Link}
-                      alt={product.Name}
-                      className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                      src={business.logo || "/placeholder.svg"}
+                      alt={business.name}
+                      className="h-16 object-contain"
                     />
-                    <button
-                      onClick={(e) => e.stopPropagation()}
-                      className="absolute top-3 right-3 h-8 w-8 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center text-gray-700 hover:text-red-500 transition-colors">
-                      <Heart className="h-4 w-4" />
-                    </button>
-                    {index === 0 && (
-                      <div className="absolute top-3 left-3 bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">
-                        NEW
-                      </div>
-                    )}
-                    {index === 1 && (
-                      <div className="absolute top-3 left-3 bg-amber-500 text-white text-xs font-bold px-2 py-1 rounded">
-                        SALE
-                      </div>
-                    )}
-                  </div>
-                  <div className="p-4">
-                    <div className="flex items-center mb-1">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`h-3 w-3 ${
-                            i < 4 ? "text-amber-400" : "text-gray-300"
-                          }`}
-                          fill={i < 4 ? "currentColor" : "none"}
-                        />
-                      ))}
-                      <span className="text-xs text-gray-500 ml-1">(24)</span>
+                  ) : (
+                    <Store className="h-16 w-16 text-gray-400" />
+                  )}
+                </div>
+                <div className="p-4">
+                  {/* <div className="flex items-center mb-1">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className={`h-3 w-3 ${
+                          i < Math.floor(business.rating)
+                            ? "text-amber-400"
+                            : "text-gray-300"
+                        }`}
+                        fill={
+                          i < Math.floor(business.rating)
+                            ? "currentColor"
+                            : "none"
+                        }
+                      />
+                    ))}
+                    <span className="text-xs text-gray-500 ml-1">
+                      ({business.rating})
+                    </span>
+                  </div> */}
+                  <h3 className="font-semibold text-gray-900 mb-1 line-clamp-1 group-hover:text-purple-600 transition-colors">
+                    {business.business_name}
+                  </h3>
+                  <p className="text-sm text-gray-500 mb-3 line-clamp-2">
+                    {business.business_description ||
+                      "Quality products and excellent service"}
+                  </p>
+                  <div className="flex items-center justify-between text-xs text-gray-500">
+                    {/* <div className="flex items-center">
+                      <ShoppingCart className="h-3 w-3 mr-1" />
+                      <span>{business.productCount || "100+"} Products</span>
                     </div>
-                    <h3 className="font-semibold text-gray-900 mb-1 line-clamp-2 group-hover:text-blue-600 transition-colors">
-                      {product.Name}
-                    </h3>
-                    <p className="text-sm text-gray-500 mb-3 line-clamp-2">
-                      {product.Description ||
-                        "High-quality product with amazing features"}
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <p className="text-lg font-bold text-gray-900">
-                        KSH {product.Price?.toLocaleString()}
-                      </p>
-                      <button
-                        onClick={(e) => addToCart(e, product)}
-                        className="flex items-center space-x-1 bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                        <ShoppingCart className="h-4 w-4" />
-                        <span>Add</span>
-                      </button>
-                    </div>
+                    <div className="flex items-center">
+                      <Users className="h-3 w-3 mr-1" />
+                      <span>{business.salesCount || "500+"} Sales</span>
+                    </div> */}
                   </div>
                 </div>
-              )
-            )}
+              </div>
+            ))}
           </div>
         </section>
 
-        {/* Benefits Section */}
+        {/* Business Benefits Section */}
+        <section className="mb-16 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-2xl shadow-lg p-8">
+          <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
+            Benefits For Business Owners
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="flex flex-col items-center text-center p-4">
+              <div className="h-16 w-16 rounded-full bg-purple-100 flex items-center justify-center mb-4">
+                <Users className="h-8 w-8 text-purple-600" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Wider Reach</h3>
+              <p className="text-gray-600">
+                Access millions of potential customers across the country
+              </p>
+            </div>
+            <div className="flex flex-col items-center text-center p-4">
+              <div className="h-16 w-16 rounded-full bg-blue-100 flex items-center justify-center mb-4">
+                <ShieldCheck className="h-8 w-8 text-blue-600" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Secure Platform</h3>
+              <p className="text-gray-600">
+                Reliable payment processing and fraud protection
+              </p>
+            </div>
+            <div className="flex flex-col items-center text-center p-4">
+              <div className="h-16 w-16 rounded-full bg-green-100 flex items-center justify-center mb-4">
+                <BarChart className="h-8 w-8 text-green-600" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Business Analytics</h3>
+              <p className="text-gray-600">
+                Detailed insights to help grow your business
+              </p>
+            </div>
+            <div className="flex flex-col items-center text-center p-4">
+              <div className="h-16 w-16 rounded-full bg-amber-100 flex items-center justify-center mb-4">
+                <Award className="h-8 w-8 text-amber-600" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Brand Recognition</h3>
+              <p className="text-gray-600">
+                Build your brand and establish customer loyalty
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Business Testimonials Section */}
+        <section className="bg-white rounded-2xl shadow-lg p-8 mb-16">
+          <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
+            Success Stories From Our Sellers
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {businessTestimonials.map((testimonial) => (
+              <div
+                key={testimonial.id}
+                className="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl p-6 shadow-sm">
+                <div className="flex items-center mb-4">
+                  <img
+                    src={
+                      testimonial.avatar ||
+                      "/placeholder.svg?height=48&width=48"
+                    }
+                    alt={testimonial.name}
+                    className="h-12 w-12 rounded-full mr-4 object-cover bg-gray-200"
+                  />
+                  <div>
+                    <h4 className="font-semibold text-gray-900">
+                      {testimonial.name}
+                    </h4>
+                    <p className="text-sm text-purple-600 font-medium">
+                      {testimonial.businessName}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex mb-3">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`h-4 w-4 ${
+                        i < testimonial.rating
+                          ? "text-amber-400"
+                          : "text-gray-300"
+                      }`}
+                      fill={i < testimonial.rating ? "currentColor" : "none"}
+                    />
+                  ))}
+                </div>
+                <p className="text-gray-700 italic">"{testimonial.comment}"</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Call to Action Section */}
+        <section className="bg-gradient-to-r from-purple-700 to-indigo-800 rounded-2xl shadow-lg p-8 mb-16">
+          <div className="max-w-3xl mx-auto text-center">
+            <h2 className="text-3xl font-bold text-white mb-4">
+              Ready to Start Selling?
+            </h2>
+            <p className="text-purple-100 mb-8">
+              Join thousands of successful businesses on our platform today
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button
+                onClick={() => navigate("/business/register")}
+                className="bg-white text-purple-700 hover:bg-purple-50 font-medium px-6 py-3 rounded-lg transition-colors duration-300">
+                Register Your Business
+              </button>
+              <button
+                onClick={() => navigate("/business/learn-more")}
+                className="bg-transparent text-white border border-white hover:bg-white/10 font-medium px-6 py-3 rounded-lg transition-colors duration-300">
+                Learn More
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* Benefits Section (for customers) */}
         <section className="mb-16 bg-white rounded-2xl shadow-lg p-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
             Why Shop With Us
@@ -358,9 +513,9 @@ export default function Home() {
                 className="bg-gray-50 rounded-xl p-6 shadow-sm">
                 <div className="flex items-center mb-4">
                   <img
-                    src={review.avatar}
+                    src={review.avatar || "/placeholder.svg?height=48&width=48"}
                     alt={review.name}
-                    className="h-12 w-12 rounded-full mr-4 object-cover"
+                    className="h-12 w-12 rounded-full mr-4 object-cover bg-gray-200"
                   />
                   <div>
                     <h4 className="font-semibold text-gray-900">
