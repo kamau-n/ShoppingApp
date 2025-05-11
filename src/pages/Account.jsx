@@ -83,19 +83,6 @@ const AccountPage = () => {
           const userData = querySnapshot.docs[0].data();
           setUserData(userData);
         }
-
-        console.log("this is the set user data", userData);
-
-        // Fetch categories for business users
-        // if (currentUser) {
-        //   const catRef = collection(db, "categories");
-        //   const cats = await getDocs(catRef);
-        //   const catData = cats.docs.map((doc) => ({
-        //     id: doc.id,
-        //     ...doc.data(),
-        //   }));
-        //   setCategories(catData);
-        // }
       }
     });
 
@@ -104,15 +91,11 @@ const AccountPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!userData) return;
       const users = await fetchUsers();
       setUsersData(users);
 
       const cats = await fetchCategories();
       setCategories(cats);
-
-      // const orders = await fetchUserOrders(userData.id);
-      // setOrders(orders);
 
       const products = await fetchUserProducts();
       setProducts(products);
@@ -124,18 +107,21 @@ const AccountPage = () => {
       setBusinessProfile(businesses);
     };
 
-    fetchData();
-  }, []);
+    if (userData) {
+      fetchData();
+    }
+  }, [userData]);
 
   useEffect(() => {
     if (userData && businessProfiles.length > 0) {
       const myProf = businessProfiles.filter(
-        (prof) => prof.user_id === userData.id
+        (prof) => prof.user_id === userData.user_id
       );
       setMyProfile(myProf);
     }
   }, [userData, businessProfiles]);
 
+  console.log("This is my profile", myProfile);
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
       if (authUser) {
@@ -180,6 +166,7 @@ const AccountPage = () => {
   // Update the handleEditProduct function to open the modal instead of navigating
   const handleEditProduct = (id) => {
     const product = products.find((p) => p.id === id);
+    console.log("this is the selected product", product);
     setSelectedProduct(product);
     setEditProductModal(true);
   };
@@ -237,15 +224,11 @@ const AccountPage = () => {
   // Add a function to handle product updates
   const handleUpdateProduct = async (updatedProduct, imageFile) => {
     try {
-      // Update the product in Firestore
       const productRef = doc(db, "Product", selectedProduct.id);
 
       // If there's a new image file, handle the upload
       if (imageFile && imageFile !== selectedProduct.Link) {
-        // In a real implementation, you would upload the image to storage
-        // and get the URL back. This is a simplified example.
         console.log("Would upload new image:", imageFile);
-        // updatedProduct.Link = newImageUrl
       }
 
       await updateDoc(productRef, updatedProduct);
@@ -300,22 +283,22 @@ const AccountPage = () => {
     );
   }
 
-  // if (!userData) {
-  //   return (
-  //     <div className="min-h-screen flex items-center justify-center bg-gray-50">
-  //       <div className="text-center space-y-4">
-  //         <AlertCircle className="w-12 h-12 text-red-500 mx-auto" />
-  //         <h2 className="text-xl font-semibold text-gray-900">No User Found</h2>
-  //         <p className="text-gray-600">Please log in to access your account.</p>
-  //         <Link
-  //           to="/login"
-  //           className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-  //           Go to Login
-  //         </Link>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+  if (!userData) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center space-y-4">
+          <AlertCircle className="w-12 h-12 text-red-500 mx-auto" />
+          <h2 className="text-xl font-semibold text-gray-900">No User Found</h2>
+          <p className="text-gray-600">Please log in to access your account.</p>
+          <Link
+            to="/login"
+            className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+            Go to Login
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   const handleViewOrder = (id) => {
     console.log("View category with ID:", id);
@@ -419,13 +402,16 @@ const AccountPage = () => {
           <MyBusinessProfileTab
             myProfile={myProfile}
             handleEdit={handleEditBusinessProfile}
+            businessProfiles={businessProfiles}
           />
         );
 
       case "settings":
-        return <SettingsTab userData={userData} />;
+        return (
+          <SettingsTab handleStripePayment={() => {}} userData={userData} />
+        );
       default:
-        return <div>Unknown Tab</div>;
+        return <div> Tab</div>;
     }
   };
 
@@ -465,7 +451,8 @@ const AccountPage = () => {
             setEditProductModal(false);
           }}
           onUpdate={handleUpdateProduct}
-          user={selectedProduct}
+          // user={selectedProduct}
+          product={selectedProduct}
         />
       )}
 
@@ -486,9 +473,8 @@ const AccountPage = () => {
         setShowLogoutConfirm={setShowLogoutConfirm}
         mobileMenuOpen={mobileMenuOpen}
         toggleMobileMenu={toggleMobileMenu}
+        key={"key"}
       />
-
-      {/* Main content */}
       <main className="flex-1 overflow-y-auto p-6 bg-gray-50">
         {renderTabContent()}
       </main>

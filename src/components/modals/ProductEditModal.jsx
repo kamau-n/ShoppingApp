@@ -131,7 +131,7 @@ const ProductEditModal = ({ product, onClose, onUpdate }) => {
               Category
             </label>
             <input
-              type="checkbox"
+              type="text"
               id="featured"
               name="featured"
               defaultValue={product.featured || false}

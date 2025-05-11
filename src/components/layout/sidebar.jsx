@@ -54,7 +54,9 @@ const Sidesbar = ({
               <h2 className="text-lg font-semibold text-gray-900">
                 {/* {user?.user_first_name} {user?.user_last_name} */}
               </h2>
-              <p className="text-sm text-gray-600">{user.user_email}</p>
+              <p className="text-sm text-gray-600">
+                {user.user_email || "@gmail.com"}
+              </p>
             </div>
           </div>
         </div>
